@@ -1,0 +1,105 @@
+meta {
+  name: Delete a link
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/api/v1/links/:link_id
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~hard_delete: 
+}
+
+params:path {
+  link_id: 
+}
+
+example {
+  name: 200 Response
+  description: Successful Response
+  
+  request: {
+    url: {{baseUrl}}/api/v1/links/:link_id
+    method: DELETE
+    mode: none
+    params:query: {
+      ~hard_delete: 
+    }
+  
+    params:path: {
+      link_id: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "id": 0,
+          "user_id": 0,
+          "type": "",
+          "from": "",
+          "value": ""
+        }
+      '''
+    }
+  }
+}
+
+example {
+  name: 422 Response
+  description: Validation Error
+  
+  request: {
+    url: {{baseUrl}}/api/v1/links/:link_id
+    method: DELETE
+    mode: none
+    params:query: {
+      ~hard_delete: 
+    }
+  
+    params:path: {
+      link_id: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 422
+      text: Unprocessable Entity
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "detail": [
+            {
+              "loc": [],
+              "msg": "",
+              "type": ""
+            }
+          ]
+        }
+      '''
+    }
+  }
+}

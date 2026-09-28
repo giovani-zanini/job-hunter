@@ -1,0 +1,209 @@
+{
+  "$defs": {
+    "SkillCategory": {
+      "description": "Enum for skill categories.",
+      "enum": [
+        "LANGUAGE",
+        "TOOL",
+        "FRAMEWORK"
+      ],
+      "title": "SkillCategory",
+      "type": "string"
+    },
+    "SkillCreateRequest": {
+      "description": "Schema for creating a new skill.",
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/SkillCategory",
+          "description": "Skill category"
+        },
+        "name": {
+          "description": "Skill name",
+          "maxLength": 100,
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "category"
+      ],
+      "title": "SkillCreateRequest",
+      "type": "object"
+    },
+    "SkillDetailResponse": {
+      "description": "Schema for detailed skill response.",
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/SkillCategory"
+        },
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "category"
+      ],
+      "title": "SkillDetailResponse",
+      "type": "object"
+    },
+    "SkillFilterParams": {
+      "description": "Schema for skill list filters.",
+      "properties": {
+        "category": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SkillCategory"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by category"
+        },
+        "include_deleted": {
+          "default": false,
+          "description": "Include soft deleted skills",
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "description": "Maximum number of records to return",
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by name (partial match)",
+          "title": "Name"
+        },
+        "skip": {
+          "default": 0,
+          "description": "Number of records to skip",
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        }
+      },
+      "title": "SkillFilterParams",
+      "type": "object"
+    },
+    "SkillResponse": {
+      "description": "Schema for skill response.",
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/SkillCategory"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "category"
+      ],
+      "title": "SkillResponse",
+      "type": "object"
+    },
+    "SkillUpdateRequest": {
+      "description": "Schema for updating a skill.",
+      "properties": {
+        "category": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SkillCategory"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Skill category"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Skill name",
+          "title": "Name"
+        }
+      },
+      "title": "SkillUpdateRequest",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/SkillCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/SkillDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/SkillFilterParams"
+    },
+    {
+      "$ref": "#/$defs/SkillResponse"
+    },
+    {
+      "$ref": "#/$defs/SkillUpdateRequest"
+    }
+  ],
+  "description": "Consolidated DTO schemas. Select an individual contract through its reference in x-models. The root accepts any listed DTO.",
+  "title": "profile.skill",
+  "x-models": {
+    "skill": {
+      "SkillCreateRequest": "#/$defs/SkillCreateRequest",
+      "SkillDetailResponse": "#/$defs/SkillDetailResponse",
+      "SkillFilterParams": "#/$defs/SkillFilterParams",
+      "SkillResponse": "#/$defs/SkillResponse",
+      "SkillUpdateRequest": "#/$defs/SkillUpdateRequest"
+    }
+  }
+}

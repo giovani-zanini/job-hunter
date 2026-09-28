@@ -1,0 +1,2511 @@
+{
+  "$defs": {
+    "AchievementInput": {
+      "description": "Schema for creating an achievement.",
+      "properties": {
+        "description": {
+          "description": "Achievement description",
+          "title": "Description",
+          "type": "string"
+        },
+        "title": {
+          "description": "Achievement title",
+          "maxLength": 64,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "description"
+      ],
+      "title": "AchievementInput",
+      "type": "object"
+    },
+    "AchievementResponse": {
+      "description": "Schema for achievement response.",
+      "properties": {
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "experience_id": {
+          "title": "Experience Id",
+          "type": "integer"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "experience_id",
+        "title",
+        "description"
+      ],
+      "title": "AchievementResponse",
+      "type": "object"
+    },
+    "AchievementUpdateRequest": {
+      "description": "Schema for updating an achievement.",
+      "properties": {
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Achievement description",
+          "title": "Description"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Achievement title",
+          "title": "Title"
+        }
+      },
+      "title": "AchievementUpdateRequest",
+      "type": "object"
+    },
+    "CertificateCreateRequest": {
+      "description": "Schema for creating a new certificate.",
+      "properties": {
+        "credential_url": {
+          "anyOf": [
+            {
+              "maxLength": 255,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Credential URL",
+          "title": "Credential Url"
+        },
+        "expiration_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Expiration date (optional)",
+          "title": "Expiration Date"
+        },
+        "issue_date": {
+          "description": "Issue date",
+          "format": "date",
+          "title": "Issue Date",
+          "type": "string"
+        },
+        "issuer": {
+          "description": "Issuing organization",
+          "maxLength": 100,
+          "title": "Issuer",
+          "type": "string"
+        },
+        "name": {
+          "description": "Certificate name",
+          "maxLength": 100,
+          "title": "Name",
+          "type": "string"
+        },
+        "skill_ids": {
+          "default": [],
+          "description": "Skill IDs to associate",
+          "items": {
+            "type": "integer"
+          },
+          "title": "Skill Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "issuer",
+        "issue_date"
+      ],
+      "title": "CertificateCreateRequest",
+      "type": "object"
+    },
+    "CertificateDetailResponse": {
+      "description": "Schema for detailed certificate response.",
+      "properties": {
+        "credential_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Credential Url"
+        },
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "expiration_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expiration Date"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "issue_date": {
+          "format": "date",
+          "title": "Issue Date",
+          "type": "string"
+        },
+        "issuer": {
+          "title": "Issuer",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "user_id": {
+          "title": "User Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "name",
+        "issuer",
+        "issue_date"
+      ],
+      "title": "CertificateDetailResponse",
+      "type": "object"
+    },
+    "CertificateFilterParams": {
+      "description": "Schema for certificate list filters.",
+      "properties": {
+        "include_deleted": {
+          "default": false,
+          "description": "Include soft deleted certificates",
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "issuer": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by issuer (partial match)",
+          "title": "Issuer"
+        },
+        "limit": {
+          "default": 20,
+          "description": "Maximum number of records to return",
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by name (partial match)",
+          "title": "Name"
+        },
+        "skip": {
+          "default": 0,
+          "description": "Number of records to skip",
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        },
+        "user_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by user ID",
+          "title": "User Id"
+        }
+      },
+      "title": "CertificateFilterParams",
+      "type": "object"
+    },
+    "CertificateResponse": {
+      "description": "Schema for certificate response.",
+      "properties": {
+        "credential_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Credential Url"
+        },
+        "expiration_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expiration Date"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "issue_date": {
+          "format": "date",
+          "title": "Issue Date",
+          "type": "string"
+        },
+        "issuer": {
+          "title": "Issuer",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "user_id": {
+          "title": "User Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "name",
+        "issuer",
+        "issue_date"
+      ],
+      "title": "CertificateResponse",
+      "type": "object"
+    },
+    "CertificateUpdateRequest": {
+      "description": "Schema for updating a certificate.",
+      "properties": {
+        "credential_url": {
+          "anyOf": [
+            {
+              "maxLength": 255,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Credential URL",
+          "title": "Credential Url"
+        },
+        "expiration_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Expiration date",
+          "title": "Expiration Date"
+        },
+        "issue_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Issue date",
+          "title": "Issue Date"
+        },
+        "issuer": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Issuing organization",
+          "title": "Issuer"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Certificate name",
+          "title": "Name"
+        }
+      },
+      "title": "CertificateUpdateRequest",
+      "type": "object"
+    },
+    "CompanyCreateRequest": {
+      "description": "Schema for creating a new company.",
+      "properties": {
+        "name": {
+          "description": "Company name",
+          "maxLength": 150,
+          "title": "Name",
+          "type": "string"
+        },
+        "website": {
+          "description": "Company website URL",
+          "maxLength": 255,
+          "title": "Website",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "website"
+      ],
+      "title": "CompanyCreateRequest",
+      "type": "object"
+    },
+    "CompanyDetailResponse": {
+      "description": "Schema for detailed company response.",
+      "properties": {
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "website": {
+          "title": "Website",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "website"
+      ],
+      "title": "CompanyDetailResponse",
+      "type": "object"
+    },
+    "CompanyFilterParams": {
+      "description": "Schema for company list filters.",
+      "properties": {
+        "include_deleted": {
+          "default": false,
+          "description": "Include soft deleted companies",
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "description": "Maximum number of records to return",
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by name (partial match)",
+          "title": "Name"
+        },
+        "skip": {
+          "default": 0,
+          "description": "Number of records to skip",
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        }
+      },
+      "title": "CompanyFilterParams",
+      "type": "object"
+    },
+    "CompanyResponse": {
+      "description": "Schema for company response.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "website": {
+          "title": "Website",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "website"
+      ],
+      "title": "CompanyResponse",
+      "type": "object"
+    },
+    "CompanyUpdateRequest": {
+      "description": "Schema for updating a company.",
+      "properties": {
+        "name": {
+          "anyOf": [
+            {
+              "maxLength": 150,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Company name",
+          "title": "Name"
+        },
+        "website": {
+          "anyOf": [
+            {
+              "maxLength": 255,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Company website URL",
+          "title": "Website"
+        }
+      },
+      "title": "CompanyUpdateRequest",
+      "type": "object"
+    },
+    "EducationCreateRequest": {
+      "description": "Schema for creating a new education.",
+      "properties": {
+        "degree": {
+          "description": "Degree type",
+          "maxLength": 25,
+          "title": "Degree",
+          "type": "string"
+        },
+        "end_date": {
+          "description": "End date",
+          "format": "date",
+          "title": "End Date",
+          "type": "string"
+        },
+        "field_of_study": {
+          "description": "Field of study",
+          "maxLength": 100,
+          "title": "Field Of Study",
+          "type": "string"
+        },
+        "institution_name": {
+          "description": "Institution name",
+          "maxLength": 100,
+          "title": "Institution Name",
+          "type": "string"
+        },
+        "skill_ids": {
+          "default": [],
+          "description": "Skill IDs to associate",
+          "items": {
+            "type": "integer"
+          },
+          "title": "Skill Ids",
+          "type": "array"
+        },
+        "start_date": {
+          "description": "Start date",
+          "format": "date",
+          "title": "Start Date",
+          "type": "string"
+        }
+      },
+      "required": [
+        "institution_name",
+        "degree",
+        "field_of_study",
+        "start_date",
+        "end_date"
+      ],
+      "title": "EducationCreateRequest",
+      "type": "object"
+    },
+    "EducationDetailResponse": {
+      "description": "Schema for detailed education response.",
+      "properties": {
+        "degree": {
+          "title": "Degree",
+          "type": "string"
+        },
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "end_date": {
+          "format": "date",
+          "title": "End Date",
+          "type": "string"
+        },
+        "field_of_study": {
+          "title": "Field Of Study",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "institution_name": {
+          "title": "Institution Name",
+          "type": "string"
+        },
+        "start_date": {
+          "format": "date",
+          "title": "Start Date",
+          "type": "string"
+        },
+        "user_id": {
+          "title": "User Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "institution_name",
+        "degree",
+        "field_of_study",
+        "start_date",
+        "end_date"
+      ],
+      "title": "EducationDetailResponse",
+      "type": "object"
+    },
+    "EducationFilterParams": {
+      "description": "Schema for education list filters.",
+      "properties": {
+        "degree": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by degree (partial match)",
+          "title": "Degree"
+        },
+        "field_of_study": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by field (partial match)",
+          "title": "Field Of Study"
+        },
+        "include_deleted": {
+          "default": false,
+          "description": "Include soft deleted education",
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "institution_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by institution (partial match)",
+          "title": "Institution Name"
+        },
+        "limit": {
+          "default": 20,
+          "description": "Maximum number of records to return",
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "skip": {
+          "default": 0,
+          "description": "Number of records to skip",
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        },
+        "user_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by user ID",
+          "title": "User Id"
+        }
+      },
+      "title": "EducationFilterParams",
+      "type": "object"
+    },
+    "EducationResponse": {
+      "description": "Schema for education response.",
+      "properties": {
+        "degree": {
+          "title": "Degree",
+          "type": "string"
+        },
+        "end_date": {
+          "format": "date",
+          "title": "End Date",
+          "type": "string"
+        },
+        "field_of_study": {
+          "title": "Field Of Study",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "institution_name": {
+          "title": "Institution Name",
+          "type": "string"
+        },
+        "start_date": {
+          "format": "date",
+          "title": "Start Date",
+          "type": "string"
+        },
+        "user_id": {
+          "title": "User Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "institution_name",
+        "degree",
+        "field_of_study",
+        "start_date",
+        "end_date"
+      ],
+      "title": "EducationResponse",
+      "type": "object"
+    },
+    "EducationUpdateRequest": {
+      "description": "Schema for updating an education.",
+      "properties": {
+        "degree": {
+          "anyOf": [
+            {
+              "maxLength": 25,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Degree type",
+          "title": "Degree"
+        },
+        "end_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "End date",
+          "title": "End Date"
+        },
+        "field_of_study": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Field of study",
+          "title": "Field Of Study"
+        },
+        "institution_name": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Institution name",
+          "title": "Institution Name"
+        },
+        "start_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Start date",
+          "title": "Start Date"
+        }
+      },
+      "title": "EducationUpdateRequest",
+      "type": "object"
+    },
+    "ExperienceCreateRequest": {
+      "description": "Schema for creating a new experience.",
+      "properties": {
+        "achievements": {
+          "default": [],
+          "description": "Achievements",
+          "items": {
+            "$ref": "#/$defs/AchievementInput"
+          },
+          "title": "Achievements",
+          "type": "array"
+        },
+        "company_id": {
+          "description": "Company ID",
+          "title": "Company Id",
+          "type": "integer"
+        },
+        "description": {
+          "description": "Job description",
+          "title": "Description",
+          "type": "string"
+        },
+        "end_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "End date (null if current)",
+          "title": "End Date"
+        },
+        "position_title": {
+          "description": "Position/job title",
+          "maxLength": 100,
+          "title": "Position Title",
+          "type": "string"
+        },
+        "skill_ids": {
+          "default": [],
+          "description": "Skill IDs to associate",
+          "items": {
+            "type": "integer"
+          },
+          "title": "Skill Ids",
+          "type": "array"
+        },
+        "start_date": {
+          "description": "Start date",
+          "format": "date",
+          "title": "Start Date",
+          "type": "string"
+        }
+      },
+      "required": [
+        "company_id",
+        "position_title",
+        "start_date",
+        "description"
+      ],
+      "title": "ExperienceCreateRequest",
+      "type": "object"
+    },
+    "ExperienceDetailResponse": {
+      "description": "Schema for detailed experience response.",
+      "properties": {
+        "achievements": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/AchievementResponse"
+          },
+          "title": "Achievements",
+          "type": "array"
+        },
+        "company_id": {
+          "title": "Company Id",
+          "type": "integer"
+        },
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "end_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End Date"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "position_title": {
+          "title": "Position Title",
+          "type": "string"
+        },
+        "start_date": {
+          "format": "date",
+          "title": "Start Date",
+          "type": "string"
+        },
+        "user_id": {
+          "title": "User Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "company_id",
+        "position_title",
+        "start_date",
+        "description"
+      ],
+      "title": "ExperienceDetailResponse",
+      "type": "object"
+    },
+    "ExperienceFilterParams": {
+      "description": "Schema for experience list filters.",
+      "properties": {
+        "company_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by company ID",
+          "title": "Company Id"
+        },
+        "include_deleted": {
+          "default": false,
+          "description": "Include soft deleted experiences",
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "description": "Maximum number of records to return",
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "position_title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by position title (partial match)",
+          "title": "Position Title"
+        },
+        "skip": {
+          "default": 0,
+          "description": "Number of records to skip",
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        },
+        "user_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by user ID",
+          "title": "User Id"
+        }
+      },
+      "title": "ExperienceFilterParams",
+      "type": "object"
+    },
+    "ExperienceResponse": {
+      "description": "Schema for experience response.",
+      "properties": {
+        "company_id": {
+          "title": "Company Id",
+          "type": "integer"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "end_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End Date"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "position_title": {
+          "title": "Position Title",
+          "type": "string"
+        },
+        "start_date": {
+          "format": "date",
+          "title": "Start Date",
+          "type": "string"
+        },
+        "user_id": {
+          "title": "User Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "company_id",
+        "position_title",
+        "start_date",
+        "description"
+      ],
+      "title": "ExperienceResponse",
+      "type": "object"
+    },
+    "ExperienceSkillInput": {
+      "description": "Schema for associating a skill with an experience.",
+      "properties": {
+        "skill_id": {
+          "description": "Skill ID",
+          "title": "Skill Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "skill_id"
+      ],
+      "title": "ExperienceSkillInput",
+      "type": "object"
+    },
+    "ExperienceUpdateRequest": {
+      "description": "Schema for updating an experience.",
+      "properties": {
+        "company_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Company ID",
+          "title": "Company Id"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Job description",
+          "title": "Description"
+        },
+        "end_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "End date",
+          "title": "End Date"
+        },
+        "position_title": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Position/job title",
+          "title": "Position Title"
+        },
+        "start_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Start date",
+          "title": "Start Date"
+        }
+      },
+      "title": "ExperienceUpdateRequest",
+      "type": "object"
+    },
+    "LinkCreateRequest": {
+      "description": "Schema for creating a new link.\n\nUsed in POST requests to create a new link for a user. All fields are\nrequired. Links can represent social media profiles, email addresses,\nor phone numbers.\n\nAttributes:\n    user_id (int): The ID of the user who owns this link.\n    type (LinkType): Type of link (SOCIAL_MEDIA, EMAIL, or CELLPHONE).\n    from_ (str): Origin platform or service (gmail, linkedin, etc.),\n        maximum 50 characters. Uses alias 'from' in JSON.\n    value (str): The actual link value (URL, email address, phone number),\n        maximum 150 characters.",
+      "properties": {
+        "from": {
+          "description": "Origin (gmail, linkedin, etc.)",
+          "maxLength": 50,
+          "title": "From",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/LinkType",
+          "description": "Type of link (SOCIAL_MEDIA, EMAIL, CELLPHONE)"
+        },
+        "value": {
+          "description": "Link value (URL, email, phone number)",
+          "maxLength": 150,
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "from",
+        "value"
+      ],
+      "title": "LinkCreateRequest",
+      "type": "object"
+    },
+    "LinkDetailResponse": {
+      "description": "Schema for detailed link response.\n\nRepresents a comprehensive link response with extended information\nincluding soft-deletion status. Used in link detail endpoints\n(GET /links/{id}).\n\nAttributes:\n    id (int): The unique identifier of the link.\n    user_id (int): The ID of the user who owns this link.\n    type (str): Type classification of the link.\n    from_ (str): Origin platform or service. Uses alias 'from' in JSON.\n    value (str): The actual link value (URL, email, phone number).\n    deleted_at (Optional[datetime]): Timestamp when the link was soft-deleted,\n        or None if the link is active.",
+      "properties": {
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "from": {
+          "title": "From",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "user_id": {
+          "title": "User Id",
+          "type": "integer"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "type",
+        "from",
+        "value"
+      ],
+      "title": "LinkDetailResponse",
+      "type": "object"
+    },
+    "LinkFilterParams": {
+      "description": "Schema for link list filters.\n\nUsed in GET requests to filter and paginate link results. Supports partial\ntext matching for the from_ field. Implements cursor-based pagination\nwith skip/limit parameters.\n\nAttributes:\n    user_id (Optional[int]): Filter links by user ID. If provided, only\n        links belonging to this user are returned.\n    type (Optional[LinkType]): Filter links by type classification.\n    from_ (Optional[str]): Filter links by origin using partial string matching\n        (case-insensitive). Uses alias 'from' in JSON.\n    include_deleted (bool): Include soft-deleted links in results. Defaults\n        to False, only active links are returned by default.\n    skip (int): Number of records to skip from the beginning of the result set.\n        Used for pagination. Must be non-negative. Defaults to 0.\n    limit (int): Maximum number of records to return in a single response.\n        Must be between 1 and 100 inclusive. Defaults to 20.",
+      "properties": {
+        "from": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by origin (partial match)",
+          "title": "From"
+        },
+        "include_deleted": {
+          "default": false,
+          "description": "Include soft deleted links",
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "description": "Maximum number of records to return",
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "skip": {
+          "default": 0,
+          "description": "Number of records to skip",
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        },
+        "type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LinkType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by link type"
+        },
+        "user_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by user ID",
+          "title": "User Id"
+        }
+      },
+      "title": "LinkFilterParams",
+      "type": "object"
+    },
+    "LinkResponse": {
+      "description": "Schema for link response.\n\nRepresents a basic link response containing core link information.\nUsed in list endpoints and basic link retrieval responses.\n\nAttributes:\n    id (int): The unique identifier of the link.\n    user_id (int): The ID of the user who owns this link.\n    type (str): Type classification of the link.\n    from_ (str): Origin platform or service. Uses alias 'from' in JSON.\n    value (str): The actual link value (URL, email, phone number).",
+      "properties": {
+        "from": {
+          "title": "From",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "user_id": {
+          "title": "User Id",
+          "type": "integer"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "type",
+        "from",
+        "value"
+      ],
+      "title": "LinkResponse",
+      "type": "object"
+    },
+    "LinkType": {
+      "description": "Enumeration of supported link types.\n\nUsed to categorize links by their purpose and format.\n\nAttributes:\n    SOCIAL_MEDIA: Links to social media profiles (LinkedIn, Instagram, etc.).\n    EMAIL: Email addresses for professional contact.\n    CELLPHONE: Phone numbers for direct communication.",
+      "enum": [
+        "SOCIAL_MEDIA",
+        "EMAIL",
+        "CELLPHONE"
+      ],
+      "title": "LinkType",
+      "type": "string"
+    },
+    "LinkUpdateRequest": {
+      "description": "Schema for updating a link.\n\nUsed in PATCH/PUT requests to update an existing link. All fields are\noptional, allowing partial updates. Only provided fields will be modified.\n\nAttributes:\n    type (Optional[LinkType]): New type classification for the link.\n    from_ (Optional[str]): Updated origin platform or service,\n        maximum 50 characters. Uses alias 'from' in JSON.\n    value (Optional[str]): Updated link value (URL, email, phone number),\n        maximum 150 characters.",
+      "properties": {
+        "from": {
+          "anyOf": [
+            {
+              "maxLength": 50,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Origin",
+          "title": "From"
+        },
+        "type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LinkType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Type of link"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "maxLength": 150,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Link value",
+          "title": "Value"
+        }
+      },
+      "title": "LinkUpdateRequest",
+      "type": "object"
+    },
+    "ProfileAddSkillRequest": {
+      "description": "Schema for adding a skill to a profile.\n\nUsed in POST requests to associate a skill with a profile. Includes\nproficiency level and experience metadata.\n\nAttributes:\n    skill_id (int): The ID of the skill to add to the profile.\n    level (int): Proficiency level on a scale of 1-5.\n    years_of_experience (int): Total years of experience with this skill.\n        Must be non-negative.\n    last_used_at (Optional[date]): The most recent date the skill was used.",
+      "properties": {
+        "last_used_at": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Last time skill was used",
+          "title": "Last Used At"
+        },
+        "level": {
+          "description": "Proficiency level (1-5)",
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Level",
+          "type": "integer"
+        },
+        "skill_id": {
+          "description": "Skill ID",
+          "title": "Skill Id",
+          "type": "integer"
+        },
+        "years_of_experience": {
+          "description": "Years of experience",
+          "minimum": 0,
+          "title": "Years Of Experience",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "skill_id",
+        "level",
+        "years_of_experience"
+      ],
+      "title": "ProfileAddSkillRequest",
+      "type": "object"
+    },
+    "ProfileCertificateInput": {
+      "description": "Schema for associating a certificate to a profile.\n\nUsed in API requests to add an existing certificate to a profile.\n\nAttributes:\n    certificate_id (int): The ID of the certificate to associate with\n        the profile.",
+      "properties": {
+        "certificate_id": {
+          "description": "Certificate ID",
+          "title": "Certificate Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "certificate_id"
+      ],
+      "title": "ProfileCertificateInput",
+      "type": "object"
+    },
+    "ProfileCreateRequest": {
+      "description": "Schema for creating a new profile.\n\nUsed in POST requests to create a new profile for a user. All fields are\nrequired. The slug must be unique per user and is used in profile URLs.\n\nAttributes:\n    user_id (int): The ID of the user who owns this profile.\n    slug (str): URL-friendly identifier for the profile, maximum 25 characters.\n    full_name (str): User's full name, maximum 150 characters.\n    title (str): Professional title or job role, maximum 125 characters.\n    bio (str): Professional biography or personal description.",
+      "properties": {
+        "bio": {
+          "description": "Bio/description",
+          "title": "Bio",
+          "type": "string"
+        },
+        "full_name": {
+          "description": "Full name",
+          "maxLength": 150,
+          "title": "Full Name",
+          "type": "string"
+        },
+        "slug": {
+          "description": "Profile URL slug",
+          "maxLength": 25,
+          "title": "Slug",
+          "type": "string"
+        },
+        "title": {
+          "description": "Professional title",
+          "maxLength": 125,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "slug",
+        "full_name",
+        "title",
+        "bio"
+      ],
+      "title": "ProfileCreateRequest",
+      "type": "object"
+    },
+    "ProfileDetailResponse": {
+      "description": "Schema for detailed profile response.\n\nRepresents a comprehensive profile response with extended information.\nCurrently mirrors ProfileResponse but is prepared for future inclusion of\nnested data such as skills, links, experiences, education, and certificates.\nUsed in profile detail endpoints (GET /profiles/{id}).\n\nFuture Fields (to be added):\n    skills: List of associated ProfileSkillResponse objects.\n    links: List of associated ProfileLinkResponse objects.\n    experiences: List of associated ProfileExperienceResponse objects.\n    education: List of associated ProfileEducationResponse objects.\n    certificates: List of associated ProfileCertificateResponse objects.\n\nAttributes:\n    id (int): The unique identifier of the profile.\n    user_id (int): The ID of the user who owns this profile.\n    slug (str): URL-friendly identifier for the profile.\n    full_name (str): User's full name.\n    title (str): Professional title or job role.\n    bio (str): Professional biography or personal description.",
+      "properties": {
+        "bio": {
+          "title": "Bio",
+          "type": "string"
+        },
+        "full_name": {
+          "title": "Full Name",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "slug": {
+          "title": "Slug",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "user_id": {
+          "title": "User Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "slug",
+        "full_name",
+        "title",
+        "bio"
+      ],
+      "title": "ProfileDetailResponse",
+      "type": "object"
+    },
+    "ProfileEducationInput": {
+      "description": "Schema for associating an education to a profile.\n\nUsed in API requests to add an existing education record to a profile.\n\nAttributes:\n    education_id (int): The ID of the education record to associate with\n        the profile.",
+      "properties": {
+        "education_id": {
+          "description": "Education ID",
+          "title": "Education Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "education_id"
+      ],
+      "title": "ProfileEducationInput",
+      "type": "object"
+    },
+    "ProfileExperienceInput": {
+      "description": "Schema for associating an experience to a profile.\n\nUsed in API requests to add an existing experience record to a profile.\n\nAttributes:\n    experience_id (int): The ID of the experience to associate with the profile.",
+      "properties": {
+        "experience_id": {
+          "description": "Experience ID",
+          "title": "Experience Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "experience_id"
+      ],
+      "title": "ProfileExperienceInput",
+      "type": "object"
+    },
+    "ProfileFilterParams": {
+      "description": "Schema for profile list filters.\n\nUsed in GET requests to filter and paginate profile results. Supports partial\ntext matching for slug and full_name fields. Implements cursor-based pagination\nwith skip/limit parameters.\n\nAttributes:\n    user_id (Optional[int]): Filter profiles by user ID. If provided, only\n        profiles belonging to this user are returned.\n    slug (Optional[str]): Filter profiles by slug using partial string matching.\n        Case-sensitive matching is applied.\n    full_name (Optional[str]): Filter profiles by full name using partial string\n        matching. Case-sensitive matching is applied.\n    include_deleted (bool): Include soft-deleted profiles in results. Defaults\n        to False, only active profiles are returned by default.\n    skip (int): Number of records to skip from the beginning of the result set.\n        Used for pagination. Must be non-negative. Defaults to 0.\n    limit (int): Maximum number of records to return in a single response.\n        Must be between 1 and 100 inclusive. Defaults to 20.",
+      "properties": {
+        "full_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by full name (partial match)",
+          "title": "Full Name"
+        },
+        "include_deleted": {
+          "default": false,
+          "description": "Include soft deleted profiles",
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "description": "Maximum number of records to return",
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "skip": {
+          "default": 0,
+          "description": "Number of records to skip",
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        },
+        "slug": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by slug (partial match)",
+          "title": "Slug"
+        },
+        "user_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by user ID",
+          "title": "User Id"
+        }
+      },
+      "title": "ProfileFilterParams",
+      "type": "object"
+    },
+    "ProfileLinkInput": {
+      "description": "Schema for associating a link to a profile.\n\nUsed in API requests to add an existing link to a profile.\n\nAttributes:\n    link_id (int): The ID of the link to associate with the profile.",
+      "properties": {
+        "link_id": {
+          "description": "Link ID",
+          "title": "Link Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "link_id"
+      ],
+      "title": "ProfileLinkInput",
+      "type": "object"
+    },
+    "ProfileResponse": {
+      "description": "Schema for profile response.\n\nRepresents a basic profile response containing core profile information.\nUsed in list endpoints and basic profile retrieval responses.\n\nAttributes:\n    id (int): The unique identifier of the profile.\n    user_id (int): The ID of the user who owns this profile.\n    slug (str): URL-friendly identifier for the profile.\n    full_name (str): User's full name.\n    title (str): Professional title or job role.\n    bio (str): Professional biography or personal description.",
+      "properties": {
+        "bio": {
+          "title": "Bio",
+          "type": "string"
+        },
+        "full_name": {
+          "title": "Full Name",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "slug": {
+          "title": "Slug",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "user_id": {
+          "title": "User Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "slug",
+        "full_name",
+        "title",
+        "bio"
+      ],
+      "title": "ProfileResponse",
+      "type": "object"
+    },
+    "ProfileSkillInput": {
+      "description": "Schema for adding a skill to a profile.\n\nUsed to associate a skill with a profile, including proficiency level\nand years of experience. Validates skill existence and proficiency constraints.\n\nAttributes:\n    skill_id (int): The ID of the skill to associate with the profile.\n    level (int): Proficiency level on a scale of 1-5, where 1 is beginner\n        and 5 is expert.\n    years_of_experience (int): Total years of experience with this skill.\n        Must be non-negative.\n    last_used_at (Optional[date]): The most recent date the skill was used.\n        If not provided, defaults to None.",
+      "properties": {
+        "last_used_at": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Last time skill was used",
+          "title": "Last Used At"
+        },
+        "level": {
+          "description": "Proficiency level (1-5)",
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Level",
+          "type": "integer"
+        },
+        "skill_id": {
+          "description": "Skill ID",
+          "title": "Skill Id",
+          "type": "integer"
+        },
+        "years_of_experience": {
+          "description": "Years of experience",
+          "minimum": 0,
+          "title": "Years Of Experience",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "skill_id",
+        "level",
+        "years_of_experience"
+      ],
+      "title": "ProfileSkillInput",
+      "type": "object"
+    },
+    "ProfileSkillResponse": {
+      "description": "Schema for profile skill response.\n\nRepresents a skill associated with a profile, including its relationship data\nand the nested skill object. Used in profile detail responses.\n\nAttributes:\n    id (int): The unique identifier of the profile-skill association.\n    skill_id (int): The ID of the associated skill.\n    level (int): Proficiency level (1-5 scale).\n    years_of_experience (int): Total years of experience with this skill.\n    last_used_at (Optional[date]): The most recent date the skill was used.\n    skill (Optional[SkillResponse]): The full skill object details, if included\n        in the response through eager loading.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "last_used_at": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Used At"
+        },
+        "level": {
+          "title": "Level",
+          "type": "integer"
+        },
+        "skill": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SkillResponse"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "skill_id": {
+          "title": "Skill Id",
+          "type": "integer"
+        },
+        "years_of_experience": {
+          "title": "Years Of Experience",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "skill_id",
+        "level",
+        "years_of_experience"
+      ],
+      "title": "ProfileSkillResponse",
+      "type": "object"
+    },
+    "ProfileUpdateRequest": {
+      "description": "Schema for updating a profile.\n\nUsed in PATCH/PUT requests to update an existing profile. All fields are\noptional, allowing partial updates. Only provided fields will be modified.\n\nAttributes:\n    slug (Optional[str]): New URL-friendly identifier, maximum 25 characters.\n    full_name (Optional[str]): Updated full name, maximum 150 characters.\n    title (Optional[str]): Updated professional title, maximum 125 characters.\n    bio (Optional[str]): Updated professional biography or description.",
+      "properties": {
+        "bio": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Bio/description",
+          "title": "Bio"
+        },
+        "full_name": {
+          "anyOf": [
+            {
+              "maxLength": 150,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Full name",
+          "title": "Full Name"
+        },
+        "slug": {
+          "anyOf": [
+            {
+              "maxLength": 25,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Profile URL slug",
+          "title": "Slug"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "maxLength": 125,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Professional title",
+          "title": "Title"
+        }
+      },
+      "title": "ProfileUpdateRequest",
+      "type": "object"
+    },
+    "ProfileUpdateSkillRequest": {
+      "description": "Schema for updating a profile skill.\n\nUsed in PATCH/PUT requests to update an existing profile-skill association.\nAll fields are optional for partial updates.\n\nAttributes:\n    level (Optional[int]): Updated proficiency level (1-5 scale).\n    years_of_experience (Optional[int]): Updated years of experience with\n        the skill. Must be non-negative if provided.\n    last_used_at (Optional[date]): Updated most recent usage date.",
+      "properties": {
+        "last_used_at": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Last time skill was used",
+          "title": "Last Used At"
+        },
+        "level": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Proficiency level (1-5)",
+          "title": "Level"
+        },
+        "years_of_experience": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Years of experience",
+          "title": "Years Of Experience"
+        }
+      },
+      "title": "ProfileUpdateSkillRequest",
+      "type": "object"
+    },
+    "ProfileUser": {
+      "description": "Authenticated user in the context of the profile module.\n\nThis DTO is returned by the profile-specific ``get_current_profile_user``\ndependency. It represents the row from the ``profile.User`` table that was\neither retrieved or auto-created based on the incoming JWT token.\n\nAttributes:\n    id: Primary key of the ``profile.User`` row.\n    external_id: Foreign reference to ``auth.User.id`` (auth module PK).\n    role_name: Role name extracted from the JWT (forwarded from auth).\n    is_active: Whether the auth user account is active.",
+      "properties": {
+        "external_id": {
+          "title": "External Id",
+          "type": "integer"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "is_active": {
+          "title": "Is Active",
+          "type": "boolean"
+        },
+        "role_name": {
+          "title": "Role Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "external_id",
+        "role_name",
+        "is_active"
+      ],
+      "title": "ProfileUser",
+      "type": "object"
+    },
+    "SkillCategory": {
+      "description": "Enum for skill categories.",
+      "enum": [
+        "LANGUAGE",
+        "TOOL",
+        "FRAMEWORK"
+      ],
+      "title": "SkillCategory",
+      "type": "string"
+    },
+    "SkillCreateRequest": {
+      "description": "Schema for creating a new skill.",
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/SkillCategory",
+          "description": "Skill category"
+        },
+        "name": {
+          "description": "Skill name",
+          "maxLength": 100,
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "category"
+      ],
+      "title": "SkillCreateRequest",
+      "type": "object"
+    },
+    "SkillDetailResponse": {
+      "description": "Schema for detailed skill response.",
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/SkillCategory"
+        },
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "category"
+      ],
+      "title": "SkillDetailResponse",
+      "type": "object"
+    },
+    "SkillFilterParams": {
+      "description": "Schema for skill list filters.",
+      "properties": {
+        "category": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SkillCategory"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by category"
+        },
+        "include_deleted": {
+          "default": false,
+          "description": "Include soft deleted skills",
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "description": "Maximum number of records to return",
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by name (partial match)",
+          "title": "Name"
+        },
+        "skip": {
+          "default": 0,
+          "description": "Number of records to skip",
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        }
+      },
+      "title": "SkillFilterParams",
+      "type": "object"
+    },
+    "SkillResponse": {
+      "description": "Schema for skill response.",
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/SkillCategory"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "category"
+      ],
+      "title": "SkillResponse",
+      "type": "object"
+    },
+    "SkillUpdateRequest": {
+      "description": "Schema for updating a skill.",
+      "properties": {
+        "category": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SkillCategory"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Skill category"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Skill name",
+          "title": "Name"
+        }
+      },
+      "title": "SkillUpdateRequest",
+      "type": "object"
+    },
+    "UserDetailResponse": {
+      "description": "Schema for detailed user response.",
+      "properties": {
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "external_id": {
+          "title": "External Id",
+          "type": "integer"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "external_id"
+      ],
+      "title": "UserDetailResponse",
+      "type": "object"
+    },
+    "UserFilterParams": {
+      "description": "Schema for user list filters.",
+      "properties": {
+        "external_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by external auth user ID",
+          "title": "External Id"
+        },
+        "include_deleted": {
+          "default": false,
+          "description": "Include soft deleted users",
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "description": "Maximum number of records to return",
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "skip": {
+          "default": 0,
+          "description": "Number of records to skip",
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        }
+      },
+      "title": "UserFilterParams",
+      "type": "object"
+    },
+    "UserResponse": {
+      "description": "Schema for user response.",
+      "properties": {
+        "external_id": {
+          "title": "External Id",
+          "type": "integer"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "external_id"
+      ],
+      "title": "UserResponse",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/CertificateCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/CertificateDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/CertificateFilterParams"
+    },
+    {
+      "$ref": "#/$defs/CertificateResponse"
+    },
+    {
+      "$ref": "#/$defs/CertificateUpdateRequest"
+    },
+    {
+      "$ref": "#/$defs/CompanyCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/CompanyDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/CompanyFilterParams"
+    },
+    {
+      "$ref": "#/$defs/CompanyResponse"
+    },
+    {
+      "$ref": "#/$defs/CompanyUpdateRequest"
+    },
+    {
+      "$ref": "#/$defs/EducationCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/EducationDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/EducationFilterParams"
+    },
+    {
+      "$ref": "#/$defs/EducationResponse"
+    },
+    {
+      "$ref": "#/$defs/EducationUpdateRequest"
+    },
+    {
+      "$ref": "#/$defs/AchievementInput"
+    },
+    {
+      "$ref": "#/$defs/AchievementResponse"
+    },
+    {
+      "$ref": "#/$defs/AchievementUpdateRequest"
+    },
+    {
+      "$ref": "#/$defs/ExperienceCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/ExperienceDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/ExperienceFilterParams"
+    },
+    {
+      "$ref": "#/$defs/ExperienceResponse"
+    },
+    {
+      "$ref": "#/$defs/ExperienceSkillInput"
+    },
+    {
+      "$ref": "#/$defs/ExperienceUpdateRequest"
+    },
+    {
+      "$ref": "#/$defs/LinkCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/LinkDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/LinkFilterParams"
+    },
+    {
+      "$ref": "#/$defs/LinkResponse"
+    },
+    {
+      "$ref": "#/$defs/LinkUpdateRequest"
+    },
+    {
+      "$ref": "#/$defs/ProfileAddSkillRequest"
+    },
+    {
+      "$ref": "#/$defs/ProfileCertificateInput"
+    },
+    {
+      "$ref": "#/$defs/ProfileCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/ProfileDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/ProfileEducationInput"
+    },
+    {
+      "$ref": "#/$defs/ProfileExperienceInput"
+    },
+    {
+      "$ref": "#/$defs/ProfileFilterParams"
+    },
+    {
+      "$ref": "#/$defs/ProfileLinkInput"
+    },
+    {
+      "$ref": "#/$defs/ProfileResponse"
+    },
+    {
+      "$ref": "#/$defs/ProfileSkillInput"
+    },
+    {
+      "$ref": "#/$defs/ProfileSkillResponse"
+    },
+    {
+      "$ref": "#/$defs/ProfileUpdateRequest"
+    },
+    {
+      "$ref": "#/$defs/ProfileUpdateSkillRequest"
+    },
+    {
+      "$ref": "#/$defs/SkillCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/SkillDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/SkillFilterParams"
+    },
+    {
+      "$ref": "#/$defs/SkillResponse"
+    },
+    {
+      "$ref": "#/$defs/SkillUpdateRequest"
+    },
+    {
+      "$ref": "#/$defs/UserDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/UserFilterParams"
+    },
+    {
+      "$ref": "#/$defs/UserResponse"
+    },
+    {
+      "$ref": "#/$defs/ProfileUser"
+    }
+  ],
+  "description": "Consolidated DTO schemas. Select an individual contract through its reference in x-models. The root accepts any listed DTO.",
+  "title": "profile",
+  "x-models": {
+    "certificate": {
+      "CertificateCreateRequest": "#/$defs/CertificateCreateRequest",
+      "CertificateDetailResponse": "#/$defs/CertificateDetailResponse",
+      "CertificateFilterParams": "#/$defs/CertificateFilterParams",
+      "CertificateResponse": "#/$defs/CertificateResponse",
+      "CertificateUpdateRequest": "#/$defs/CertificateUpdateRequest"
+    },
+    "company": {
+      "CompanyCreateRequest": "#/$defs/CompanyCreateRequest",
+      "CompanyDetailResponse": "#/$defs/CompanyDetailResponse",
+      "CompanyFilterParams": "#/$defs/CompanyFilterParams",
+      "CompanyResponse": "#/$defs/CompanyResponse",
+      "CompanyUpdateRequest": "#/$defs/CompanyUpdateRequest"
+    },
+    "education": {
+      "EducationCreateRequest": "#/$defs/EducationCreateRequest",
+      "EducationDetailResponse": "#/$defs/EducationDetailResponse",
+      "EducationFilterParams": "#/$defs/EducationFilterParams",
+      "EducationResponse": "#/$defs/EducationResponse",
+      "EducationUpdateRequest": "#/$defs/EducationUpdateRequest"
+    },
+    "experience": {
+      "AchievementInput": "#/$defs/AchievementInput",
+      "AchievementResponse": "#/$defs/AchievementResponse",
+      "AchievementUpdateRequest": "#/$defs/AchievementUpdateRequest",
+      "ExperienceCreateRequest": "#/$defs/ExperienceCreateRequest",
+      "ExperienceDetailResponse": "#/$defs/ExperienceDetailResponse",
+      "ExperienceFilterParams": "#/$defs/ExperienceFilterParams",
+      "ExperienceResponse": "#/$defs/ExperienceResponse",
+      "ExperienceSkillInput": "#/$defs/ExperienceSkillInput",
+      "ExperienceUpdateRequest": "#/$defs/ExperienceUpdateRequest"
+    },
+    "link": {
+      "LinkCreateRequest": "#/$defs/LinkCreateRequest",
+      "LinkDetailResponse": "#/$defs/LinkDetailResponse",
+      "LinkFilterParams": "#/$defs/LinkFilterParams",
+      "LinkResponse": "#/$defs/LinkResponse",
+      "LinkUpdateRequest": "#/$defs/LinkUpdateRequest"
+    },
+    "profile": {
+      "ProfileAddSkillRequest": "#/$defs/ProfileAddSkillRequest",
+      "ProfileCertificateInput": "#/$defs/ProfileCertificateInput",
+      "ProfileCreateRequest": "#/$defs/ProfileCreateRequest",
+      "ProfileDetailResponse": "#/$defs/ProfileDetailResponse",
+      "ProfileEducationInput": "#/$defs/ProfileEducationInput",
+      "ProfileExperienceInput": "#/$defs/ProfileExperienceInput",
+      "ProfileFilterParams": "#/$defs/ProfileFilterParams",
+      "ProfileLinkInput": "#/$defs/ProfileLinkInput",
+      "ProfileResponse": "#/$defs/ProfileResponse",
+      "ProfileSkillInput": "#/$defs/ProfileSkillInput",
+      "ProfileSkillResponse": "#/$defs/ProfileSkillResponse",
+      "ProfileUpdateRequest": "#/$defs/ProfileUpdateRequest",
+      "ProfileUpdateSkillRequest": "#/$defs/ProfileUpdateSkillRequest"
+    },
+    "shared": {
+      "ProfileUser": "#/$defs/ProfileUser"
+    },
+    "skill": {
+      "SkillCreateRequest": "#/$defs/SkillCreateRequest",
+      "SkillDetailResponse": "#/$defs/SkillDetailResponse",
+      "SkillFilterParams": "#/$defs/SkillFilterParams",
+      "SkillResponse": "#/$defs/SkillResponse",
+      "SkillUpdateRequest": "#/$defs/SkillUpdateRequest"
+    },
+    "user": {
+      "UserDetailResponse": "#/$defs/UserDetailResponse",
+      "UserFilterParams": "#/$defs/UserFilterParams",
+      "UserResponse": "#/$defs/UserResponse"
+    }
+  }
+}

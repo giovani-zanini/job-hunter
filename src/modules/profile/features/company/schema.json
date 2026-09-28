@@ -1,0 +1,193 @@
+{
+  "$defs": {
+    "CompanyCreateRequest": {
+      "description": "Schema for creating a new company.",
+      "properties": {
+        "name": {
+          "description": "Company name",
+          "maxLength": 150,
+          "title": "Name",
+          "type": "string"
+        },
+        "website": {
+          "description": "Company website URL",
+          "maxLength": 255,
+          "title": "Website",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "website"
+      ],
+      "title": "CompanyCreateRequest",
+      "type": "object"
+    },
+    "CompanyDetailResponse": {
+      "description": "Schema for detailed company response.",
+      "properties": {
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "website": {
+          "title": "Website",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "website"
+      ],
+      "title": "CompanyDetailResponse",
+      "type": "object"
+    },
+    "CompanyFilterParams": {
+      "description": "Schema for company list filters.",
+      "properties": {
+        "include_deleted": {
+          "default": false,
+          "description": "Include soft deleted companies",
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "description": "Maximum number of records to return",
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by name (partial match)",
+          "title": "Name"
+        },
+        "skip": {
+          "default": 0,
+          "description": "Number of records to skip",
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        }
+      },
+      "title": "CompanyFilterParams",
+      "type": "object"
+    },
+    "CompanyResponse": {
+      "description": "Schema for company response.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "website": {
+          "title": "Website",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "website"
+      ],
+      "title": "CompanyResponse",
+      "type": "object"
+    },
+    "CompanyUpdateRequest": {
+      "description": "Schema for updating a company.",
+      "properties": {
+        "name": {
+          "anyOf": [
+            {
+              "maxLength": 150,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Company name",
+          "title": "Name"
+        },
+        "website": {
+          "anyOf": [
+            {
+              "maxLength": 255,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Company website URL",
+          "title": "Website"
+        }
+      },
+      "title": "CompanyUpdateRequest",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/CompanyCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/CompanyDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/CompanyFilterParams"
+    },
+    {
+      "$ref": "#/$defs/CompanyResponse"
+    },
+    {
+      "$ref": "#/$defs/CompanyUpdateRequest"
+    }
+  ],
+  "description": "Consolidated DTO schemas. Select an individual contract through its reference in x-models. The root accepts any listed DTO.",
+  "title": "profile.company",
+  "x-models": {
+    "company": {
+      "CompanyCreateRequest": "#/$defs/CompanyCreateRequest",
+      "CompanyDetailResponse": "#/$defs/CompanyDetailResponse",
+      "CompanyFilterParams": "#/$defs/CompanyFilterParams",
+      "CompanyResponse": "#/$defs/CompanyResponse",
+      "CompanyUpdateRequest": "#/$defs/CompanyUpdateRequest"
+    }
+  }
+}

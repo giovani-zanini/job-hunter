@@ -1,0 +1,117 @@
+{
+  "$defs": {
+    "UserDetailResponse": {
+      "description": "Schema for detailed user response.",
+      "properties": {
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "external_id": {
+          "title": "External Id",
+          "type": "integer"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "external_id"
+      ],
+      "title": "UserDetailResponse",
+      "type": "object"
+    },
+    "UserFilterParams": {
+      "description": "Schema for user list filters.",
+      "properties": {
+        "external_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by external auth user ID",
+          "title": "External Id"
+        },
+        "include_deleted": {
+          "default": false,
+          "description": "Include soft deleted users",
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "description": "Maximum number of records to return",
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "skip": {
+          "default": 0,
+          "description": "Number of records to skip",
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        }
+      },
+      "title": "UserFilterParams",
+      "type": "object"
+    },
+    "UserResponse": {
+      "description": "Schema for user response.",
+      "properties": {
+        "external_id": {
+          "title": "External Id",
+          "type": "integer"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "external_id"
+      ],
+      "title": "UserResponse",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/UserDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/UserFilterParams"
+    },
+    {
+      "$ref": "#/$defs/UserResponse"
+    }
+  ],
+  "description": "Consolidated DTO schemas. Select an individual contract through its reference in x-models. The root accepts any listed DTO.",
+  "title": "profile.user",
+  "x-models": {
+    "user": {
+      "UserDetailResponse": "#/$defs/UserDetailResponse",
+      "UserFilterParams": "#/$defs/UserFilterParams",
+      "UserResponse": "#/$defs/UserResponse"
+    }
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "$defs": {
+    "RequirementCreateRequest": {
+      "properties": {
+        "skill": {
+          "maxLength": 50,
+          "title": "Skill",
+          "type": "string"
+        }
+      },
+      "required": [
+        "skill"
+      ],
+      "title": "RequirementCreateRequest",
+      "type": "object"
+    },
+    "RequirementDetailResponse": {
+      "properties": {
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "skill": {
+          "title": "Skill",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "skill"
+      ],
+      "title": "RequirementDetailResponse",
+      "type": "object"
+    },
+    "RequirementFilterParams": {
+      "properties": {
+        "include_deleted": {
+          "default": false,
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "skill": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Skill"
+        },
+        "skip": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        }
+      },
+      "title": "RequirementFilterParams",
+      "type": "object"
+    },
+    "RequirementResponse": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "skill": {
+          "title": "Skill",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "skill"
+      ],
+      "title": "RequirementResponse",
+      "type": "object"
+    },
+    "RequirementUpdateRequest": {
+      "properties": {
+        "skill": {
+          "anyOf": [
+            {
+              "maxLength": 50,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Skill"
+        }
+      },
+      "title": "RequirementUpdateRequest",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/RequirementCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/RequirementDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/RequirementFilterParams"
+    },
+    {
+      "$ref": "#/$defs/RequirementResponse"
+    },
+    {
+      "$ref": "#/$defs/RequirementUpdateRequest"
+    }
+  ],
+  "description": "Consolidated DTO schemas. Select an individual contract through its reference in x-models. The root accepts any listed DTO.",
+  "title": "enterprise.requirement",
+  "x-models": {
+    "requirement": {
+      "RequirementCreateRequest": "#/$defs/RequirementCreateRequest",
+      "RequirementDetailResponse": "#/$defs/RequirementDetailResponse",
+      "RequirementFilterParams": "#/$defs/RequirementFilterParams",
+      "RequirementResponse": "#/$defs/RequirementResponse",
+      "RequirementUpdateRequest": "#/$defs/RequirementUpdateRequest"
+    }
+  }
+}

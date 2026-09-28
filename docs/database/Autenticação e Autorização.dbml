@@ -1,0 +1,66 @@
+Table user [headercolor: #175e7a] {
+	id integer [ pk, increment, not null, unique ]
+	email varchar(255) [ not null, unique ]
+	role_id integer [ not null ]
+	is_active boolean [ not null, default: true ]
+	is_verified boolean [ not null, default: false ]
+	created_at timestamptz [ not null, default: `NOW()` ]
+	updated_at timestamptz
+}
+
+Table auth [headercolor: #175e7a] {
+	id integer [ pk, increment, not null, unique ]
+	user_id integer [ not null ]
+	password_hash varchar(255) [ not null ]
+	last_password_change timestamptz
+	recovery_token varchar(12)
+	recovery_token_expires_at timestamptz
+	failed_login_attempts smallint [ not null, default: 0 ]
+	locked_until timestamptz
+
+	indexes {
+		(user_id, recovery_token) [ name: 'auth_index_0', unique ]
+	}
+}
+
+Table role [headercolor: #175e7a] {
+	id integer [ pk, increment, not null, unique ]
+	name varchar(50) [ not null, unique ]
+	description text
+}
+
+Table access_policy [headercolor: #175e7a] {
+	id integer [ pk, increment, not null, unique ]
+	resource varchar(50) [ not null, unique ]
+	action varchar(50) [ not null, unique ]
+	rules jsonb [ not null ]
+	created_at timestamptz [ not null, default: `NOW()` ]
+
+	indexes {
+		(resource, action) [ name: 'access_policy_index_0', unique ]
+	}
+}
+
+Table session [headercolor: #175e7a] {
+	id integer [ pk, increment, not null, unique ]
+	user_id integer [ not null ]
+	refresh_token_hash varchar(255) [ not null ]
+	refresh_token_expires_at timestamptz [ not null ]
+	ip_address inet [ not null ]
+	user_agent text [ not null ]
+	is_revoked boolean [ not null, default: false ]
+	created_at timestamptz [ not null, default: `NOW()` ]
+	last_used_at timestamptz [ not null, default: `NOW()` ]
+}
+
+Ref fk_role_id_user {
+	role.id < user.role_id [ delete: no action, update: no action ]
+}
+
+Ref fk_user_id_auth {
+	user.id < auth.user_id [ delete: no action, update: no action ]
+}
+
+Ref fk_session_user_id_user {
+	session.user_id > user.id [ delete: no action, update: no action ]
+}

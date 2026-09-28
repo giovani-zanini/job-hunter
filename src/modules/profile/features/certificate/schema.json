@@ -1,0 +1,377 @@
+{
+  "$defs": {
+    "CertificateCreateRequest": {
+      "description": "Schema for creating a new certificate.",
+      "properties": {
+        "credential_url": {
+          "anyOf": [
+            {
+              "maxLength": 255,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Credential URL",
+          "title": "Credential Url"
+        },
+        "expiration_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Expiration date (optional)",
+          "title": "Expiration Date"
+        },
+        "issue_date": {
+          "description": "Issue date",
+          "format": "date",
+          "title": "Issue Date",
+          "type": "string"
+        },
+        "issuer": {
+          "description": "Issuing organization",
+          "maxLength": 100,
+          "title": "Issuer",
+          "type": "string"
+        },
+        "name": {
+          "description": "Certificate name",
+          "maxLength": 100,
+          "title": "Name",
+          "type": "string"
+        },
+        "skill_ids": {
+          "default": [],
+          "description": "Skill IDs to associate",
+          "items": {
+            "type": "integer"
+          },
+          "title": "Skill Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "issuer",
+        "issue_date"
+      ],
+      "title": "CertificateCreateRequest",
+      "type": "object"
+    },
+    "CertificateDetailResponse": {
+      "description": "Schema for detailed certificate response.",
+      "properties": {
+        "credential_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Credential Url"
+        },
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "expiration_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expiration Date"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "issue_date": {
+          "format": "date",
+          "title": "Issue Date",
+          "type": "string"
+        },
+        "issuer": {
+          "title": "Issuer",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "user_id": {
+          "title": "User Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "name",
+        "issuer",
+        "issue_date"
+      ],
+      "title": "CertificateDetailResponse",
+      "type": "object"
+    },
+    "CertificateFilterParams": {
+      "description": "Schema for certificate list filters.",
+      "properties": {
+        "include_deleted": {
+          "default": false,
+          "description": "Include soft deleted certificates",
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "issuer": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by issuer (partial match)",
+          "title": "Issuer"
+        },
+        "limit": {
+          "default": 20,
+          "description": "Maximum number of records to return",
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by name (partial match)",
+          "title": "Name"
+        },
+        "skip": {
+          "default": 0,
+          "description": "Number of records to skip",
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        },
+        "user_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by user ID",
+          "title": "User Id"
+        }
+      },
+      "title": "CertificateFilterParams",
+      "type": "object"
+    },
+    "CertificateResponse": {
+      "description": "Schema for certificate response.",
+      "properties": {
+        "credential_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Credential Url"
+        },
+        "expiration_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expiration Date"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "issue_date": {
+          "format": "date",
+          "title": "Issue Date",
+          "type": "string"
+        },
+        "issuer": {
+          "title": "Issuer",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "user_id": {
+          "title": "User Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "name",
+        "issuer",
+        "issue_date"
+      ],
+      "title": "CertificateResponse",
+      "type": "object"
+    },
+    "CertificateUpdateRequest": {
+      "description": "Schema for updating a certificate.",
+      "properties": {
+        "credential_url": {
+          "anyOf": [
+            {
+              "maxLength": 255,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Credential URL",
+          "title": "Credential Url"
+        },
+        "expiration_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Expiration date",
+          "title": "Expiration Date"
+        },
+        "issue_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Issue date",
+          "title": "Issue Date"
+        },
+        "issuer": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Issuing organization",
+          "title": "Issuer"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Certificate name",
+          "title": "Name"
+        }
+      },
+      "title": "CertificateUpdateRequest",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/CertificateCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/CertificateDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/CertificateFilterParams"
+    },
+    {
+      "$ref": "#/$defs/CertificateResponse"
+    },
+    {
+      "$ref": "#/$defs/CertificateUpdateRequest"
+    }
+  ],
+  "description": "Consolidated DTO schemas. Select an individual contract through its reference in x-models. The root accepts any listed DTO.",
+  "title": "profile.certificate",
+  "x-models": {
+    "certificate": {
+      "CertificateCreateRequest": "#/$defs/CertificateCreateRequest",
+      "CertificateDetailResponse": "#/$defs/CertificateDetailResponse",
+      "CertificateFilterParams": "#/$defs/CertificateFilterParams",
+      "CertificateResponse": "#/$defs/CertificateResponse",
+      "CertificateUpdateRequest": "#/$defs/CertificateUpdateRequest"
+    }
+  }
+}

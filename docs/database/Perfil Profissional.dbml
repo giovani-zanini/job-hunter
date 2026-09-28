@@ -1,0 +1,224 @@
+enum SKILL_CATEGORY {
+	Language
+	Tool
+	Framework
+}
+
+Table User [headercolor: #177a1c] {
+	id integer [ pk, increment, not null, unique ]
+	email varchar(125) [ not null, unique ]
+	password varchar(64) [ not null ]
+
+	indexes {
+		(id, email) [ name: 'User_index_0', unique ]
+	}
+}
+
+Table Link [headercolor: #177a1c] {
+	id integer [ pk, increment, not null, unique ]
+	type varchar(50) [ not null, note: 'Indica o tipo de link: Exemplo: SOCCIAL_MEDIA, EMAIL, CELLPHONE' ]
+	from varchar(50) [ not null, note: 'Indica o local de origem. Exemplo: gmail, outlook, Linkedin, Instagram, etc...' ]
+	value varchar(150) [ not null, note: 'Indica o link na sua forma bruta. Exemplo: www.portfolio.com, 47988000554' ]
+	user_id integer [ not null ]
+}
+
+Table Experience [headercolor: #177a1c] {
+	id integer [ pk, increment, not null, unique ]
+	company_id integer [ not null ]
+	position_title varchar(100) [ not null ]
+	start_date date [ not null ]
+	end_date date
+	description text [ not null ]
+	user_id integer [ not null ]
+}
+
+Table Company [headercolor: #177a1c] {
+	id integer [ pk, increment, not null, unique ]
+	name varchar(150) [ not null ]
+	website varchar(255) [ not null ]
+}
+
+Table Achievements [headercolor: #177a1c] {
+	id integer [ pk, increment, not null, unique ]
+	experience_id integer [ not null ]
+	title varchar(64) [ not null ]
+	description text [ not null ]
+}
+
+Table Education [headercolor: #177a1c] {
+	id integer [ pk, increment, not null, unique ]
+	institution_name varchar(100) [ not null ]
+	degree varchar(25) [ not null ]
+	field_of_study varchar(100) [ not null ]
+	start_date date [ not null ]
+	end_date date [ not null ]
+	user_id integer [ not null ]
+}
+
+Table Certificate [headercolor: #177a1c] {
+	id integer [ pk, increment, not null, unique ]
+	name varchar(100) [ not null ]
+	issuer varchar(100) [ not null ]
+	issue_date date [ not null ]
+	expiration_date date
+	credential_url varchar(255)
+	user_id integer [ not null ]
+}
+
+Table Skill [headercolor: #177a1c] {
+	id integer [ pk, increment, not null, unique ]
+	category varchar(25) [ not null ]
+	name varchar(100) [ not null ]
+}
+
+Table Profile [headercolor: #177a1c] {
+	id integer [ pk, increment, not null, unique ]
+	slug varchar(25) [ not null ]
+	full_name varchar(150) [ not null ]
+	title varchar(125) [ not null ]
+	bio text [ not null ]
+	user_id integer [ not null ]
+}
+
+Table ProfileSkills [headercolor: #48C899,8] {
+	id integer [ pk, increment, not null, unique ]
+	profile_id integer [ not null ]
+	skill_id integer [ not null ]
+	level smallint [ not null ]
+	years_of_experience smallint [ not null ]
+	last_used_at date
+}
+
+Table ExperienceSkills [headercolor: #7a1717] {
+	id integer [ pk, increment, not null, unique ]
+	skill_id integer [ not null ]
+	experience_id integer [ not null ]
+}
+
+Table EducationSkills [headercolor: #7a1717] {
+	id integer [ pk, increment, not null, unique ]
+	education_id integer [ not null ]
+	skill_id integer [ not null ]
+}
+
+Table CertificateSkills [headercolor: #7a1717] {
+	id integer [ pk, increment, not null, unique ]
+	certificate_id integer [ not null ]
+	skill_id integer [ not null ]
+}
+
+Table ProfileEducation [headercolor: #7a1717] {
+	id integer [ pk, increment, not null, unique ]
+	profile_id integer [ not null ]
+	education_id integer [ not null ]
+}
+
+Table ProfileCertificate [headercolor: #7a1717] {
+	id integer [ pk, increment, not null, unique ]
+	profile_id integer [ not null ]
+	certificate_id integer [ not null ]
+}
+
+Table ProfileLink [headercolor: #7a1717] {
+	id integer [ pk, increment, not null, unique ]
+	link_id integer [ not null ]
+	profile_id integer [ not null ]
+}
+
+Table ProfileExperience [headercolor: #7a1717] {
+	id integer [ pk, increment, not null, unique ]
+	profile_id integer [ not null ]
+	experience_id integer [ not null ]
+}
+
+Ref fk_experience_achievements {
+	Experience.id < Achievements.experience_id [ delete: no action, update: no action ]
+}
+
+Ref fk_Experience_company_id_Company {
+	Experience.company_id > Company.id [ delete: no action, update: no action ]
+}
+
+Ref fk_ProfileSkills_profile_id_Profile {
+	ProfileSkills.profile_id > Profile.id [ delete: no action, update: no action ]
+}
+
+Ref fk_ProfileSkills_skill_id_Skill {
+	ProfileSkills.skill_id > Skill.id [ delete: no action, update: no action ]
+}
+
+Ref fk_ExperienceSkills_skill_id_Skill {
+	ExperienceSkills.skill_id > Skill.id [ delete: no action, update: no action ]
+}
+
+Ref fk_ExperienceSkills_experience_id_Experience {
+	ExperienceSkills.experience_id > Experience.id [ delete: no action, update: no action ]
+}
+
+Ref fk_Education_id_EducationSkills {
+	Education.id < EducationSkills.education_id [ delete: no action, update: no action ]
+}
+
+Ref fk_EducationSkills_skill_id_Skill {
+	EducationSkills.skill_id > Skill.id [ delete: no action, update: no action ]
+}
+
+Ref fk_Certificate_id_CertificateSkills {
+	Certificate.id < CertificateSkills.certificate_id [ delete: no action, update: no action ]
+}
+
+Ref fk_CertificateSkills_skill_id_Skill {
+	CertificateSkills.skill_id > Skill.id [ delete: no action, update: no action ]
+}
+
+Ref fk_ProfileEducation_profile_id_Profile {
+	ProfileEducation.profile_id > Profile.id [ delete: no action, update: no action ]
+}
+
+Ref fk_Education_id_ProfileEducation {
+	Education.id < ProfileEducation.education_id [ delete: no action, update: no action ]
+}
+
+Ref fk_Certificate_id_ProfileCertificate {
+	Certificate.id < ProfileCertificate.certificate_id [ delete: no action, update: no action ]
+}
+
+Ref fk_ProfileCertificate_profile_id_Profile {
+	ProfileCertificate.profile_id > Profile.id [ delete: no action, update: no action ]
+}
+
+Ref fk_ProfileLink_link_id_Link {
+	ProfileLink.link_id > Link.id [ delete: no action, update: no action ]
+}
+
+Ref fk_ProfileLink_profile_id_Profile {
+	ProfileLink.profile_id > Profile.id [ delete: no action, update: no action ]
+}
+
+Ref fk_ProfileExperience_profile_id_Profile {
+	ProfileExperience.profile_id > Profile.id [ delete: no action, update: no action ]
+}
+
+Ref fk_ProfileExperience_experience_id_Experience {
+	ProfileExperience.experience_id > Experience.id [ delete: no action, update: no action ]
+}
+
+Ref fk_Profile_user_id_User {
+	Profile.user_id > User.id [ delete: no action, update: no action ]
+}
+
+Ref fk_Link_user_id_User {
+	Link.user_id > User.id [ delete: no action, update: no action ]
+}
+
+Ref fk_Certificate_user_id_User {
+	Certificate.user_id > User.id [ delete: no action, update: no action ]
+}
+
+Ref fk_Education_user_id_User {
+	Education.user_id > User.id [ delete: no action, update: no action ]
+}
+
+Ref fk_Experience_user_id_User {
+	Experience.user_id > User.id [ delete: no action, update: no action ]
+}

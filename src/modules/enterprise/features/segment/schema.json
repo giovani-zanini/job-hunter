@@ -1,0 +1,151 @@
+{
+  "$defs": {
+    "SegmentCreateRequest": {
+      "properties": {
+        "name": {
+          "maxLength": 100,
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "SegmentCreateRequest",
+      "type": "object"
+    },
+    "SegmentDetailResponse": {
+      "properties": {
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "SegmentDetailResponse",
+      "type": "object"
+    },
+    "SegmentFilterParams": {
+      "properties": {
+        "include_deleted": {
+          "default": false,
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        },
+        "skip": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        }
+      },
+      "title": "SegmentFilterParams",
+      "type": "object"
+    },
+    "SegmentResponse": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "SegmentResponse",
+      "type": "object"
+    },
+    "SegmentUpdateRequest": {
+      "properties": {
+        "name": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        }
+      },
+      "title": "SegmentUpdateRequest",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/SegmentCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/SegmentDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/SegmentFilterParams"
+    },
+    {
+      "$ref": "#/$defs/SegmentResponse"
+    },
+    {
+      "$ref": "#/$defs/SegmentUpdateRequest"
+    }
+  ],
+  "description": "Consolidated DTO schemas. Select an individual contract through its reference in x-models. The root accepts any listed DTO.",
+  "title": "enterprise.segment",
+  "x-models": {
+    "segment": {
+      "SegmentCreateRequest": "#/$defs/SegmentCreateRequest",
+      "SegmentDetailResponse": "#/$defs/SegmentDetailResponse",
+      "SegmentFilterParams": "#/$defs/SegmentFilterParams",
+      "SegmentResponse": "#/$defs/SegmentResponse",
+      "SegmentUpdateRequest": "#/$defs/SegmentUpdateRequest"
+    }
+  }
+}

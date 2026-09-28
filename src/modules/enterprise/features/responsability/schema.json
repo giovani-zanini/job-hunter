@@ -1,0 +1,209 @@
+{
+  "$defs": {
+    "ResponsabilityCreateRequest": {
+      "properties": {
+        "action": {
+          "maxLength": 50,
+          "title": "Action",
+          "type": "string"
+        },
+        "outcome": {
+          "maxLength": 50,
+          "title": "Outcome",
+          "type": "string"
+        },
+        "target": {
+          "maxLength": 50,
+          "title": "Target",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action",
+        "target",
+        "outcome"
+      ],
+      "title": "ResponsabilityCreateRequest",
+      "type": "object"
+    },
+    "ResponsabilityDetailResponse": {
+      "properties": {
+        "action": {
+          "title": "Action",
+          "type": "string"
+        },
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "outcome": {
+          "title": "Outcome",
+          "type": "string"
+        },
+        "target": {
+          "title": "Target",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "action",
+        "target",
+        "outcome"
+      ],
+      "title": "ResponsabilityDetailResponse",
+      "type": "object"
+    },
+    "ResponsabilityFilterParams": {
+      "properties": {
+        "action": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Action"
+        },
+        "include_deleted": {
+          "default": false,
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "skip": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        }
+      },
+      "title": "ResponsabilityFilterParams",
+      "type": "object"
+    },
+    "ResponsabilityResponse": {
+      "properties": {
+        "action": {
+          "title": "Action",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "outcome": {
+          "title": "Outcome",
+          "type": "string"
+        },
+        "target": {
+          "title": "Target",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "action",
+        "target",
+        "outcome"
+      ],
+      "title": "ResponsabilityResponse",
+      "type": "object"
+    },
+    "ResponsabilityUpdateRequest": {
+      "properties": {
+        "action": {
+          "anyOf": [
+            {
+              "maxLength": 50,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Action"
+        },
+        "outcome": {
+          "anyOf": [
+            {
+              "maxLength": 50,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Outcome"
+        },
+        "target": {
+          "anyOf": [
+            {
+              "maxLength": 50,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target"
+        }
+      },
+      "title": "ResponsabilityUpdateRequest",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/ResponsabilityCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/ResponsabilityDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/ResponsabilityFilterParams"
+    },
+    {
+      "$ref": "#/$defs/ResponsabilityResponse"
+    },
+    {
+      "$ref": "#/$defs/ResponsabilityUpdateRequest"
+    }
+  ],
+  "description": "Consolidated DTO schemas. Select an individual contract through its reference in x-models. The root accepts any listed DTO.",
+  "title": "enterprise.responsability",
+  "x-models": {
+    "responsability": {
+      "ResponsabilityCreateRequest": "#/$defs/ResponsabilityCreateRequest",
+      "ResponsabilityDetailResponse": "#/$defs/ResponsabilityDetailResponse",
+      "ResponsabilityFilterParams": "#/$defs/ResponsabilityFilterParams",
+      "ResponsabilityResponse": "#/$defs/ResponsabilityResponse",
+      "ResponsabilityUpdateRequest": "#/$defs/ResponsabilityUpdateRequest"
+    }
+  }
+}

@@ -1,0 +1,121 @@
+meta {
+  name: Update a profile skill
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{baseUrl}}/api/v1/profiles/:profile_id/skills/:skill_id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  profile_id: 
+  skill_id: 
+}
+
+body:json {
+  {
+    "level": "",
+    "years_of_experience": "",
+    "last_used_at": ""
+  }
+}
+
+example {
+  name: 200 Response
+  description: Successful Response
+  
+  request: {
+    url: {{baseUrl}}/api/v1/profiles/:profile_id/skills/:skill_id
+    method: PUT
+    mode: json
+    params:path: {
+      profile_id: 
+      skill_id: 
+    }
+  
+    body:json: {
+      {
+        "level": "",
+        "years_of_experience": "",
+        "last_used_at": ""
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "id": 0,
+          "skill_id": 0,
+          "level": 0,
+          "years_of_experience": 0,
+          "last_used_at": "",
+          "skill": ""
+        }
+      '''
+    }
+  }
+}
+
+example {
+  name: 422 Response
+  description: Validation Error
+  
+  request: {
+    url: {{baseUrl}}/api/v1/profiles/:profile_id/skills/:skill_id
+    method: PUT
+    mode: json
+    params:path: {
+      profile_id: 
+      skill_id: 
+    }
+  
+    body:json: {
+      {
+        "level": "",
+        "years_of_experience": "",
+        "last_used_at": ""
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 422
+      text: Unprocessable Entity
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "detail": [
+            {
+              "loc": [],
+              "msg": "",
+              "type": ""
+            }
+          ]
+        }
+      '''
+    }
+  }
+}

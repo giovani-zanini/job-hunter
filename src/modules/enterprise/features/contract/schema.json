@@ -1,0 +1,395 @@
+{
+  "$defs": {
+    "ContractCreateRequest": {
+      "properties": {
+        "currency": {
+          "default": "BRL",
+          "maxLength": 4,
+          "title": "Currency",
+          "type": "string"
+        },
+        "is_payment_disclosed": {
+          "default": false,
+          "title": "Is Payment Disclosed",
+          "type": "boolean"
+        },
+        "max_payment_amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Payment Amount"
+        },
+        "min_payment_amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Payment Amount"
+        },
+        "payment_periodicity": {
+          "default": "MONTHLY",
+          "maxLength": 25,
+          "title": "Payment Periodicity",
+          "type": "string"
+        },
+        "regional_classification": {
+          "description": "e.g. BRA, USA",
+          "maxLength": 4,
+          "title": "Regional Classification",
+          "type": "string"
+        },
+        "type": {
+          "description": "e.g. CLT, PJ, FREELANCE",
+          "maxLength": 25,
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "regional_classification"
+      ],
+      "title": "ContractCreateRequest",
+      "type": "object"
+    },
+    "ContractDetailResponse": {
+      "properties": {
+        "currency": {
+          "title": "Currency",
+          "type": "string"
+        },
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "is_payment_disclosed": {
+          "title": "Is Payment Disclosed",
+          "type": "boolean"
+        },
+        "max_payment_amount": {
+          "anyOf": [
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Payment Amount"
+        },
+        "min_payment_amount": {
+          "anyOf": [
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Payment Amount"
+        },
+        "payment_periodicity": {
+          "title": "Payment Periodicity",
+          "type": "string"
+        },
+        "regional_classification": {
+          "title": "Regional Classification",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "regional_classification",
+        "currency",
+        "payment_periodicity",
+        "is_payment_disclosed"
+      ],
+      "title": "ContractDetailResponse",
+      "type": "object"
+    },
+    "ContractFilterParams": {
+      "properties": {
+        "include_deleted": {
+          "default": false,
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "regional_classification": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Regional Classification"
+        },
+        "skip": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        },
+        "type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Type"
+        }
+      },
+      "title": "ContractFilterParams",
+      "type": "object"
+    },
+    "ContractResponse": {
+      "properties": {
+        "currency": {
+          "title": "Currency",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "is_payment_disclosed": {
+          "title": "Is Payment Disclosed",
+          "type": "boolean"
+        },
+        "max_payment_amount": {
+          "anyOf": [
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Payment Amount"
+        },
+        "min_payment_amount": {
+          "anyOf": [
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Payment Amount"
+        },
+        "payment_periodicity": {
+          "title": "Payment Periodicity",
+          "type": "string"
+        },
+        "regional_classification": {
+          "title": "Regional Classification",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "regional_classification",
+        "currency",
+        "payment_periodicity",
+        "is_payment_disclosed"
+      ],
+      "title": "ContractResponse",
+      "type": "object"
+    },
+    "ContractUpdateRequest": {
+      "properties": {
+        "currency": {
+          "anyOf": [
+            {
+              "maxLength": 4,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Currency"
+        },
+        "is_payment_disclosed": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Is Payment Disclosed"
+        },
+        "max_payment_amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Payment Amount"
+        },
+        "min_payment_amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Payment Amount"
+        },
+        "payment_periodicity": {
+          "anyOf": [
+            {
+              "maxLength": 25,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Payment Periodicity"
+        },
+        "regional_classification": {
+          "anyOf": [
+            {
+              "maxLength": 4,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Regional Classification"
+        },
+        "type": {
+          "anyOf": [
+            {
+              "maxLength": 25,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Type"
+        }
+      },
+      "title": "ContractUpdateRequest",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/ContractCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/ContractDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/ContractFilterParams"
+    },
+    {
+      "$ref": "#/$defs/ContractResponse"
+    },
+    {
+      "$ref": "#/$defs/ContractUpdateRequest"
+    }
+  ],
+  "description": "Consolidated DTO schemas. Select an individual contract through its reference in x-models. The root accepts any listed DTO.",
+  "title": "enterprise.contract",
+  "x-models": {
+    "contract": {
+      "ContractCreateRequest": "#/$defs/ContractCreateRequest",
+      "ContractDetailResponse": "#/$defs/ContractDetailResponse",
+      "ContractFilterParams": "#/$defs/ContractFilterParams",
+      "ContractResponse": "#/$defs/ContractResponse",
+      "ContractUpdateRequest": "#/$defs/ContractUpdateRequest"
+    }
+  }
+}

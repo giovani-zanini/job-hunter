@@ -1,0 +1,240 @@
+{
+  "$defs": {
+    "CompanyCreateRequest": {
+      "properties": {
+        "name": {
+          "maxLength": 150,
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "CompanyCreateRequest",
+      "type": "object"
+    },
+    "CompanyDetailResponse": {
+      "properties": {
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "CompanyDetailResponse",
+      "type": "object"
+    },
+    "CompanyFilterParams": {
+      "properties": {
+        "include_deleted": {
+          "default": false,
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        },
+        "skip": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        }
+      },
+      "title": "CompanyFilterParams",
+      "type": "object"
+    },
+    "CompanyResponse": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "CompanyResponse",
+      "type": "object"
+    },
+    "CompanySegmentCreateRequest": {
+      "properties": {
+        "segment_id": {
+          "title": "Segment Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "segment_id"
+      ],
+      "title": "CompanySegmentCreateRequest",
+      "type": "object"
+    },
+    "CompanySegmentResponse": {
+      "properties": {
+        "company_id": {
+          "title": "Company Id",
+          "type": "integer"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "segment_id": {
+          "title": "Segment Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "company_id",
+        "segment_id"
+      ],
+      "title": "CompanySegmentResponse",
+      "type": "object"
+    },
+    "CompanyUnitCreateRequest": {
+      "properties": {
+        "location_id": {
+          "description": "Location ID",
+          "title": "Location Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "location_id"
+      ],
+      "title": "CompanyUnitCreateRequest",
+      "type": "object"
+    },
+    "CompanyUnitResponse": {
+      "properties": {
+        "company_id": {
+          "title": "Company Id",
+          "type": "integer"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "location_id": {
+          "title": "Location Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "company_id",
+        "location_id"
+      ],
+      "title": "CompanyUnitResponse",
+      "type": "object"
+    },
+    "CompanyUpdateRequest": {
+      "properties": {
+        "name": {
+          "anyOf": [
+            {
+              "maxLength": 150,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        }
+      },
+      "title": "CompanyUpdateRequest",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/CompanyCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/CompanyDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/CompanyFilterParams"
+    },
+    {
+      "$ref": "#/$defs/CompanyResponse"
+    },
+    {
+      "$ref": "#/$defs/CompanySegmentCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/CompanySegmentResponse"
+    },
+    {
+      "$ref": "#/$defs/CompanyUnitCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/CompanyUnitResponse"
+    },
+    {
+      "$ref": "#/$defs/CompanyUpdateRequest"
+    }
+  ],
+  "description": "Consolidated DTO schemas. Select an individual contract through its reference in x-models. The root accepts any listed DTO.",
+  "title": "enterprise.company",
+  "x-models": {
+    "company": {
+      "CompanyCreateRequest": "#/$defs/CompanyCreateRequest",
+      "CompanyDetailResponse": "#/$defs/CompanyDetailResponse",
+      "CompanyFilterParams": "#/$defs/CompanyFilterParams",
+      "CompanyResponse": "#/$defs/CompanyResponse",
+      "CompanySegmentCreateRequest": "#/$defs/CompanySegmentCreateRequest",
+      "CompanySegmentResponse": "#/$defs/CompanySegmentResponse",
+      "CompanyUnitCreateRequest": "#/$defs/CompanyUnitCreateRequest",
+      "CompanyUnitResponse": "#/$defs/CompanyUnitResponse",
+      "CompanyUpdateRequest": "#/$defs/CompanyUpdateRequest"
+    }
+  }
+}

@@ -1,0 +1,146 @@
+meta {
+  name: Create a new experience
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/v1/experiences/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "user_id": 0,
+    "company_id": 0,
+    "position_title": "",
+    "start_date": "",
+    "end_date": "",
+    "description": "",
+    "achievements": [
+      {
+        "title": "",
+        "description": ""
+      }
+    ],
+    "skill_ids": []
+  }
+}
+
+example {
+  name: 201 Response
+  description: Successful Response
+  
+  request: {
+    url: {{baseUrl}}/api/v1/experiences/
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "user_id": 0,
+        "company_id": 0,
+        "position_title": "",
+        "start_date": "",
+        "end_date": "",
+        "description": "",
+        "achievements": [
+          {
+            "title": "",
+            "description": ""
+          }
+        ],
+        "skill_ids": []
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 201
+      text: Created
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "id": 0,
+          "user_id": 0,
+          "company_id": 0,
+          "position_title": "",
+          "start_date": "",
+          "end_date": "",
+          "description": "",
+          "deleted_at": "",
+          "achievements": [
+            {
+              "id": 0,
+              "experience_id": 0,
+              "title": "",
+              "description": ""
+            }
+          ]
+        }
+      '''
+    }
+  }
+}
+
+example {
+  name: 422 Response
+  description: Validation Error
+  
+  request: {
+    url: {{baseUrl}}/api/v1/experiences/
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "user_id": 0,
+        "company_id": 0,
+        "position_title": "",
+        "start_date": "",
+        "end_date": "",
+        "description": "",
+        "achievements": [
+          {
+            "title": "",
+            "description": ""
+          }
+        ],
+        "skill_ids": []
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 422
+      text: Unprocessable Entity
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "detail": [
+            {
+              "loc": [],
+              "msg": "",
+              "type": ""
+            }
+          ]
+        }
+      '''
+    }
+  }
+}

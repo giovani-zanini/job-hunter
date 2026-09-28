@@ -1,0 +1,112 @@
+meta {
+  name: List all experiences
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/v1/experiences/
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~user_id: 
+  ~company_id: 
+  ~position_title: 
+  ~include_deleted: 
+  ~skip: 
+  ~limit: 
+}
+
+example {
+  name: 200 Response
+  description: Successful Response
+  
+  request: {
+    url: {{baseUrl}}/api/v1/experiences/
+    method: GET
+    mode: none
+    params:query: {
+      ~user_id: 
+      ~company_id: 
+      ~position_title: 
+      ~include_deleted: 
+      ~skip: 
+      ~limit: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: json
+      content: '''
+        [
+          {
+            "id": 0,
+            "user_id": 0,
+            "company_id": 0,
+            "position_title": "",
+            "start_date": "",
+            "end_date": "",
+            "description": ""
+          }
+        ]
+      '''
+    }
+  }
+}
+
+example {
+  name: 422 Response
+  description: Validation Error
+  
+  request: {
+    url: {{baseUrl}}/api/v1/experiences/
+    method: GET
+    mode: none
+    params:query: {
+      ~user_id: 
+      ~company_id: 
+      ~position_title: 
+      ~include_deleted: 
+      ~skip: 
+      ~limit: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 422
+      text: Unprocessable Entity
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "detail": [
+            {
+              "loc": [],
+              "msg": "",
+              "type": ""
+            }
+          ]
+        }
+      '''
+    }
+  }
+}

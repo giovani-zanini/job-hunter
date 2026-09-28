@@ -1,0 +1,592 @@
+{
+  "$defs": {
+    "ProfileAddSkillRequest": {
+      "description": "Schema for adding a skill to a profile.\n\nUsed in POST requests to associate a skill with a profile. Includes\nproficiency level and experience metadata.\n\nAttributes:\n    skill_id (int): The ID of the skill to add to the profile.\n    level (int): Proficiency level on a scale of 1-5.\n    years_of_experience (int): Total years of experience with this skill.\n        Must be non-negative.\n    last_used_at (Optional[date]): The most recent date the skill was used.",
+      "properties": {
+        "last_used_at": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Last time skill was used",
+          "title": "Last Used At"
+        },
+        "level": {
+          "description": "Proficiency level (1-5)",
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Level",
+          "type": "integer"
+        },
+        "skill_id": {
+          "description": "Skill ID",
+          "title": "Skill Id",
+          "type": "integer"
+        },
+        "years_of_experience": {
+          "description": "Years of experience",
+          "minimum": 0,
+          "title": "Years Of Experience",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "skill_id",
+        "level",
+        "years_of_experience"
+      ],
+      "title": "ProfileAddSkillRequest",
+      "type": "object"
+    },
+    "ProfileCertificateInput": {
+      "description": "Schema for associating a certificate to a profile.\n\nUsed in API requests to add an existing certificate to a profile.\n\nAttributes:\n    certificate_id (int): The ID of the certificate to associate with\n        the profile.",
+      "properties": {
+        "certificate_id": {
+          "description": "Certificate ID",
+          "title": "Certificate Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "certificate_id"
+      ],
+      "title": "ProfileCertificateInput",
+      "type": "object"
+    },
+    "ProfileCreateRequest": {
+      "description": "Schema for creating a new profile.\n\nUsed in POST requests to create a new profile for a user. All fields are\nrequired. The slug must be unique per user and is used in profile URLs.\n\nAttributes:\n    user_id (int): The ID of the user who owns this profile.\n    slug (str): URL-friendly identifier for the profile, maximum 25 characters.\n    full_name (str): User's full name, maximum 150 characters.\n    title (str): Professional title or job role, maximum 125 characters.\n    bio (str): Professional biography or personal description.",
+      "properties": {
+        "bio": {
+          "description": "Bio/description",
+          "title": "Bio",
+          "type": "string"
+        },
+        "full_name": {
+          "description": "Full name",
+          "maxLength": 150,
+          "title": "Full Name",
+          "type": "string"
+        },
+        "slug": {
+          "description": "Profile URL slug",
+          "maxLength": 25,
+          "title": "Slug",
+          "type": "string"
+        },
+        "title": {
+          "description": "Professional title",
+          "maxLength": 125,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "slug",
+        "full_name",
+        "title",
+        "bio"
+      ],
+      "title": "ProfileCreateRequest",
+      "type": "object"
+    },
+    "ProfileDetailResponse": {
+      "description": "Schema for detailed profile response.\n\nRepresents a comprehensive profile response with extended information.\nCurrently mirrors ProfileResponse but is prepared for future inclusion of\nnested data such as skills, links, experiences, education, and certificates.\nUsed in profile detail endpoints (GET /profiles/{id}).\n\nFuture Fields (to be added):\n    skills: List of associated ProfileSkillResponse objects.\n    links: List of associated ProfileLinkResponse objects.\n    experiences: List of associated ProfileExperienceResponse objects.\n    education: List of associated ProfileEducationResponse objects.\n    certificates: List of associated ProfileCertificateResponse objects.\n\nAttributes:\n    id (int): The unique identifier of the profile.\n    user_id (int): The ID of the user who owns this profile.\n    slug (str): URL-friendly identifier for the profile.\n    full_name (str): User's full name.\n    title (str): Professional title or job role.\n    bio (str): Professional biography or personal description.",
+      "properties": {
+        "bio": {
+          "title": "Bio",
+          "type": "string"
+        },
+        "full_name": {
+          "title": "Full Name",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "slug": {
+          "title": "Slug",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "user_id": {
+          "title": "User Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "slug",
+        "full_name",
+        "title",
+        "bio"
+      ],
+      "title": "ProfileDetailResponse",
+      "type": "object"
+    },
+    "ProfileEducationInput": {
+      "description": "Schema for associating an education to a profile.\n\nUsed in API requests to add an existing education record to a profile.\n\nAttributes:\n    education_id (int): The ID of the education record to associate with\n        the profile.",
+      "properties": {
+        "education_id": {
+          "description": "Education ID",
+          "title": "Education Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "education_id"
+      ],
+      "title": "ProfileEducationInput",
+      "type": "object"
+    },
+    "ProfileExperienceInput": {
+      "description": "Schema for associating an experience to a profile.\n\nUsed in API requests to add an existing experience record to a profile.\n\nAttributes:\n    experience_id (int): The ID of the experience to associate with the profile.",
+      "properties": {
+        "experience_id": {
+          "description": "Experience ID",
+          "title": "Experience Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "experience_id"
+      ],
+      "title": "ProfileExperienceInput",
+      "type": "object"
+    },
+    "ProfileFilterParams": {
+      "description": "Schema for profile list filters.\n\nUsed in GET requests to filter and paginate profile results. Supports partial\ntext matching for slug and full_name fields. Implements cursor-based pagination\nwith skip/limit parameters.\n\nAttributes:\n    user_id (Optional[int]): Filter profiles by user ID. If provided, only\n        profiles belonging to this user are returned.\n    slug (Optional[str]): Filter profiles by slug using partial string matching.\n        Case-sensitive matching is applied.\n    full_name (Optional[str]): Filter profiles by full name using partial string\n        matching. Case-sensitive matching is applied.\n    include_deleted (bool): Include soft-deleted profiles in results. Defaults\n        to False, only active profiles are returned by default.\n    skip (int): Number of records to skip from the beginning of the result set.\n        Used for pagination. Must be non-negative. Defaults to 0.\n    limit (int): Maximum number of records to return in a single response.\n        Must be between 1 and 100 inclusive. Defaults to 20.",
+      "properties": {
+        "full_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by full name (partial match)",
+          "title": "Full Name"
+        },
+        "include_deleted": {
+          "default": false,
+          "description": "Include soft deleted profiles",
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "description": "Maximum number of records to return",
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "skip": {
+          "default": 0,
+          "description": "Number of records to skip",
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        },
+        "slug": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by slug (partial match)",
+          "title": "Slug"
+        },
+        "user_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by user ID",
+          "title": "User Id"
+        }
+      },
+      "title": "ProfileFilterParams",
+      "type": "object"
+    },
+    "ProfileLinkInput": {
+      "description": "Schema for associating a link to a profile.\n\nUsed in API requests to add an existing link to a profile.\n\nAttributes:\n    link_id (int): The ID of the link to associate with the profile.",
+      "properties": {
+        "link_id": {
+          "description": "Link ID",
+          "title": "Link Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "link_id"
+      ],
+      "title": "ProfileLinkInput",
+      "type": "object"
+    },
+    "ProfileResponse": {
+      "description": "Schema for profile response.\n\nRepresents a basic profile response containing core profile information.\nUsed in list endpoints and basic profile retrieval responses.\n\nAttributes:\n    id (int): The unique identifier of the profile.\n    user_id (int): The ID of the user who owns this profile.\n    slug (str): URL-friendly identifier for the profile.\n    full_name (str): User's full name.\n    title (str): Professional title or job role.\n    bio (str): Professional biography or personal description.",
+      "properties": {
+        "bio": {
+          "title": "Bio",
+          "type": "string"
+        },
+        "full_name": {
+          "title": "Full Name",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "slug": {
+          "title": "Slug",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "user_id": {
+          "title": "User Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "slug",
+        "full_name",
+        "title",
+        "bio"
+      ],
+      "title": "ProfileResponse",
+      "type": "object"
+    },
+    "ProfileSkillInput": {
+      "description": "Schema for adding a skill to a profile.\n\nUsed to associate a skill with a profile, including proficiency level\nand years of experience. Validates skill existence and proficiency constraints.\n\nAttributes:\n    skill_id (int): The ID of the skill to associate with the profile.\n    level (int): Proficiency level on a scale of 1-5, where 1 is beginner\n        and 5 is expert.\n    years_of_experience (int): Total years of experience with this skill.\n        Must be non-negative.\n    last_used_at (Optional[date]): The most recent date the skill was used.\n        If not provided, defaults to None.",
+      "properties": {
+        "last_used_at": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Last time skill was used",
+          "title": "Last Used At"
+        },
+        "level": {
+          "description": "Proficiency level (1-5)",
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Level",
+          "type": "integer"
+        },
+        "skill_id": {
+          "description": "Skill ID",
+          "title": "Skill Id",
+          "type": "integer"
+        },
+        "years_of_experience": {
+          "description": "Years of experience",
+          "minimum": 0,
+          "title": "Years Of Experience",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "skill_id",
+        "level",
+        "years_of_experience"
+      ],
+      "title": "ProfileSkillInput",
+      "type": "object"
+    },
+    "ProfileSkillResponse": {
+      "description": "Schema for profile skill response.\n\nRepresents a skill associated with a profile, including its relationship data\nand the nested skill object. Used in profile detail responses.\n\nAttributes:\n    id (int): The unique identifier of the profile-skill association.\n    skill_id (int): The ID of the associated skill.\n    level (int): Proficiency level (1-5 scale).\n    years_of_experience (int): Total years of experience with this skill.\n    last_used_at (Optional[date]): The most recent date the skill was used.\n    skill (Optional[SkillResponse]): The full skill object details, if included\n        in the response through eager loading.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "last_used_at": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Used At"
+        },
+        "level": {
+          "title": "Level",
+          "type": "integer"
+        },
+        "skill": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SkillResponse"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "skill_id": {
+          "title": "Skill Id",
+          "type": "integer"
+        },
+        "years_of_experience": {
+          "title": "Years Of Experience",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "skill_id",
+        "level",
+        "years_of_experience"
+      ],
+      "title": "ProfileSkillResponse",
+      "type": "object"
+    },
+    "ProfileUpdateRequest": {
+      "description": "Schema for updating a profile.\n\nUsed in PATCH/PUT requests to update an existing profile. All fields are\noptional, allowing partial updates. Only provided fields will be modified.\n\nAttributes:\n    slug (Optional[str]): New URL-friendly identifier, maximum 25 characters.\n    full_name (Optional[str]): Updated full name, maximum 150 characters.\n    title (Optional[str]): Updated professional title, maximum 125 characters.\n    bio (Optional[str]): Updated professional biography or description.",
+      "properties": {
+        "bio": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Bio/description",
+          "title": "Bio"
+        },
+        "full_name": {
+          "anyOf": [
+            {
+              "maxLength": 150,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Full name",
+          "title": "Full Name"
+        },
+        "slug": {
+          "anyOf": [
+            {
+              "maxLength": 25,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Profile URL slug",
+          "title": "Slug"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "maxLength": 125,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Professional title",
+          "title": "Title"
+        }
+      },
+      "title": "ProfileUpdateRequest",
+      "type": "object"
+    },
+    "ProfileUpdateSkillRequest": {
+      "description": "Schema for updating a profile skill.\n\nUsed in PATCH/PUT requests to update an existing profile-skill association.\nAll fields are optional for partial updates.\n\nAttributes:\n    level (Optional[int]): Updated proficiency level (1-5 scale).\n    years_of_experience (Optional[int]): Updated years of experience with\n        the skill. Must be non-negative if provided.\n    last_used_at (Optional[date]): Updated most recent usage date.",
+      "properties": {
+        "last_used_at": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Last time skill was used",
+          "title": "Last Used At"
+        },
+        "level": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Proficiency level (1-5)",
+          "title": "Level"
+        },
+        "years_of_experience": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Years of experience",
+          "title": "Years Of Experience"
+        }
+      },
+      "title": "ProfileUpdateSkillRequest",
+      "type": "object"
+    },
+    "SkillCategory": {
+      "description": "Enum for skill categories.",
+      "enum": [
+        "LANGUAGE",
+        "TOOL",
+        "FRAMEWORK"
+      ],
+      "title": "SkillCategory",
+      "type": "string"
+    },
+    "SkillResponse": {
+      "description": "Schema for skill response.",
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/SkillCategory"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "category"
+      ],
+      "title": "SkillResponse",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/ProfileAddSkillRequest"
+    },
+    {
+      "$ref": "#/$defs/ProfileCertificateInput"
+    },
+    {
+      "$ref": "#/$defs/ProfileCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/ProfileDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/ProfileEducationInput"
+    },
+    {
+      "$ref": "#/$defs/ProfileExperienceInput"
+    },
+    {
+      "$ref": "#/$defs/ProfileFilterParams"
+    },
+    {
+      "$ref": "#/$defs/ProfileLinkInput"
+    },
+    {
+      "$ref": "#/$defs/ProfileResponse"
+    },
+    {
+      "$ref": "#/$defs/ProfileSkillInput"
+    },
+    {
+      "$ref": "#/$defs/ProfileSkillResponse"
+    },
+    {
+      "$ref": "#/$defs/ProfileUpdateRequest"
+    },
+    {
+      "$ref": "#/$defs/ProfileUpdateSkillRequest"
+    }
+  ],
+  "description": "Consolidated DTO schemas. Select an individual contract through its reference in x-models. The root accepts any listed DTO.",
+  "title": "profile.profile",
+  "x-models": {
+    "profile": {
+      "ProfileAddSkillRequest": "#/$defs/ProfileAddSkillRequest",
+      "ProfileCertificateInput": "#/$defs/ProfileCertificateInput",
+      "ProfileCreateRequest": "#/$defs/ProfileCreateRequest",
+      "ProfileDetailResponse": "#/$defs/ProfileDetailResponse",
+      "ProfileEducationInput": "#/$defs/ProfileEducationInput",
+      "ProfileExperienceInput": "#/$defs/ProfileExperienceInput",
+      "ProfileFilterParams": "#/$defs/ProfileFilterParams",
+      "ProfileLinkInput": "#/$defs/ProfileLinkInput",
+      "ProfileResponse": "#/$defs/ProfileResponse",
+      "ProfileSkillInput": "#/$defs/ProfileSkillInput",
+      "ProfileSkillResponse": "#/$defs/ProfileSkillResponse",
+      "ProfileUpdateRequest": "#/$defs/ProfileUpdateRequest",
+      "ProfileUpdateSkillRequest": "#/$defs/ProfileUpdateSkillRequest"
+    }
+  }
+}

@@ -1,0 +1,559 @@
+{
+  "$defs": {
+    "VacancyCreateRequest": {
+      "properties": {
+        "company_unit_id": {
+          "title": "Company Unit Id",
+          "type": "integer"
+        },
+        "contract_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contract Id"
+        },
+        "custom_data": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Custom Data"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "published_date": {
+          "format": "date",
+          "title": "Published Date",
+          "type": "string"
+        },
+        "seniority_level": {
+          "maxLength": 25,
+          "title": "Seniority Level",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 100,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "description",
+        "company_unit_id",
+        "seniority_level",
+        "published_date"
+      ],
+      "title": "VacancyCreateRequest",
+      "type": "object"
+    },
+    "VacancyDetailResponse": {
+      "properties": {
+        "company_unit_id": {
+          "title": "Company Unit Id",
+          "type": "integer"
+        },
+        "contract_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contract Id"
+        },
+        "custom_data": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Custom Data"
+        },
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "published_date": {
+          "format": "date",
+          "title": "Published Date",
+          "type": "string"
+        },
+        "seniority_level": {
+          "title": "Seniority Level",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "vacancy_requirements": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/VacancyRequirementResponse"
+          },
+          "title": "Vacancy Requirements",
+          "type": "array"
+        },
+        "vacancy_responsabilities": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/VacancyResponsabilityResponse"
+          },
+          "title": "Vacancy Responsabilities",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "company_unit_id",
+        "seniority_level",
+        "published_date"
+      ],
+      "title": "VacancyDetailResponse",
+      "type": "object"
+    },
+    "VacancyFilterParams": {
+      "properties": {
+        "company_unit_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Company Unit Id"
+        },
+        "include_deleted": {
+          "default": false,
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "seniority_level": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seniority Level"
+        },
+        "skip": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        }
+      },
+      "title": "VacancyFilterParams",
+      "type": "object"
+    },
+    "VacancyRequirementCreateRequest": {
+      "properties": {
+        "experience_years": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Experience Years"
+        },
+        "level": {
+          "minimum": 0,
+          "title": "Level",
+          "type": "integer"
+        },
+        "optional_requirement_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Optional Requirement Id"
+        },
+        "requirement_id": {
+          "title": "Requirement Id",
+          "type": "integer"
+        },
+        "requirement_type": {
+          "maxLength": 25,
+          "title": "Requirement Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "requirement_id",
+        "level",
+        "requirement_type"
+      ],
+      "title": "VacancyRequirementCreateRequest",
+      "type": "object"
+    },
+    "VacancyRequirementResponse": {
+      "properties": {
+        "experience_years": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Experience Years"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "level": {
+          "title": "Level",
+          "type": "integer"
+        },
+        "optional_requirement_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Optional Requirement Id"
+        },
+        "requirement_id": {
+          "title": "Requirement Id",
+          "type": "integer"
+        },
+        "requirement_type": {
+          "title": "Requirement Type",
+          "type": "string"
+        },
+        "vacancy_id": {
+          "title": "Vacancy Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "vacancy_id",
+        "requirement_id",
+        "level",
+        "requirement_type"
+      ],
+      "title": "VacancyRequirementResponse",
+      "type": "object"
+    },
+    "VacancyResponsabilityCreateRequest": {
+      "properties": {
+        "responsability_id": {
+          "title": "Responsability Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "responsability_id"
+      ],
+      "title": "VacancyResponsabilityCreateRequest",
+      "type": "object"
+    },
+    "VacancyResponsabilityResponse": {
+      "properties": {
+        "responsability_id": {
+          "title": "Responsability Id",
+          "type": "integer"
+        },
+        "vacancy_id": {
+          "title": "Vacancy Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "vacancy_id",
+        "responsability_id"
+      ],
+      "title": "VacancyResponsabilityResponse",
+      "type": "object"
+    },
+    "VacancyResponse": {
+      "properties": {
+        "company_unit_id": {
+          "title": "Company Unit Id",
+          "type": "integer"
+        },
+        "contract_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contract Id"
+        },
+        "custom_data": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Custom Data"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "published_date": {
+          "format": "date",
+          "title": "Published Date",
+          "type": "string"
+        },
+        "seniority_level": {
+          "title": "Seniority Level",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "company_unit_id",
+        "seniority_level",
+        "published_date"
+      ],
+      "title": "VacancyResponse",
+      "type": "object"
+    },
+    "VacancyUpdateRequest": {
+      "properties": {
+        "company_unit_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Company Unit Id"
+        },
+        "contract_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contract Id"
+        },
+        "custom_data": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Custom Data"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "published_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Published Date"
+        },
+        "seniority_level": {
+          "anyOf": [
+            {
+              "maxLength": 25,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seniority Level"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        }
+      },
+      "title": "VacancyUpdateRequest",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/VacancyCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/VacancyDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/VacancyFilterParams"
+    },
+    {
+      "$ref": "#/$defs/VacancyRequirementCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/VacancyRequirementResponse"
+    },
+    {
+      "$ref": "#/$defs/VacancyResponsabilityCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/VacancyResponsabilityResponse"
+    },
+    {
+      "$ref": "#/$defs/VacancyResponse"
+    },
+    {
+      "$ref": "#/$defs/VacancyUpdateRequest"
+    }
+  ],
+  "description": "Consolidated DTO schemas. Select an individual contract through its reference in x-models. The root accepts any listed DTO.",
+  "title": "enterprise.vacancy",
+  "x-models": {
+    "vacancy": {
+      "VacancyCreateRequest": "#/$defs/VacancyCreateRequest",
+      "VacancyDetailResponse": "#/$defs/VacancyDetailResponse",
+      "VacancyFilterParams": "#/$defs/VacancyFilterParams",
+      "VacancyRequirementCreateRequest": "#/$defs/VacancyRequirementCreateRequest",
+      "VacancyRequirementResponse": "#/$defs/VacancyRequirementResponse",
+      "VacancyResponsabilityCreateRequest": "#/$defs/VacancyResponsabilityCreateRequest",
+      "VacancyResponsabilityResponse": "#/$defs/VacancyResponsabilityResponse",
+      "VacancyResponse": "#/$defs/VacancyResponse",
+      "VacancyUpdateRequest": "#/$defs/VacancyUpdateRequest"
+    }
+  }
+}

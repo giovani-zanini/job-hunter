@@ -1,0 +1,90 @@
+meta {
+  name: Add an experience to a profile
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{baseUrl}}/api/v1/profiles/:profile_id/experiences/:experience_id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  profile_id: 
+  experience_id: 
+}
+
+example {
+  name: 201 Response
+  description: Successful Response
+  
+  request: {
+    url: {{baseUrl}}/api/v1/profiles/:profile_id/experiences/:experience_id
+    method: POST
+    mode: none
+    params:path: {
+      profile_id: 
+      experience_id: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 201
+      text: Created
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {}
+      '''
+    }
+  }
+}
+
+example {
+  name: 422 Response
+  description: Validation Error
+  
+  request: {
+    url: {{baseUrl}}/api/v1/profiles/:profile_id/experiences/:experience_id
+    method: POST
+    mode: none
+    params:path: {
+      profile_id: 
+      experience_id: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 422
+      text: Unprocessable Entity
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "detail": [
+            {
+              "loc": [],
+              "msg": "",
+              "type": ""
+            }
+          ]
+        }
+      '''
+    }
+  }
+}

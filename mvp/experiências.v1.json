@@ -1,0 +1,216 @@
+{
+  "basics": {
+    "name": "Giovani Liskoski Zanini",
+    "label": "Senior Backend Software Engineer | AI & Cloud Architect",
+    "email": "giovani@email.com",
+    "phone": "+55 (47) 98800 0555",
+    "location": {
+      "address": null,
+      "city": "Brusque",
+      "region": "SC",
+      "countryCode": "BR"
+    },
+    "profiles": [
+      {
+        "network": "GitHub",
+        "username": "giovani-dev",
+        "url": "https://github.com/giovani-dev"
+      },
+      {
+        "network": "LinkedIn",
+        "username": "giovani-liskoski-zanini-4a318b180",
+        "url": "https://www.linkedin.com/in/giovani-liskoski-zanini-4a318b180/"
+      }
+    ],
+    "summary": "Engenheiro de Software Sênior com sólida experiência em arquitetura de sistemas distribuídos, microsserviços e soluções Cloud Native (AWS/Kubernetes). Especialista no ecossistema Python (FastAPI, Django), com foco em Domain-Driven Design (DDD) e Clean Architecture. Atualmente focado em Engenharia de Plataforma e integração de IA Generativa (LLMs/RAG) para otimização de fluxos de trabalho. Histórico comprovado em ambientes de alta escala (Mídia/Eleições) e missão crítica (HealthTech), liderando iniciativas técnicas que elevam a confiabilidade do software e a produtividade das equipes."
+  },
+  "work": [
+    {
+      "name": "HubXP / Afya",
+      "position": "Senior Backend Engineer (Core Squad)",
+      "location": "Remoto",
+      "startDate": "2025-04",
+      "endDate": "Atualmente",
+      "highlights": [
+        "Liderança técnica na concepção e implementação do ambiente 'DevQA' utilizando Kubernetes e Helm, permitindo a criação de ambientes efêmeros e isolados por desenvolvedor.",
+        "Propositor e executor de melhorias arquiteturais (RFCs e PoCs): Liderou a refatoração do Core dos microsserviços introduzindo 'Base Repositories' genéricos para redução de boilerplate, formalização de 'Shared Kernel' e 'Bounded Contexts' (DDD) e adoção estrita de Injeção de Dependência para desacoplamento e testabilidade.",
+        "Atuação no 'Core Squad' focado em melhoria da Developer Experience (DX), padronização de Code Review e mentoring técnico para elevar a qualidade das entregas do time.",
+        "Desenvolvimento de microsserviços críticos para prescrição médica, garantindo validação robusta nas fronteiras (DTOs) e isolamento da regra de negócio (Domain Entities)."
+      ]
+    },
+    {
+      "name": "Infoglobo",
+      "position": "Pleno Backend Developer",
+      "location": "Rio de Janeiro (Remoto)",
+      "startDate": "2023-04",
+      "endDate": "2025-03",
+      "highlights": [
+        "Projetou e implementou arquitetura Serverless de alta disponibilidade (99.9% SLA) utilizando AWS Lambda, API Gateway e DynamoDB para suportar picos de tráfego durante as Eleições de 2022.",
+        "Otimizou o pipeline de CI/CD, reduzindo o tempo de deploy de 25 para 7 minutos através de estratégias de cache e paralelismo no GitHub Actions/Jenkins.",
+        "Desenvolveu o backend de produtos editoriais de alto impacto ('Bola de Cristal', 'Radar do Congresso'), integrando análise de dados com APIs RESTful robustas.",
+        "Automatizou fluxos complexos de tratamento de imagem em tempo real utilizando Python (Pillow/OpenCV) para publicação ágil de conteúdo jornalístico."
+      ]
+    },
+    {
+      "name": "Noana",
+      "position": "Pleno Backend Developer",
+      "location": "Remoto",
+      "startDate": "2022-11",
+      "endDate": "2023-04",
+      "highlights": [
+        "Elevou o padrão de qualidade de código (Quality Assurance), implementando cultura de testes rigorosa com Pytest, atingindo 85% de cobertura e bloqueio automático de regressões no CI.",
+        "Arquitetou pipeline de processamento de dados IoT (SmartWatches) utilizando AWS SQS e Lambda para ingestão assíncrona e escalável de métricas de saúde.",
+        "Atuou como referência técnica em Python, introduzindo type hinting (Pydantic) e análise estática para redução de bugs em produção."
+      ]
+    },
+    {
+      "name": "Marttech",
+      "position": "Pleno Backend Developer",
+      "location": "Remoto",
+      "startDate": "2022-02",
+      "endDate": "2022-08",
+      "highlights": [
+        "Desenvolvimento de APIs RESTful escaláveis e manutenção de sistemas legados, focando em refatoração progressiva e melhoria de performance de queries SQL."
+      ]
+    },
+    {
+      "name": "4intelligence",
+      "position": "Junior Backend Developer",
+      "location": "São Paulo",
+      "startDate": "2021-07",
+      "endDate": "2021-12",
+      "highlights": [
+        "Colaboração no desenvolvimento de soluções de inteligência de mercado, implementando endpoints de API e rotinas de extração de dados (ETL) em Python."
+      ]
+    },
+    {
+      "name": "Leader Aplicativos",
+      "position": "Junior Backend Developer",
+      "location": "Brusque, SC",
+      "startDate": "2020-04",
+      "endDate": "2021-05",
+      "highlights": [
+        "Desenvolvimento full-cycle de MVPs para startups utilizando Django e Django Rest Framework, focando em entrega rápida de valor.",
+        "Implementação inicial de pipelines de deploy automatizado em instâncias AWS EC2, reduzindo a intervenção manual em produção."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "UNIFEBE",
+      "area": "Sistemas de Informação",
+      "studyType": "Bacharelado",
+      "startDate": "2024-07",
+      "endDate": "2028-12",
+      "description": "Foco acadêmico em Engenharia de Software, Algoritmos Avançados e Sistemas Distribuídos."
+    },
+    {
+      "institution": "Instituto Federal Catarinense (IFC)",
+      "area": "Informática",
+      "studyType": "Técnico Integrado",
+      "startDate": "2015-01",
+      "endDate": "2018-12",
+      "description": "Base sólida em lógica de programação, redes de computadores e sistemas operacionais Linux."
+    }
+  ],
+  "skills": [
+    {
+      "name": "Linguagens & Core",
+      "keywords": [
+        "Python (3.9+)",
+        "TypeScript",
+        "SQL",
+        "Bash/Shell Scripting"
+      ]
+    },
+    {
+      "name": "Arquitetura & Design",
+      "keywords": [
+        "Domain-Driven Design (DDD)",
+        "Bounded Contexts",
+        "Shared Kernel",
+        "Clean Architecture",
+        "Dependency Injection",
+        "Design Patterns (Repository, Factory)",
+        "Hexagonal Architecture",
+        "Microservices",
+        "Event-Driven Architecture",
+        "SOLID"
+      ]
+    },
+    {
+      "name": "Backend Frameworks",
+      "keywords": [
+        "FastAPI",
+        "Django",
+        "Django Rest Framework",
+        "SQLAlchemy",
+        "Pydantic",
+        "Pytest",
+        "Celery"
+      ]
+    },
+    {
+      "name": "Cloud Native & DevOps",
+      "keywords": [
+        "AWS (EKS, Lambda, DynamoDB, S3, SQS)",
+        "Kubernetes (K8s)",
+        "Helm Charts",
+        "Docker",
+        "Terraform/IaC",
+        "CI/CD (GitHub Actions)"
+      ]
+    },
+    {
+      "name": "Data & AI Engineering",
+      "keywords": [
+        "RAG (Retrieval-Augmented Generation)",
+        "Vector Databases (Pinecone)",
+        "LangChain",
+        "OpenAI API",
+        "PostgreSQL",
+        "Redis",
+        "MongoDB"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Plantii",
+      "description": "Assistente botânico inteligente premiado. Arquitetura baseada em RAG para fornecer diagnósticos precisos de plantas.",
+      "highlights": [
+        "1º Lugar Startup Weekend 2025",
+        "Python/FastAPI",
+        "Pinecone Vector DB",
+        "LLM Integration"
+      ]
+    },
+    {
+      "name": "The Architect (Em desenvolvimento)",
+      "description": "Ferramenta de brainstorming arquitetural baseada em IA, projetada para auxiliar desenvolvedores na definição de estruturas de software complexas.",
+      "highlights": [
+        "Clean Architecture",
+        "React & Python",
+        "Prompt Engineering Avançado"
+      ]
+    }
+  ],
+  "awards": [
+    {
+      "title": "Vencedor Startup Weekend Brusque 2025",
+      "date": "2025",
+      "awarder": "Techstars / Startup Weekend",
+      "summary": "Liderança técnica e desenvolvimento do MVP 'Plantii', validando solução de IA aplicada ao mercado de jardinagem em 54 horas."
+    }
+  ],
+  "languages": [
+    {
+      "language": "Português",
+      "fluency": "Nativo"
+    },
+    {
+      "language": "Inglês",
+      "fluency": "Avançado (Leitura/Escrita Técnica)"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: job_finder_postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: job_finder
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d job_finder"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # drawdb:
+  #   build:
+  #     context: ..
+  #     dockerfile: docker/drawdb.Dockerfile
+  #   ports:
+  #     - "8080:80"
+  #   networks:
+  #     - default
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  postgres_data:

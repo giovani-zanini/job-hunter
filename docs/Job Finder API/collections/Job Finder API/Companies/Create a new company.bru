@@ -1,0 +1,100 @@
+meta {
+  name: Create a new company
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/v1/companies/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "",
+    "website": ""
+  }
+}
+
+example {
+  name: 201 Response
+  description: Successful Response
+  
+  request: {
+    url: {{baseUrl}}/api/v1/companies/
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "name": "",
+        "website": ""
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 201
+      text: Created
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "id": 0,
+          "name": "",
+          "website": ""
+        }
+      '''
+    }
+  }
+}
+
+example {
+  name: 422 Response
+  description: Validation Error
+  
+  request: {
+    url: {{baseUrl}}/api/v1/companies/
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "name": "",
+        "website": ""
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: application/json
+    }
+  
+    status: {
+      code: 422
+      text: Unprocessable Entity
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "detail": [
+            {
+              "loc": [],
+              "msg": "",
+              "type": ""
+            }
+          ]
+        }
+      '''
+    }
+  }
+}

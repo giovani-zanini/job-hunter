@@ -1,0 +1,265 @@
+{
+  "$defs": {
+    "LinkCreateRequest": {
+      "description": "Schema for creating a new link.\n\nUsed in POST requests to create a new link for a user. All fields are\nrequired. Links can represent social media profiles, email addresses,\nor phone numbers.\n\nAttributes:\n    user_id (int): The ID of the user who owns this link.\n    type (LinkType): Type of link (SOCIAL_MEDIA, EMAIL, or CELLPHONE).\n    from_ (str): Origin platform or service (gmail, linkedin, etc.),\n        maximum 50 characters. Uses alias 'from' in JSON.\n    value (str): The actual link value (URL, email address, phone number),\n        maximum 150 characters.",
+      "properties": {
+        "from": {
+          "description": "Origin (gmail, linkedin, etc.)",
+          "maxLength": 50,
+          "title": "From",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/LinkType",
+          "description": "Type of link (SOCIAL_MEDIA, EMAIL, CELLPHONE)"
+        },
+        "value": {
+          "description": "Link value (URL, email, phone number)",
+          "maxLength": 150,
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "from",
+        "value"
+      ],
+      "title": "LinkCreateRequest",
+      "type": "object"
+    },
+    "LinkDetailResponse": {
+      "description": "Schema for detailed link response.\n\nRepresents a comprehensive link response with extended information\nincluding soft-deletion status. Used in link detail endpoints\n(GET /links/{id}).\n\nAttributes:\n    id (int): The unique identifier of the link.\n    user_id (int): The ID of the user who owns this link.\n    type (str): Type classification of the link.\n    from_ (str): Origin platform or service. Uses alias 'from' in JSON.\n    value (str): The actual link value (URL, email, phone number).\n    deleted_at (Optional[datetime]): Timestamp when the link was soft-deleted,\n        or None if the link is active.",
+      "properties": {
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "from": {
+          "title": "From",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "user_id": {
+          "title": "User Id",
+          "type": "integer"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "type",
+        "from",
+        "value"
+      ],
+      "title": "LinkDetailResponse",
+      "type": "object"
+    },
+    "LinkFilterParams": {
+      "description": "Schema for link list filters.\n\nUsed in GET requests to filter and paginate link results. Supports partial\ntext matching for the from_ field. Implements cursor-based pagination\nwith skip/limit parameters.\n\nAttributes:\n    user_id (Optional[int]): Filter links by user ID. If provided, only\n        links belonging to this user are returned.\n    type (Optional[LinkType]): Filter links by type classification.\n    from_ (Optional[str]): Filter links by origin using partial string matching\n        (case-insensitive). Uses alias 'from' in JSON.\n    include_deleted (bool): Include soft-deleted links in results. Defaults\n        to False, only active links are returned by default.\n    skip (int): Number of records to skip from the beginning of the result set.\n        Used for pagination. Must be non-negative. Defaults to 0.\n    limit (int): Maximum number of records to return in a single response.\n        Must be between 1 and 100 inclusive. Defaults to 20.",
+      "properties": {
+        "from": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by origin (partial match)",
+          "title": "From"
+        },
+        "include_deleted": {
+          "default": false,
+          "description": "Include soft deleted links",
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "description": "Maximum number of records to return",
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "skip": {
+          "default": 0,
+          "description": "Number of records to skip",
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        },
+        "type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LinkType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by link type"
+        },
+        "user_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by user ID",
+          "title": "User Id"
+        }
+      },
+      "title": "LinkFilterParams",
+      "type": "object"
+    },
+    "LinkResponse": {
+      "description": "Schema for link response.\n\nRepresents a basic link response containing core link information.\nUsed in list endpoints and basic link retrieval responses.\n\nAttributes:\n    id (int): The unique identifier of the link.\n    user_id (int): The ID of the user who owns this link.\n    type (str): Type classification of the link.\n    from_ (str): Origin platform or service. Uses alias 'from' in JSON.\n    value (str): The actual link value (URL, email, phone number).",
+      "properties": {
+        "from": {
+          "title": "From",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "user_id": {
+          "title": "User Id",
+          "type": "integer"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "type",
+        "from",
+        "value"
+      ],
+      "title": "LinkResponse",
+      "type": "object"
+    },
+    "LinkType": {
+      "description": "Enumeration of supported link types.\n\nUsed to categorize links by their purpose and format.\n\nAttributes:\n    SOCIAL_MEDIA: Links to social media profiles (LinkedIn, Instagram, etc.).\n    EMAIL: Email addresses for professional contact.\n    CELLPHONE: Phone numbers for direct communication.",
+      "enum": [
+        "SOCIAL_MEDIA",
+        "EMAIL",
+        "CELLPHONE"
+      ],
+      "title": "LinkType",
+      "type": "string"
+    },
+    "LinkUpdateRequest": {
+      "description": "Schema for updating a link.\n\nUsed in PATCH/PUT requests to update an existing link. All fields are\noptional, allowing partial updates. Only provided fields will be modified.\n\nAttributes:\n    type (Optional[LinkType]): New type classification for the link.\n    from_ (Optional[str]): Updated origin platform or service,\n        maximum 50 characters. Uses alias 'from' in JSON.\n    value (Optional[str]): Updated link value (URL, email, phone number),\n        maximum 150 characters.",
+      "properties": {
+        "from": {
+          "anyOf": [
+            {
+              "maxLength": 50,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Origin",
+          "title": "From"
+        },
+        "type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LinkType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Type of link"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "maxLength": 150,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Link value",
+          "title": "Value"
+        }
+      },
+      "title": "LinkUpdateRequest",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/LinkCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/LinkDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/LinkFilterParams"
+    },
+    {
+      "$ref": "#/$defs/LinkResponse"
+    },
+    {
+      "$ref": "#/$defs/LinkUpdateRequest"
+    }
+  ],
+  "description": "Consolidated DTO schemas. Select an individual contract through its reference in x-models. The root accepts any listed DTO.",
+  "title": "profile.link",
+  "x-models": {
+    "link": {
+      "LinkCreateRequest": "#/$defs/LinkCreateRequest",
+      "LinkDetailResponse": "#/$defs/LinkDetailResponse",
+      "LinkFilterParams": "#/$defs/LinkFilterParams",
+      "LinkResponse": "#/$defs/LinkResponse",
+      "LinkUpdateRequest": "#/$defs/LinkUpdateRequest"
+    }
+  }
+}

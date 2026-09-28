@@ -1,0 +1,485 @@
+{
+  "$defs": {
+    "AchievementInput": {
+      "description": "Schema for creating an achievement.",
+      "properties": {
+        "description": {
+          "description": "Achievement description",
+          "title": "Description",
+          "type": "string"
+        },
+        "title": {
+          "description": "Achievement title",
+          "maxLength": 64,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "description"
+      ],
+      "title": "AchievementInput",
+      "type": "object"
+    },
+    "AchievementResponse": {
+      "description": "Schema for achievement response.",
+      "properties": {
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "experience_id": {
+          "title": "Experience Id",
+          "type": "integer"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "experience_id",
+        "title",
+        "description"
+      ],
+      "title": "AchievementResponse",
+      "type": "object"
+    },
+    "AchievementUpdateRequest": {
+      "description": "Schema for updating an achievement.",
+      "properties": {
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Achievement description",
+          "title": "Description"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Achievement title",
+          "title": "Title"
+        }
+      },
+      "title": "AchievementUpdateRequest",
+      "type": "object"
+    },
+    "ExperienceCreateRequest": {
+      "description": "Schema for creating a new experience.",
+      "properties": {
+        "achievements": {
+          "default": [],
+          "description": "Achievements",
+          "items": {
+            "$ref": "#/$defs/AchievementInput"
+          },
+          "title": "Achievements",
+          "type": "array"
+        },
+        "company_id": {
+          "description": "Company ID",
+          "title": "Company Id",
+          "type": "integer"
+        },
+        "description": {
+          "description": "Job description",
+          "title": "Description",
+          "type": "string"
+        },
+        "end_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "End date (null if current)",
+          "title": "End Date"
+        },
+        "position_title": {
+          "description": "Position/job title",
+          "maxLength": 100,
+          "title": "Position Title",
+          "type": "string"
+        },
+        "skill_ids": {
+          "default": [],
+          "description": "Skill IDs to associate",
+          "items": {
+            "type": "integer"
+          },
+          "title": "Skill Ids",
+          "type": "array"
+        },
+        "start_date": {
+          "description": "Start date",
+          "format": "date",
+          "title": "Start Date",
+          "type": "string"
+        }
+      },
+      "required": [
+        "company_id",
+        "position_title",
+        "start_date",
+        "description"
+      ],
+      "title": "ExperienceCreateRequest",
+      "type": "object"
+    },
+    "ExperienceDetailResponse": {
+      "description": "Schema for detailed experience response.",
+      "properties": {
+        "achievements": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/AchievementResponse"
+          },
+          "title": "Achievements",
+          "type": "array"
+        },
+        "company_id": {
+          "title": "Company Id",
+          "type": "integer"
+        },
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "end_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End Date"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "position_title": {
+          "title": "Position Title",
+          "type": "string"
+        },
+        "start_date": {
+          "format": "date",
+          "title": "Start Date",
+          "type": "string"
+        },
+        "user_id": {
+          "title": "User Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "company_id",
+        "position_title",
+        "start_date",
+        "description"
+      ],
+      "title": "ExperienceDetailResponse",
+      "type": "object"
+    },
+    "ExperienceFilterParams": {
+      "description": "Schema for experience list filters.",
+      "properties": {
+        "company_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by company ID",
+          "title": "Company Id"
+        },
+        "include_deleted": {
+          "default": false,
+          "description": "Include soft deleted experiences",
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "description": "Maximum number of records to return",
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "position_title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by position title (partial match)",
+          "title": "Position Title"
+        },
+        "skip": {
+          "default": 0,
+          "description": "Number of records to skip",
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        },
+        "user_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter by user ID",
+          "title": "User Id"
+        }
+      },
+      "title": "ExperienceFilterParams",
+      "type": "object"
+    },
+    "ExperienceResponse": {
+      "description": "Schema for experience response.",
+      "properties": {
+        "company_id": {
+          "title": "Company Id",
+          "type": "integer"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "end_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End Date"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "position_title": {
+          "title": "Position Title",
+          "type": "string"
+        },
+        "start_date": {
+          "format": "date",
+          "title": "Start Date",
+          "type": "string"
+        },
+        "user_id": {
+          "title": "User Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "company_id",
+        "position_title",
+        "start_date",
+        "description"
+      ],
+      "title": "ExperienceResponse",
+      "type": "object"
+    },
+    "ExperienceSkillInput": {
+      "description": "Schema for associating a skill with an experience.",
+      "properties": {
+        "skill_id": {
+          "description": "Skill ID",
+          "title": "Skill Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "skill_id"
+      ],
+      "title": "ExperienceSkillInput",
+      "type": "object"
+    },
+    "ExperienceUpdateRequest": {
+      "description": "Schema for updating an experience.",
+      "properties": {
+        "company_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Company ID",
+          "title": "Company Id"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Job description",
+          "title": "Description"
+        },
+        "end_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "End date",
+          "title": "End Date"
+        },
+        "position_title": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Position/job title",
+          "title": "Position Title"
+        },
+        "start_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Start date",
+          "title": "Start Date"
+        }
+      },
+      "title": "ExperienceUpdateRequest",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/AchievementInput"
+    },
+    {
+      "$ref": "#/$defs/AchievementResponse"
+    },
+    {
+      "$ref": "#/$defs/AchievementUpdateRequest"
+    },
+    {
+      "$ref": "#/$defs/ExperienceCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/ExperienceDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/ExperienceFilterParams"
+    },
+    {
+      "$ref": "#/$defs/ExperienceResponse"
+    },
+    {
+      "$ref": "#/$defs/ExperienceSkillInput"
+    },
+    {
+      "$ref": "#/$defs/ExperienceUpdateRequest"
+    }
+  ],
+  "description": "Consolidated DTO schemas. Select an individual contract through its reference in x-models. The root accepts any listed DTO.",
+  "title": "profile.experience",
+  "x-models": {
+    "experience": {
+      "AchievementInput": "#/$defs/AchievementInput",
+      "AchievementResponse": "#/$defs/AchievementResponse",
+      "AchievementUpdateRequest": "#/$defs/AchievementUpdateRequest",
+      "ExperienceCreateRequest": "#/$defs/ExperienceCreateRequest",
+      "ExperienceDetailResponse": "#/$defs/ExperienceDetailResponse",
+      "ExperienceFilterParams": "#/$defs/ExperienceFilterParams",
+      "ExperienceResponse": "#/$defs/ExperienceResponse",
+      "ExperienceSkillInput": "#/$defs/ExperienceSkillInput",
+      "ExperienceUpdateRequest": "#/$defs/ExperienceUpdateRequest"
+    }
+  }
+}

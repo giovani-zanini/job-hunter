@@ -1,0 +1,14 @@
+opencollection: 1.0.0
+info:
+  name: "Job Finder API"
+  type: workspace
+
+collections:
+  - name: "Job Finder Auth API"
+    path: "collections/Job Finder Auth API"
+
+specs:
+
+docs: ''
+
+activeEnvironmentUid: 1kwv6ka00000000000000

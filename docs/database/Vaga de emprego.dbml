@@ -1,0 +1,159 @@
+Table Vacancy [headercolor: #175e7a] {
+	id integer [ pk, increment, not null, unique ]
+	title varchar(100) [ not null ]
+	description text [ not null ]
+	company_unit_id integer [ not null ]
+	contract_id integer
+	seniority_level varchar(25) [ not null ]
+	published_date date [ not null ]
+	custom_data json
+}
+
+Table Location [headercolor: #175e7a] {
+	id integer [ pk, increment, not null, unique ]
+	country varchar(4) [ not null ]
+	state varchar(25) [ not null ]
+	city varchar(50)
+	neighborhood varchar(64)
+	postal_code varchar(16)
+	street varchar(150)
+	number varchar(15)
+	complement varchar(25)
+}
+
+Table Company [headercolor: #175e7a] {
+	id integer [ pk, increment, not null, unique ]
+}
+
+Table CompanySegment [headercolor: #175e7a] {
+	company_id integer [ pk, not null ]
+	segment_id integer [ pk, not null ]
+
+	indexes {
+		(company_id, segment_id) [ name: 'CompanySegment_index_0', unique ]
+	}
+}
+
+Table Segment [headercolor: #175e7a] {
+	id integer [ pk, increment, not null, unique ]
+}
+
+Table CompanyUnit [headercolor: #175e7a] {
+	id integer [ pk, not null ]
+	company_id integer [ not null ]
+	location_id integer [ not null ]
+
+	indexes {
+		(company_id, location_id) [ name: 'CompanyUnit_index_0', unique ]
+	}
+}
+
+Table Contract [headercolor: #175e7a] {
+	id integer [ pk, increment, not null, unique ]
+	type varchar(25) [ not null ]
+	regional_classification varchar(4) [ not null ]
+	currency varchar(4) [ not null, default: 'BRL' ]
+	payment_periodicity varchar(25) [ not null, default: 'MONTHLY' ]
+	min_payment_amount numeric
+	max_payment_amount numeric
+	is_payment_disclosed boolean [ not null, default: false ]
+}
+
+Table Requirement [headercolor: #175e7a] {
+	id integer [ pk, increment, not null, unique ]
+	skill varchar(50) [ not null ]
+}
+
+Table VacancyRequirements [headercolor: #175e7a] {
+	id integer [ pk, not null ]
+	vacancy_id integer [ not null ]
+	optional_requirement_id integer
+	requirement_id integer [ not null ]
+	level smallint [ not null ]
+	experience_years smallint
+	requirement_type varchar(25) [ not null ]
+}
+
+Table Responsability [headercolor: #175e7a] {
+	id integer [ pk, increment, not null, unique ]
+	action varchar(50) [ not null ]
+	target varchar(50) [ not null ]
+	outcome varchar(50) [ not null ]
+}
+
+Table VacancyResponsability [headercolor: #175e7a] {
+	responsability_id integer [ pk, not null ]
+	vacancy_id integer [ pk, not null ]
+
+	indexes {
+		(responsability_id, vacancy_id) [ name: 'VacancyResponsability_index_0', unique ]
+	}
+}
+
+Table Meta [headercolor: #175e7a] {
+	id integer [ pk, increment, not null, unique ]
+	app_version varchar(25) [ not null, default: '1.0.0' ]
+	extraction_timestamp timestamp [ not null ]
+	parsing_timestamp timestamp [ not null ]
+	source_url text [ not null ]
+	custom_data json
+	vacancy_id integer
+	company_id integer
+
+	indexes {
+		(vacancy_id) [ name: 'Meta_index_0', unique ]
+		(company_id) [ name: 'Meta_index_1', unique ]
+	}
+}
+
+Ref fk_Segment_id_CompanySegment {
+	Segment.id < CompanySegment.segment_id [ delete: no action, update: no action ]
+}
+
+Ref fk_CompanySegment_company_id_Company {
+	CompanySegment.company_id > Company.id [ delete: no action, update: no action ]
+}
+
+Ref fk_Company_id_CompanyUnit {
+	Company.id < CompanyUnit.company_id [ delete: no action, update: no action ]
+}
+
+Ref fk_CompanyUnit_location_id_Location {
+	CompanyUnit.location_id > Location.id [ delete: no action, update: no action ]
+}
+
+Ref fk_Vacancy_company_unit_id_CompanyUnit {
+	Vacancy.company_unit_id > CompanyUnit.id [ delete: no action, update: no action ]
+}
+
+Ref fk_Vacancy_contract_id_Contract {
+	Vacancy.contract_id > Contract.id [ delete: no action, update: no action ]
+}
+
+Ref fk_Requirement_id_VacancyRequirements {
+	Requirement.id < VacancyRequirements.requirement_id [ delete: no action, update: no action ]
+}
+
+Ref fk_VacancyRequirements_vacancy_id_Vacancy {
+	VacancyRequirements.vacancy_id > Vacancy.id [ delete: no action, update: no action ]
+}
+
+Ref fk_VacancyResponsability_vacancy_id_Vacancy {
+	VacancyResponsability.vacancy_id > Vacancy.id [ delete: no action, update: no action ]
+}
+
+Ref fk_VacancyResponsability_responsability_id_Responsability {
+	VacancyResponsability.responsability_id > Responsability.id [ delete: no action, update: no action ]
+}
+
+Ref fk_VacancyRequirements_optional_requirement_id_VacancyRequirements {
+	VacancyRequirements.optional_requirement_id > VacancyRequirements.id [ delete: no action, update: no action ]
+}
+
+Ref fk_Vacancy_id_Meta {
+	Vacancy.id < Meta.vacancy_id [ delete: no action, update: no action ]
+}
+
+Ref fk_Meta_company_id_Company {
+	Meta.company_id > Company.id [ delete: no action, update: no action ]
+}

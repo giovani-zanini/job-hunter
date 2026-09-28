@@ -1,0 +1,36 @@
+meta {
+  name: Delete current user
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{baseUrl}}/api/v1/account/me
+  body: none
+  auth: inherit
+}
+
+example {
+  name: 204 Response
+  description: Successful Response
+  
+  request: {
+    url: {{baseUrl}}/api/v1/account/me
+    method: DELETE
+    mode: none
+  }
+  
+  response: {
+    status: {
+      code: 204
+      text: No Content
+    }
+  
+    body: {
+      type: text
+      content: '''
+  
+      '''
+    }
+  }
+}

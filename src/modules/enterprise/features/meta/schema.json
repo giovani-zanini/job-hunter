@@ -1,0 +1,400 @@
+{
+  "$defs": {
+    "MetaCreateRequest": {
+      "properties": {
+        "app_version": {
+          "default": "1.0.0",
+          "maxLength": 25,
+          "title": "App Version",
+          "type": "string"
+        },
+        "company_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Company Id"
+        },
+        "custom_data": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Custom Data"
+        },
+        "extraction_timestamp": {
+          "format": "date-time",
+          "title": "Extraction Timestamp",
+          "type": "string"
+        },
+        "parsing_timestamp": {
+          "format": "date-time",
+          "title": "Parsing Timestamp",
+          "type": "string"
+        },
+        "source_url": {
+          "title": "Source Url",
+          "type": "string"
+        },
+        "vacancy_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Vacancy Id"
+        }
+      },
+      "required": [
+        "extraction_timestamp",
+        "parsing_timestamp",
+        "source_url"
+      ],
+      "title": "MetaCreateRequest",
+      "type": "object"
+    },
+    "MetaDetailResponse": {
+      "properties": {
+        "app_version": {
+          "title": "App Version",
+          "type": "string"
+        },
+        "company_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Company Id"
+        },
+        "custom_data": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Custom Data"
+        },
+        "deleted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deleted At"
+        },
+        "extraction_timestamp": {
+          "format": "date-time",
+          "title": "Extraction Timestamp",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "parsing_timestamp": {
+          "format": "date-time",
+          "title": "Parsing Timestamp",
+          "type": "string"
+        },
+        "source_url": {
+          "title": "Source Url",
+          "type": "string"
+        },
+        "vacancy_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Vacancy Id"
+        }
+      },
+      "required": [
+        "id",
+        "app_version",
+        "extraction_timestamp",
+        "parsing_timestamp",
+        "source_url"
+      ],
+      "title": "MetaDetailResponse",
+      "type": "object"
+    },
+    "MetaFilterParams": {
+      "properties": {
+        "company_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Company Id"
+        },
+        "include_deleted": {
+          "default": false,
+          "title": "Include Deleted",
+          "type": "boolean"
+        },
+        "limit": {
+          "default": 20,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "skip": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Skip",
+          "type": "integer"
+        },
+        "vacancy_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Vacancy Id"
+        }
+      },
+      "title": "MetaFilterParams",
+      "type": "object"
+    },
+    "MetaResponse": {
+      "properties": {
+        "app_version": {
+          "title": "App Version",
+          "type": "string"
+        },
+        "company_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Company Id"
+        },
+        "custom_data": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Custom Data"
+        },
+        "extraction_timestamp": {
+          "format": "date-time",
+          "title": "Extraction Timestamp",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "parsing_timestamp": {
+          "format": "date-time",
+          "title": "Parsing Timestamp",
+          "type": "string"
+        },
+        "source_url": {
+          "title": "Source Url",
+          "type": "string"
+        },
+        "vacancy_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Vacancy Id"
+        }
+      },
+      "required": [
+        "id",
+        "app_version",
+        "extraction_timestamp",
+        "parsing_timestamp",
+        "source_url"
+      ],
+      "title": "MetaResponse",
+      "type": "object"
+    },
+    "MetaUpdateRequest": {
+      "properties": {
+        "app_version": {
+          "anyOf": [
+            {
+              "maxLength": 25,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "App Version"
+        },
+        "company_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Company Id"
+        },
+        "custom_data": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Custom Data"
+        },
+        "extraction_timestamp": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Extraction Timestamp"
+        },
+        "parsing_timestamp": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parsing Timestamp"
+        },
+        "source_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Url"
+        },
+        "vacancy_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Vacancy Id"
+        }
+      },
+      "title": "MetaUpdateRequest",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/MetaCreateRequest"
+    },
+    {
+      "$ref": "#/$defs/MetaDetailResponse"
+    },
+    {
+      "$ref": "#/$defs/MetaFilterParams"
+    },
+    {
+      "$ref": "#/$defs/MetaResponse"
+    },
+    {
+      "$ref": "#/$defs/MetaUpdateRequest"
+    }
+  ],
+  "description": "Consolidated DTO schemas. Select an individual contract through its reference in x-models. The root accepts any listed DTO.",
+  "title": "enterprise.meta",
+  "x-models": {
+    "meta": {
+      "MetaCreateRequest": "#/$defs/MetaCreateRequest",
+      "MetaDetailResponse": "#/$defs/MetaDetailResponse",
+      "MetaFilterParams": "#/$defs/MetaFilterParams",
+      "MetaResponse": "#/$defs/MetaResponse",
+      "MetaUpdateRequest": "#/$defs/MetaUpdateRequest"
+    }
+  }
+}
