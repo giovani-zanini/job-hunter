@@ -27,14 +27,12 @@ BASE = "/api/v1/certificates"
 
 async def create_certificate(
     client,
-    headers,
     name: str = "AWS Solutions Architect",
     issuer: str = "Amazon Web Services",
     issue_date: str = "2024-01-15",
 ) -> dict:
     response = await client.post(
         BASE + "/",
-        headers=headers,
         json={
             "name": name,
             "issuer": issuer,
@@ -48,10 +46,9 @@ async def create_certificate(
     return response.json()
 
 
-async def create_skill(client, headers, name: str = "Python") -> dict:
+async def create_skill(client, name: str = "Python") -> dict:
     response = await client.post(
         "/api/v1/skills/",
-        headers=headers,
         json={"name": name, "category": "TOOL"},
     )
     assert response.status_code == 201, response.text
@@ -63,11 +60,10 @@ async def create_skill(client, headers, name: str = "Python") -> dict:
 # ---------------------------------------------------------------------------
 
 
-async def test_create_certificate_returns_201_with_data(client, auth_headers):
+async def test_create_certificate_returns_201_with_data(client):
     """Creating a certificate returns 201 with all expected fields."""
     response = await client.post(
         BASE + "/",
-        headers=auth_headers,
         json={
             "name": "Google Professional Cloud Architect",
             "issuer": "Google",
@@ -89,27 +85,21 @@ async def test_create_certificate_returns_201_with_data(client, auth_headers):
     assert "user_id" in body
 
 
-async def test_create_certificate_requires_auth(client):
-    """POST /certificates/ without auth returns 401."""
-    response = await client.post(BASE + "/", json={})
-    assert response.status_code == 401
 
 
-async def test_create_certificate_missing_fields_returns_422(client, auth_headers):
+async def test_create_certificate_missing_fields_returns_422(client):
     """Missing required fields returns 422."""
     response = await client.post(
         BASE + "/",
-        headers=auth_headers,
         json={"name": "Incomplete"},
     )
     assert response.status_code == 422
 
 
-async def test_create_certificate_with_optional_fields_null(client, auth_headers):
+async def test_create_certificate_with_optional_fields_null(client):
     """Certificate with null optional fields returns 201."""
     response = await client.post(
         BASE + "/",
-        headers=auth_headers,
         json={
             "name": "Minimal Cert",
             "issuer": "SomeOrg",
@@ -130,24 +120,24 @@ async def test_create_certificate_with_optional_fields_null(client, auth_headers
 # ---------------------------------------------------------------------------
 
 
-async def test_created_certificate_appears_in_list(client, auth_headers):
+async def test_created_certificate_appears_in_list(client):
     """A certificate created via POST must appear in GET /certificates/."""
-    created = await create_certificate(client, auth_headers, name="List This Cert")
+    created = await create_certificate(client, name="List This Cert")
 
-    response = await client.get(BASE + "/", headers=auth_headers)
+    response = await client.get(BASE + "/")
 
     assert response.status_code == 200
     ids = [c["id"] for c in response.json()]
     assert created["id"] in ids
 
 
-async def test_list_certificates_filter_by_name(client, auth_headers):
+async def test_list_certificates_filter_by_name(client):
     """GET /certificates/?name=partial returns only matching certificates."""
-    await create_certificate(client, auth_headers, name="Azure Fundamentals")
-    await create_certificate(client, auth_headers, name="AWS Cloud Practitioner")
+    await create_certificate(client, name="Azure Fundamentals")
+    await create_certificate(client, name="AWS Cloud Practitioner")
 
     response = await client.get(
-        BASE + "/", headers=auth_headers, params={"name": "Azure"}
+        BASE + "/", params={"name": "Azure"}
     )
 
     assert response.status_code == 200
@@ -156,13 +146,13 @@ async def test_list_certificates_filter_by_name(client, auth_headers):
     assert all("Azure" in c["name"] for c in items)
 
 
-async def test_list_certificates_filter_by_issuer(client, auth_headers):
+async def test_list_certificates_filter_by_issuer(client):
     """GET /certificates/?issuer=partial returns only matching certificates."""
-    await create_certificate(client, auth_headers, name="Cert A", issuer="Microsoft")
-    await create_certificate(client, auth_headers, name="Cert B", issuer="Google")
+    await create_certificate(client, name="Cert A", issuer="Microsoft")
+    await create_certificate(client, name="Cert B", issuer="Google")
 
     response = await client.get(
-        BASE + "/", headers=auth_headers, params={"issuer": "Microsoft"}
+        BASE + "/", params={"issuer": "Microsoft"}
     )
 
     assert response.status_code == 200
@@ -170,9 +160,9 @@ async def test_list_certificates_filter_by_issuer(client, auth_headers):
     assert all("Microsoft" in c["issuer"] for c in items)
 
 
-async def test_list_certificates_empty_initially(client, auth_headers):
+async def test_list_certificates_empty_initially(client):
     """GET /certificates/ returns an empty list when none exist."""
-    response = await client.get(BASE + "/", headers=auth_headers)
+    response = await client.get(BASE + "/")
     assert response.status_code == 200
     assert response.json() == []
 
@@ -182,11 +172,11 @@ async def test_list_certificates_empty_initially(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_created_certificate_retrievable_by_id(client, auth_headers):
+async def test_created_certificate_retrievable_by_id(client):
     """A certificate created via POST can be fetched by its ID."""
-    created = await create_certificate(client, auth_headers, name="Fetch By ID Cert")
+    created = await create_certificate(client, name="Fetch By ID Cert")
 
-    response = await client.get(f"{BASE}/{created['id']}", headers=auth_headers)
+    response = await client.get(f"{BASE}/{created['id']}")
 
     assert response.status_code == 200
     body = response.json()
@@ -194,9 +184,9 @@ async def test_created_certificate_retrievable_by_id(client, auth_headers):
     assert body["name"] == "Fetch By ID Cert"
 
 
-async def test_get_nonexistent_certificate_returns_404(client, auth_headers):
+async def test_get_nonexistent_certificate_returns_404(client):
     """GET /certificates/999999 returns 404."""
-    response = await client.get(f"{BASE}/999999", headers=auth_headers)
+    response = await client.get(f"{BASE}/999999")
     assert response.status_code == 404
 
 
@@ -205,18 +195,17 @@ async def test_get_nonexistent_certificate_returns_404(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_update_certificate_changes_values(client, auth_headers):
+async def test_update_certificate_changes_values(client):
     """PUT /certificates/{id} updates name and issuer; GET by id reflects changes."""
-    created = await create_certificate(client, auth_headers, name="OldCertName")
+    created = await create_certificate(client, name="OldCertName")
 
     put = await client.put(
         f"{BASE}/{created['id']}",
-        headers=auth_headers,
         json={"name": "NewCertName", "issuer": "UpdatedOrg"},
     )
     assert put.status_code == 200
 
-    get = await client.get(f"{BASE}/{created['id']}", headers=auth_headers)
+    get = await client.get(f"{BASE}/{created['id']}")
     body = get.json()
     assert body["name"] == "NewCertName"
     assert body["issuer"] == "UpdatedOrg"
@@ -227,29 +216,28 @@ async def test_update_certificate_changes_values(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_delete_certificate_soft_deletes(client, auth_headers):
+async def test_delete_certificate_soft_deletes(client):
     """DELETE /certificates/{id} soft-deletes; detail with include_deleted shows deleted_at."""
-    created = await create_certificate(client, auth_headers, name="Delete Me Cert")
+    created = await create_certificate(client, name="Delete Me Cert")
 
-    delete = await client.delete(f"{BASE}/{created['id']}", headers=auth_headers)
+    delete = await client.delete(f"{BASE}/{created['id']}")
     assert delete.status_code == 200
 
     detail = await client.get(
         f"{BASE}/{created['id']}",
-        headers=auth_headers,
         params={"include_deleted": "true"},
     )
     assert detail.status_code == 200
     assert detail.json()["deleted_at"] is not None
 
 
-async def test_deleted_certificate_excluded_from_list(client, auth_headers):
+async def test_deleted_certificate_excluded_from_list(client):
     """Soft-deleted certificates do not appear in the default list."""
-    created = await create_certificate(client, auth_headers, name="Gone Cert")
+    created = await create_certificate(client, name="Gone Cert")
 
-    await client.delete(f"{BASE}/{created['id']}", headers=auth_headers)
+    await client.delete(f"{BASE}/{created['id']}")
 
-    list_response = await client.get(BASE + "/", headers=auth_headers)
+    list_response = await client.get(BASE + "/")
     ids = [c["id"] for c in list_response.json()]
     assert created["id"] not in ids
 
@@ -259,30 +247,30 @@ async def test_deleted_certificate_excluded_from_list(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_add_skill_to_certificate_returns_201(client, auth_headers):
+async def test_add_skill_to_certificate_returns_201(client):
     """POST /certificates/{id}/skills/{skill_id} returns 201."""
-    cert = await create_certificate(client, auth_headers, name="Skill Cert")
-    skill = await create_skill(client, auth_headers, name="Terraform")
+    cert = await create_certificate(client, name="Skill Cert")
+    skill = await create_skill(client, name="Terraform")
 
     response = await client.post(
         f"{BASE}/{cert['id']}/skills/{skill['id']}",
-        headers=auth_headers,
+
     )
     assert response.status_code == 201
 
 
-async def test_remove_skill_from_certificate_returns_204(client, auth_headers):
+async def test_remove_skill_from_certificate_returns_204(client):
     """DELETE /certificates/{id}/skills/{skill_id} returns 204."""
-    cert = await create_certificate(client, auth_headers, name="Remove Skill Cert")
-    skill = await create_skill(client, auth_headers, name="Ansible")
+    cert = await create_certificate(client, name="Remove Skill Cert")
+    skill = await create_skill(client, name="Ansible")
 
     await client.post(
         f"{BASE}/{cert['id']}/skills/{skill['id']}",
-        headers=auth_headers,
+
     )
 
     delete = await client.delete(
         f"{BASE}/{cert['id']}/skills/{skill['id']}",
-        headers=auth_headers,
+
     )
     assert delete.status_code == 204

@@ -1,3 +1,5 @@
+> **Pesquisa histórica (anterior à remoção do módulo Auth).** O código e as rotas citados abaixo foram removidos na revisão `a03e20261003`; este documento não descreve a API atual.
+
 # Pesquisa de serviço open source para autenticação e autorização
 
 **Consulta realizada em:** 25/09/2026  
@@ -21,20 +23,20 @@ Critérios de cobertura: cadastro e login por e-mail/senha; recuperação e troc
 
 ## O que o módulo atual realmente faz
 
-As rotas carregadas em [auth/main.py](../src/modules/auth/main.py) são somente as features `account` e `identity`. As APIs efetivamente registradas são cadastro, conta atual e exclusão em [account/router.py](../src/modules/auth/features/account/router.py), e login, refresh, troca de senha, pedido de recuperação e reset em [identity/router.py](../src/modules/auth/features/identity/router.py). A feature `role` tem serviços/modelos, mas não está registrada como router; a feature `session` persiste dados, mas também não expõe rotas de listagem ou revogação de sessões.
+As rotas carregadas em auth/main.py (arquivo histórico removido) são somente as features `account` e `identity`. As APIs efetivamente registradas são cadastro, conta atual e exclusão em account/router.py (arquivo histórico removido), e login, refresh, troca de senha, pedido de recuperação e reset em identity/router.py (arquivo histórico removido). A feature `role` tem serviços/modelos, mas não está registrada como router; a feature `session` persiste dados, mas também não expõe rotas de listagem ou revogação de sessões.
 
 | Comportamento observado | Evidência no repositório |
 |---|---|
-| Login emite access e refresh JWT; refresh rotaciona o par. | [identity/router.py](../src/modules/auth/features/identity/router.py), [identity/handlers.py](../src/modules/auth/features/identity/handlers.py) |
-| Access token dura 30 minutos e refresh token 7 dias na configuração padrão versionada. | [config.py](../src/shared/config.py), [.env.example](../.env.example) |
-| Hashes de senha são Passlib/Argon2. Bloqueio ocorre após 5 tentativas inválidas por 15 minutos. | [utils.py](../src/modules/auth/shared/utils.py), [identity/services.py](../src/modules/auth/features/identity/services.py), [.env.example](../.env.example) |
-| Sessão armazena hash do refresh token, expiração, IP, user-agent, revogação e último uso. | [session/models.py](../src/modules/auth/features/session/models.py), [session/services.py](../src/modules/auth/features/session/services.py) |
-| Existe troca de senha autenticada e validação da senha atual. | [identity/handlers.py](../src/modules/auth/features/identity/handlers.py) |
-| Recuperação não envia e-mail: o código cria o token e o hash, mas descarta o token bruto; o comentário diz que o envio ainda deve ser implementado. O reset correspondente não é utilizável por um usuário normal nesse estado. | [identity/handlers.py](../src/modules/auth/features/identity/handlers.py) |
-| `is_verified` existe no modelo, mas o login observado não consulta esse campo. Não foi encontrada rota carregada de confirmação de e-mail. | [account/models.py](../src/modules/auth/features/account/models.py), [identity/services.py](../src/modules/auth/features/identity/services.py), [auth/main.py](../src/modules/auth/main.py) |
-| O token carrega uma role lida do banco. `profile` e `enterprise` usam `require_role(["default"])`. Se a role mudar, o adapter atual rejeita o token e revoga as sessões registradas. | [identity/handlers.py](../src/modules/auth/features/identity/handlers.py), [auth/shared/adapters.py](../src/modules/auth/shared/adapters.py), [profile/shared/adapters.py](../src/modules/profile/shared/adapters.py), [enterprise/shared/adapters.py](../src/modules/enterprise/shared/adapters.py) |
+| Login emite access e refresh JWT; refresh rotaciona o par. | identity/router.py (arquivo histórico removido), identity/handlers.py (arquivo histórico removido) |
+| Access token dura 30 minutos e refresh token 7 dias na configuração padrão versionada. | config.py (arquivo histórico removido), .env.example (arquivo histórico removido) |
+| Hashes de senha são Passlib/Argon2. Bloqueio ocorre após 5 tentativas inválidas por 15 minutos. | utils.py (arquivo histórico removido), identity/services.py (arquivo histórico removido), .env.example (arquivo histórico removido) |
+| Sessão armazena hash do refresh token, expiração, IP, user-agent, revogação e último uso. | session/models.py (arquivo histórico removido), session/services.py (arquivo histórico removido) |
+| Existe troca de senha autenticada e validação da senha atual. | identity/handlers.py (arquivo histórico removido) |
+| Recuperação não envia e-mail: o código cria o token e o hash, mas descarta o token bruto; o comentário diz que o envio ainda deve ser implementado. O reset correspondente não é utilizável por um usuário normal nesse estado. | identity/handlers.py (arquivo histórico removido) |
+| `is_verified` existe no modelo, mas o login observado não consulta esse campo. Não foi encontrada rota carregada de confirmação de e-mail. | account/models.py (arquivo histórico removido), identity/services.py (arquivo histórico removido), auth/main.py (arquivo histórico removido) |
+| O token carrega uma role lida do banco. `profile` e `enterprise` usam `require_role(["default"])`. Se a role mudar, o adapter atual rejeita o token e revoga as sessões registradas. | identity/handlers.py (arquivo histórico removido), auth/shared/adapters.py (arquivo histórico removido), profile/shared/adapters.py (arquivo histórico removido), enterprise/shared/adapters.py (arquivo histórico removido) |
 
-O contrato compartilhado `AuthenticatedUser` expõe `id: int`, e a feature de perfil cria automaticamente um `profile.User` na primeira chamada autenticada. A coluna `profile.User.external_id` é `Integer`, única, e representa o ID inteiro da conta Auth; os IDs internos `profile.User.id` e as relações dos perfis são separados. [DTO compartilhado](../src/modules/auth/shared/dtos.py), [modelo de usuário de perfil](../src/modules/profile/features/user/models.py), [adapter de perfil](../src/modules/profile/shared/adapters.py).
+O contrato compartilhado `AuthenticatedUser` expõe `id: int`, e a feature de perfil cria automaticamente um `profile.User` na primeira chamada autenticada. A coluna `profile.User.external_id` é `Integer`, única, e representa o ID inteiro da conta Auth; os IDs internos `profile.User.id` e as relações dos perfis são separados. DTO compartilhado (arquivo histórico removido), modelo de usuário de perfil (arquivo histórico removido), adapter de perfil (arquivo histórico removido).
 
 ## Comparação dos candidatos
 

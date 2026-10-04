@@ -6,6 +6,7 @@ from sqlalchemy import engine_from_config, text
 from sqlalchemy import pool
 
 from alembic import context
+from alembic.runtime.migration import MigrationContext
 
 # Add project root to path (src/shared/database/alembic/ -> project root)
 sys.path.insert(
@@ -59,12 +60,6 @@ from src.modules.profile.features.certificate.models import (
 from src.modules.profile.features.company.models import Company
 from src.modules.profile.features.skill.models import Skill
 
-# Auth module models
-from src.modules.auth.features.role.models import Role
-from src.modules.auth.features.account.models import UserAccount
-from src.modules.auth.features.identity.models import Auth
-from src.modules.auth.features.session.models import Session
-
 # Enterprise module models
 from src.modules.enterprise.features.location.models import Location
 from src.modules.enterprise.features.segment.models import Segment
@@ -106,6 +101,10 @@ def run_migrations_offline() -> None:
     )
 
     with context.begin_transaction():
+        if context.get_starting_revision_argument() is None:
+            context.execute("CREATE SCHEMA IF NOT EXISTS profile")
+            context.execute("CREATE SCHEMA IF NOT EXISTS enterprise")
+            context.execute("CREATE SCHEMA IF NOT EXISTS auth")
         context.run_migrations()
 
 
@@ -125,8 +124,10 @@ def run_migrations_online() -> None:
     with connectable.connect() as connection:
         # Create schemas if they don't exist
         connection.execute(text("CREATE SCHEMA IF NOT EXISTS profile"))
-        connection.execute(text("CREATE SCHEMA IF NOT EXISTS auth"))
         connection.execute(text("CREATE SCHEMA IF NOT EXISTS enterprise"))
+        if MigrationContext.configure(connection).get_current_revision() is None:
+            # Historical revisions still create tables in auth on a fresh DB.
+            connection.execute(text("CREATE SCHEMA IF NOT EXISTS auth"))
         connection.commit()
 
         context.configure(

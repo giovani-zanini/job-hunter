@@ -102,7 +102,7 @@ async def remove_unit(
     await shared_services.ensure_exists(session, EnterpriseCompany, company_id, label="Company")
     unit = await shared_services.ensure_exists(session, CompanyUnit, unit_id, label="CompanyUnit")
     if unit.company_id != company_id:
-        raise exceptions.ForbiddenException(detail="CompanyUnit does not belong to this company.")
+        raise exceptions.NotFoundException(detail="CompanyUnit does not belong to this company.")
     await services.delete_unit(session, unit)
 
 

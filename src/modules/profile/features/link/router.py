@@ -5,14 +5,12 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.modules.profile.shared.adapters import get_current_profile_user, require_role
-from src.modules.profile.shared.dtos import ProfileUser
 from src.modules.profile.features.link import dtos
 from src.modules.profile.features.link import handlers
+from src.modules.profile.shared.adapters import get_anonymous_user_id
 from src.shared.database import sql_client
 
 
-_require_default_role = require_role(["default"])
 router = APIRouter(prefix="/links", tags=["Links"])
 
 
@@ -28,11 +26,10 @@ router = APIRouter(prefix="/links", tags=["Links"])
 async def create_link(
     data: dtos.LinkCreateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
+    anonymous_user_id: int = Depends(get_anonymous_user_id),
 ) -> dtos.LinkResponse:
-    """Create a new link for the authenticated user."""
-    return await handlers.create_link(session, current_user.id, data)
+    """Create a new link."""
+    return await handlers.create_link(session, anonymous_user_id, data)
 
 
 @router.get(
@@ -51,12 +48,9 @@ async def list_links(
     skip: int = Query(0, ge=0, description="Number of records to skip"),
     limit: int = Query(20, ge=1, le=100, description="Maximum number of records"),
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> List[dtos.LinkResponse]:
-    """List links for the authenticated user."""
+    """List links."""
     filters = dtos.LinkFilterParams(
-        user_id=current_user.id,
         type=type,
         from_=from_,
         include_deleted=include_deleted,
@@ -75,8 +69,6 @@ async def get_link(
     link_id: int,
     include_deleted: bool = Query(False, description="Include if soft deleted"),
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.LinkDetailResponse:
     """Get a specific link by its ID."""
     return await handlers.get_link(session, link_id, include_deleted)
@@ -91,11 +83,9 @@ async def update_link(
     link_id: int,
     data: dtos.LinkUpdateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.LinkResponse:
     """Update a link's information."""
-    return await handlers.update_link(session, link_id, data, current_user.id)
+    return await handlers.update_link(session, link_id, data)
 
 
 @router.delete(
@@ -107,8 +97,6 @@ async def delete_link(
     link_id: int,
     hard_delete: bool = Query(False, description="Permanently delete the link"),
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.LinkResponse:
     """Soft delete a link (or hard delete if specified)."""
-    return await handlers.delete_link(session, link_id, current_user.id, hard_delete)
+    return await handlers.delete_link(session, link_id, hard_delete)

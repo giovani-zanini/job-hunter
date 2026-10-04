@@ -14,7 +14,6 @@ from src.modules.profile.features.experience.models import (
 from src.modules.profile.features.company.models import Company
 from src.modules.profile.features.skill.models import Skill
 from src.modules.profile.features.skill.services import ensure_skills_exist
-from src.shared import exceptions
 from src.shared import services as shared_services
 from src.shared import dtos as shared_dtos
 
@@ -109,7 +108,6 @@ async def update_experience(
     session: AsyncSession,
     experience_id: int,
     data: dtos.ExperienceUpdateRequest,
-    user_id: int,
 ) -> dtos.ExperienceResponse:
     """
     Update an experience.
@@ -124,10 +122,6 @@ async def update_experience(
         session, Experience, experience_id, label="Experience"
     )
 
-    if experience.user_id != user_id:
-        raise exceptions.ForbiddenException(
-            detail="Not authorized to update this experience."
-        )
 
     # Validate company exists if changing
     if data.company_id and data.company_id != experience.company_id:
@@ -152,7 +146,7 @@ async def update_experience(
 
 
 async def delete_experience(
-    session: AsyncSession, experience_id: int, user_id: int, hard_delete: bool = False
+    session: AsyncSession, experience_id: int, hard_delete: bool = False
 ) -> dtos.ExperienceResponse:
     """
     Delete an experience (soft or hard delete).
@@ -165,10 +159,6 @@ async def delete_experience(
         session, Experience, experience_id, include_deleted=True, label="Experience"
     )
 
-    if experience.user_id != user_id:
-        raise exceptions.ForbiddenException(
-            detail="Not authorized to delete this experience."
-        )
 
     if hard_delete:
         response = dtos.ExperienceResponse.model_validate(experience)

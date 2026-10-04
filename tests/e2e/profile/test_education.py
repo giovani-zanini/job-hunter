@@ -27,14 +27,12 @@ BASE = "/api/v1/education"
 
 async def create_education(
     client,
-    headers,
     institution: str = "MIT",
     degree: str = "Bachelor",
     field: str = "Computer Science",
 ) -> dict:
     response = await client.post(
         BASE + "/",
-        headers=headers,
         json={
             "institution_name": institution,
             "degree": degree,
@@ -48,10 +46,9 @@ async def create_education(
     return response.json()
 
 
-async def create_skill(client, headers, name: str = "Python") -> dict:
+async def create_skill(client, name: str = "Python") -> dict:
     response = await client.post(
         "/api/v1/skills/",
-        headers=headers,
         json={"name": name, "category": "LANGUAGE"},
     )
     assert response.status_code == 201, response.text
@@ -63,11 +60,10 @@ async def create_skill(client, headers, name: str = "Python") -> dict:
 # ---------------------------------------------------------------------------
 
 
-async def test_create_education_returns_201_with_data(client, auth_headers):
+async def test_create_education_returns_201_with_data(client):
     """Creating an education record returns 201 with all expected fields."""
     response = await client.post(
         BASE + "/",
-        headers=auth_headers,
         json={
             "institution_name": "Stanford University",
             "degree": "Master",
@@ -87,17 +83,12 @@ async def test_create_education_returns_201_with_data(client, auth_headers):
     assert "user_id" in body
 
 
-async def test_create_education_requires_auth(client):
-    """POST /education/ without auth returns 401."""
-    response = await client.post(BASE + "/", json={})
-    assert response.status_code == 401
 
 
-async def test_create_education_missing_fields_returns_422(client, auth_headers):
+async def test_create_education_missing_fields_returns_422(client):
     """Missing required fields returns 422."""
     response = await client.post(
         BASE + "/",
-        headers=auth_headers,
         json={"institution_name": "Only Name"},
     )
     assert response.status_code == 422
@@ -108,25 +99,24 @@ async def test_create_education_missing_fields_returns_422(client, auth_headers)
 # ---------------------------------------------------------------------------
 
 
-async def test_created_education_appears_in_list(client, auth_headers):
+async def test_created_education_appears_in_list(client):
     """An education record created via POST must appear in GET /education/."""
-    created = await create_education(client, auth_headers, institution="Cambridge")
+    created = await create_education(client, institution="Cambridge")
 
-    response = await client.get(BASE + "/", headers=auth_headers)
+    response = await client.get(BASE + "/")
 
     assert response.status_code == 200
     ids = [e["id"] for e in response.json()]
     assert created["id"] in ids
 
 
-async def test_list_education_filter_by_institution(client, auth_headers):
+async def test_list_education_filter_by_institution(client):
     """GET /education/?institution_name=partial returns only matching records."""
-    await create_education(client, auth_headers, institution="Harvard University")
-    await create_education(client, auth_headers, institution="Oxford University")
+    await create_education(client, institution="Harvard University")
+    await create_education(client, institution="Oxford University")
 
     response = await client.get(
         BASE + "/",
-        headers=auth_headers,
         params={"institution_name": "Harvard"},
     )
 
@@ -136,9 +126,9 @@ async def test_list_education_filter_by_institution(client, auth_headers):
     assert all("Harvard" in e["institution_name"] for e in items)
 
 
-async def test_list_education_empty_initially(client, auth_headers):
+async def test_list_education_empty_initially(client):
     """GET /education/ returns an empty list when none exist."""
-    response = await client.get(BASE + "/", headers=auth_headers)
+    response = await client.get(BASE + "/")
     assert response.status_code == 200
     assert response.json() == []
 
@@ -148,11 +138,11 @@ async def test_list_education_empty_initially(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_created_education_retrievable_by_id(client, auth_headers):
+async def test_created_education_retrievable_by_id(client):
     """An education record created via POST can be fetched by its ID."""
-    created = await create_education(client, auth_headers, institution="UC Berkeley")
+    created = await create_education(client, institution="UC Berkeley")
 
-    response = await client.get(f"{BASE}/{created['id']}", headers=auth_headers)
+    response = await client.get(f"{BASE}/{created['id']}")
 
     assert response.status_code == 200
     body = response.json()
@@ -160,9 +150,9 @@ async def test_created_education_retrievable_by_id(client, auth_headers):
     assert body["institution_name"] == "UC Berkeley"
 
 
-async def test_get_nonexistent_education_returns_404(client, auth_headers):
+async def test_get_nonexistent_education_returns_404(client):
     """GET /education/999999 returns 404."""
-    response = await client.get(f"{BASE}/999999", headers=auth_headers)
+    response = await client.get(f"{BASE}/999999")
     assert response.status_code == 404
 
 
@@ -171,18 +161,17 @@ async def test_get_nonexistent_education_returns_404(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_update_education_changes_values(client, auth_headers):
+async def test_update_education_changes_values(client):
     """PUT /education/{id} updates degree; GET by id reflects the change."""
-    created = await create_education(client, auth_headers, degree="Bachelor")
+    created = await create_education(client, degree="Bachelor")
 
     put = await client.put(
         f"{BASE}/{created['id']}",
-        headers=auth_headers,
         json={"degree": "PhD", "field_of_study": "Machine Learning"},
     )
     assert put.status_code == 200
 
-    get = await client.get(f"{BASE}/{created['id']}", headers=auth_headers)
+    get = await client.get(f"{BASE}/{created['id']}")
     body = get.json()
     assert body["degree"] == "PhD"
     assert body["field_of_study"] == "Machine Learning"
@@ -193,33 +182,32 @@ async def test_update_education_changes_values(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_delete_education_soft_deletes(client, auth_headers):
+async def test_delete_education_soft_deletes(client):
     """DELETE /education/{id} soft-deletes; detail with include_deleted shows deleted_at."""
     created = await create_education(
-        client, auth_headers, institution="Delete University"
+        client, institution="Delete University"
     )
 
-    delete = await client.delete(f"{BASE}/{created['id']}", headers=auth_headers)
+    delete = await client.delete(f"{BASE}/{created['id']}")
     assert delete.status_code == 200
 
     detail = await client.get(
         f"{BASE}/{created['id']}",
-        headers=auth_headers,
         params={"include_deleted": "true"},
     )
     assert detail.status_code == 200
     assert detail.json()["deleted_at"] is not None
 
 
-async def test_deleted_education_excluded_from_list(client, auth_headers):
+async def test_deleted_education_excluded_from_list(client):
     """Soft-deleted education records do not appear in the default list."""
     created = await create_education(
-        client, auth_headers, institution="Gone University"
+        client, institution="Gone University"
     )
 
-    await client.delete(f"{BASE}/{created['id']}", headers=auth_headers)
+    await client.delete(f"{BASE}/{created['id']}")
 
-    list_response = await client.get(BASE + "/", headers=auth_headers)
+    list_response = await client.get(BASE + "/")
     ids = [e["id"] for e in list_response.json()]
     assert created["id"] not in ids
 
@@ -229,32 +217,32 @@ async def test_deleted_education_excluded_from_list(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_add_skill_to_education_returns_201(client, auth_headers):
+async def test_add_skill_to_education_returns_201(client):
     """POST /education/{id}/skills/{skill_id} returns 201."""
-    education = await create_education(client, auth_headers, institution="Skill Uni")
-    skill = await create_skill(client, auth_headers, name="Linear Algebra")
+    education = await create_education(client, institution="Skill Uni")
+    skill = await create_skill(client, name="Linear Algebra")
 
     response = await client.post(
         f"{BASE}/{education['id']}/skills/{skill['id']}",
-        headers=auth_headers,
+
     )
     assert response.status_code == 201
 
 
-async def test_remove_skill_from_education_returns_204(client, auth_headers):
+async def test_remove_skill_from_education_returns_204(client):
     """DELETE /education/{id}/skills/{skill_id} returns 204."""
     education = await create_education(
-        client, auth_headers, institution="Remove Skill Uni"
+        client, institution="Remove Skill Uni"
     )
-    skill = await create_skill(client, auth_headers, name="Calculus")
+    skill = await create_skill(client, name="Calculus")
 
     await client.post(
         f"{BASE}/{education['id']}/skills/{skill['id']}",
-        headers=auth_headers,
+
     )
 
     delete = await client.delete(
         f"{BASE}/{education['id']}/skills/{skill['id']}",
-        headers=auth_headers,
+
     )
     assert delete.status_code == 204

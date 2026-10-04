@@ -1,136 +1,29 @@
 # job-hunter
 
+API FastAPI para dados de perfil profissional e empresas/vagas. As APIs de Profile e Enterprise são públicas: nenhuma rota exige login, token ou papel.
 
-Automação pessoal para candidaturas de emprego usando IA - encontra vagas, gera currículos personalizados e automatiza aplicações.
+## Executar
 
-## Quick Start
-
-### Prerequisites
-
-- Python 3.12+
-- Docker & Docker Compose
-- PostgreSQL (via Docker)
-
-### Setup
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd job-hunter
-   ```
-
-2. **Create virtual environment and install dependencies**
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # On Linux/Mac
-   # or
-   .venv\Scripts\activate  # On Windows
-   
-   pip install -e .
-   ```
-
-3. **Start PostgreSQL with Docker**
-   ```bash
-   docker compose -f docker/docker-compose.yml up postgres -d
-   ```
-
-4. **Configure environment variables**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your settings if needed
-   ```
-
-5. **Run database migrations**
-   ```bash
-   ./migrate.sh upgrade
-   ```
-
-6. **Start the application**
-   ```bash
-   uvicorn src.profile.main:app --reload
-   ```
-
-The API will be available at `http://localhost:8000`
-
-## Database Migrations
-
-This project uses Alembic for database migrations. See [docs/MIGRATIONS.md](docs/MIGRATIONS.md) for detailed documentation.
-
-### Quick Commands
+Requisitos: Python 3.12+ e PostgreSQL.
 
 ```bash
-# Create a new migration
-./migrate.sh create "Description of changes"
-
-# Apply pending migrations
-./migrate.sh upgrade
-
-# Rollback last migration
-./migrate.sh downgrade
-
-# View migration history
-./migrate.sh history
+python -m venv .venv
+.venv/bin/python -m ensurepip --upgrade
+.venv/bin/python -m pip install -e '.[test]'
+cp .env.sample .env
+# Defina DATABASE_URL (asyncpg) e DATABASE_SYNC_URL (psycopg2) para o mesmo banco.
+./scripts/migrate.sh upgrade
+.venv/bin/uvicorn src.main:app --reload
 ```
 
-## Project Structure
+A documentação interativa fica em `http://localhost:8000/docs`. O projeto inclui um Compose para iniciar o PostgreSQL local: `docker compose -f docker/docker-compose.yml up -d postgres`.
 
-```
-job-hunter/
-├── src/
-│   ├── main.py                 # FastAPI application entry point
-│   ├── features/               # Feature modules
-│   │   ├── user/              # User management
-│   │   ├── profile/           # User profiles
-│   │   ├── experience/        # Work experience
-│   │   ├── education/         # Education history
-│   │   ├── certificate/       # Certificates
-│   │   ├── skill/             # Skills
-│   │   ├── link/              # Social links
-│   │   └── company/           # Company information
-│   └── shared/                # Shared utilities
-│       ├── database/          # Database configuration
-│       └── exceptions/        # Exception handlers
-├── alembic/                   # Database migrations
-├── docker/                    # Docker configuration
-└── docs/                      # Documentation
-```
+A migração `a03e20261003` remove o schema `auth` e todos os dados de suas tabelas, além da antiga coluna `profile.User.external_id`. Ela preserva os IDs e vínculos existentes de Profile e os dados de Enterprise. Cria um único `profile.User` anônimo para as novas criações de Profile que precisam de `user_id`. Registros antigos continuam associados a seus usuários locais e ficam acessíveis publicamente. Essa migração é irreversível sem restauração de backup.
 
-## Development
+## Testes e contratos
 
-### Running Tests
+Use um PostgreSQL de teste descartável e configure `TEST_DATABASE_URL` e `TEST_DATABASE_SYNC_URL` para ele. `./scripts/test.sh` executa as migrações e os testes. Os testes de integração criam bancos temporários separados na mesma instância PostgreSQL, então a conta de teste precisa de permissão `CREATEDB`.
 
-```bash
-# TODO: Add test commands
-```
+Atualize os catálogos JSON Schema com `.venv/bin/python scripts/generate_json_schemas.py`; confira com `--check`. Veja [docs/json-schemas.md](docs/json-schemas.md).
 
-### API Documentation
-
-When the application is running, visit:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
-
-## Docker Services
-
-### PostgreSQL
-
-```bash
-# Start PostgreSQL
-docker compose -f docker/docker-compose.yml up postgres -d
-
-# Stop PostgreSQL
-docker compose -f docker/docker-compose.yml down postgres
-
-# View logs
-docker compose -f docker/docker-compose.yml logs postgres
-
-# Access PostgreSQL CLI
-docker exec -it job_hunter_postgres psql -U user -d job_hunter
-```
-
-## License
-
-GPL-3.0
-
-## Author
-
-Giovani Liskoski Zanini - giovanilzanini@gmail.com
+Licença: GPL-3.0.

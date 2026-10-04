@@ -5,14 +5,11 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.modules.profile.shared.adapters import get_current_profile_user, require_role
-from src.modules.profile.shared.dtos import ProfileUser
 from src.modules.profile.features.company import dtos
 from src.modules.profile.features.company import handlers
 from src.shared.database import sql_client
 
 
-_require_default_role = require_role(["default"])
 router = APIRouter(prefix="/companies", tags=["Companies"])
 
 
@@ -25,8 +22,6 @@ router = APIRouter(prefix="/companies", tags=["Companies"])
 async def create_company(
     data: dtos.CompanyCreateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.CompanyResponse:
     """Create a new company with the provided name and website."""
     return await handlers.create_company(session, data)
@@ -43,8 +38,6 @@ async def list_companies(
     skip: int = Query(0, ge=0, description="Number of records to skip"),
     limit: int = Query(20, ge=1, le=100, description="Maximum number of records"),
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> List[dtos.CompanyResponse]:
     """List all companies with optional filters and pagination."""
     filters = dtos.CompanyFilterParams(
@@ -65,8 +58,6 @@ async def get_company(
     company_id: int,
     include_deleted: bool = Query(False, description="Include if soft deleted"),
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.CompanyDetailResponse:
     """Get a specific company by its ID."""
     return await handlers.get_company(session, company_id, include_deleted)
@@ -81,8 +72,6 @@ async def update_company(
     company_id: int,
     data: dtos.CompanyUpdateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.CompanyResponse:
     """Update a company's information."""
     return await handlers.update_company(session, company_id, data)
@@ -97,8 +86,6 @@ async def delete_company(
     company_id: int,
     hard_delete: bool = Query(False, description="Permanently delete the company"),
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.CompanyResponse:
     """Soft delete a company (or hard delete if specified)."""
     return await handlers.delete_company(session, company_id, hard_delete)

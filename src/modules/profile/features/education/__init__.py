@@ -5,6 +5,5 @@ from src.modules.profile.features.education.models import (
     EducationSkills,
     ProfileEducation,
 )
-from src.modules.profile.features.education.router import router
 
-__all__ = ["Education", "EducationSkills", "ProfileEducation", "router"]
+__all__ = ["Education", "EducationSkills", "ProfileEducation"]

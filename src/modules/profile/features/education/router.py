@@ -5,15 +5,13 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.modules.profile.shared.adapters import get_current_profile_user, require_role
-from src.modules.profile.shared.dtos import ProfileUser
 from src.modules.profile.features.education import dtos
 from src.modules.profile.features.education import handlers
+from src.modules.profile.shared.adapters import get_anonymous_user_id
 from src.shared.database import sql_client
 from src.shared import dtos as shared_dtos
 
 
-_require_default_role = require_role(["default"])
 router = APIRouter(prefix="/education", tags=["Education"])
 
 
@@ -29,11 +27,10 @@ router = APIRouter(prefix="/education", tags=["Education"])
 async def create_education(
     data: dtos.EducationCreateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
+    anonymous_user_id: int = Depends(get_anonymous_user_id),
 ) -> dtos.EducationDetailResponse:
     """Create a new education record with optional skills."""
-    return await handlers.create_education(session, current_user.id, data)
+    return await handlers.create_education(session, anonymous_user_id, data)
 
 
 @router.get(
@@ -53,12 +50,9 @@ async def list_education(
     skip: int = Query(0, ge=0, description="Number of records to skip"),
     limit: int = Query(20, ge=1, le=100, description="Maximum number of records"),
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> List[dtos.EducationResponse]:
-    """List education records for the authenticated user."""
+    """List education records."""
     filters = dtos.EducationFilterParams(
-        user_id=current_user.id,
         institution_name=institution_name,
         degree=degree,
         field_of_study=field_of_study,
@@ -78,8 +72,6 @@ async def get_education(
     education_id: int,
     include_deleted: bool = Query(False, description="Include if soft deleted"),
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.EducationDetailResponse:
     """Get a specific education record by its ID."""
     return await handlers.get_education(session, education_id, include_deleted)
@@ -94,11 +86,9 @@ async def update_education(
     education_id: int,
     data: dtos.EducationUpdateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.EducationResponse:
     """Update an education record's information."""
-    return await handlers.update_education(session, education_id, data, current_user.id)
+    return await handlers.update_education(session, education_id, data)
 
 
 @router.delete(
@@ -110,12 +100,10 @@ async def delete_education(
     education_id: int,
     hard_delete: bool = Query(False, description="Permanently delete the record"),
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.EducationResponse:
     """Soft delete an education record (or hard delete if specified)."""
     return await handlers.delete_education(
-        session, education_id, current_user.id, hard_delete
+        session, education_id, hard_delete
     )
 
 
@@ -132,8 +120,6 @@ async def add_education_skill(
     education_id: int,
     skill_id: int,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> shared_dtos.Message:
     """Associate a skill with an education record."""
     return await handlers.add_education_skill(session, education_id, skill_id)
@@ -148,8 +134,6 @@ async def remove_education_skill(
     education_id: int,
     skill_id: int,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> None:
     """Remove a skill from an education record."""
     await handlers.remove_education_skill(session, education_id, skill_id)

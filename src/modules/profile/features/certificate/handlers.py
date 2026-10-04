@@ -10,7 +10,6 @@ from src.modules.profile.features.certificate.models import (
 )
 from src.modules.profile.features.skill.models import Skill
 from src.modules.profile.features.skill.services import ensure_skills_exist
-from src.shared import exceptions
 from src.shared import services as shared_services
 from src.shared import dtos as shared_dtos
 
@@ -44,7 +43,7 @@ async def create_certificate(
 
 
 async def delete_certificate(
-    session: AsyncSession, certificate_id: int, user_id: int, hard_delete: bool = False
+    session: AsyncSession, certificate_id: int, hard_delete: bool = False
 ) -> dtos.CertificateResponse:
     """Execute the delete certificate use case."""
 
@@ -57,10 +56,6 @@ async def delete_certificate(
         label="Certificate",
     )
 
-    if certificate.user_id != user_id:
-        raise exceptions.ForbiddenException(
-            detail="Not authorized to delete this certificate."
-        )
 
     if hard_delete:
         response = dtos.CertificateResponse.model_validate(certificate)
@@ -115,7 +110,6 @@ async def update_certificate(
     session: AsyncSession,
     certificate_id: int,
     data: dtos.CertificateUpdateRequest,
-    user_id: int,
 ) -> dtos.CertificateResponse:
     """Execute the update certificate use case."""
 
@@ -124,10 +118,6 @@ async def update_certificate(
         session, Certificate, certificate_id, label="Certificate"
     )
 
-    if certificate.user_id != user_id:
-        raise exceptions.ForbiddenException(
-            detail="Not authorized to update this certificate."
-        )
 
     # Update certificate
     certificate = await services.update_certificate(

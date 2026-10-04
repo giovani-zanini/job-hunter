@@ -27,14 +27,12 @@ BASE = "/api/v1/links"
 
 async def create_link(
     client,
-    headers,
     type_: str = "SOCIAL_MEDIA",
     from_: str = "linkedin",
     value: str = "https://linkedin.com/in/testuser",
 ) -> dict:
     response = await client.post(
         BASE + "/",
-        headers=headers,
         json={"type": type_, "from": from_, "value": value},
     )
     assert response.status_code == 201, response.text
@@ -46,11 +44,10 @@ async def create_link(
 # ---------------------------------------------------------------------------
 
 
-async def test_create_link_returns_201_with_data(client, auth_headers):
+async def test_create_link_returns_201_with_data(client):
     """Creating a link returns 201 with id, type, from and value."""
     response = await client.post(
         BASE + "/",
-        headers=auth_headers,
         json={
             "type": "SOCIAL_MEDIA",
             "from": "github",
@@ -67,20 +64,12 @@ async def test_create_link_returns_201_with_data(client, auth_headers):
     assert "user_id" in body
 
 
-async def test_create_link_requires_auth(client):
-    """POST /links/ without auth returns 401."""
-    response = await client.post(
-        BASE + "/",
-        json={"type": "EMAIL", "from": "gmail", "value": "test@gmail.com"},
-    )
-    assert response.status_code == 401
 
 
-async def test_create_link_invalid_type_returns_422(client, auth_headers):
+async def test_create_link_invalid_type_returns_422(client):
     """An invalid link type returns 422."""
     response = await client.post(
         BASE + "/",
-        headers=auth_headers,
         json={"type": "INVALID_TYPE", "from": "github", "value": "https://github.com"},
     )
     assert response.status_code == 422
@@ -91,34 +80,33 @@ async def test_create_link_invalid_type_returns_422(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_created_link_appears_in_list(client, auth_headers):
+async def test_created_link_appears_in_list(client):
     """A link created via POST must appear in GET /links/."""
     created = await create_link(
-        client, auth_headers, from_="twitter", value="https://twitter.com/test"
+        client, from_="twitter", value="https://twitter.com/test"
     )
 
-    response = await client.get(BASE + "/", headers=auth_headers)
+    response = await client.get(BASE + "/")
 
     assert response.status_code == 200
     ids = [lnk["id"] for lnk in response.json()]
     assert created["id"] in ids
 
 
-async def test_list_links_filter_by_type(client, auth_headers):
+async def test_list_links_filter_by_type(client):
     """GET /links/?type=EMAIL returns only EMAIL links."""
     await create_link(
-        client, auth_headers, type_="EMAIL", from_="gmail", value="me@gmail.com"
+        client, type_="EMAIL", from_="gmail", value="me@gmail.com"
     )
     await create_link(
         client,
-        auth_headers,
         type_="SOCIAL_MEDIA",
         from_="linkedin",
         value="https://linkedin.com/in/a",
     )
 
     response = await client.get(
-        BASE + "/", headers=auth_headers, params={"type": "EMAIL"}
+        BASE + "/", params={"type": "EMAIL"}
     )
 
     assert response.status_code == 200
@@ -126,9 +114,9 @@ async def test_list_links_filter_by_type(client, auth_headers):
     assert all(lnk["type"] == "EMAIL" for lnk in items)
 
 
-async def test_list_links_empty_initially(client, auth_headers):
+async def test_list_links_empty_initially(client):
     """GET /links/ returns an empty list when no links exist."""
-    response = await client.get(BASE + "/", headers=auth_headers)
+    response = await client.get(BASE + "/")
     assert response.status_code == 200
     assert response.json() == []
 
@@ -138,13 +126,13 @@ async def test_list_links_empty_initially(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_created_link_retrievable_by_id(client, auth_headers):
+async def test_created_link_retrievable_by_id(client):
     """A link created via POST can be fetched by its ID."""
     created = await create_link(
-        client, auth_headers, type_="CELLPHONE", from_="mobile", value="+5511999999999"
+        client, type_="CELLPHONE", from_="mobile", value="+5511999999999"
     )
 
-    response = await client.get(f"{BASE}/{created['id']}", headers=auth_headers)
+    response = await client.get(f"{BASE}/{created['id']}")
 
     assert response.status_code == 200
     body = response.json()
@@ -153,9 +141,9 @@ async def test_created_link_retrievable_by_id(client, auth_headers):
     assert body["from"] == "mobile"
 
 
-async def test_get_nonexistent_link_returns_404(client, auth_headers):
+async def test_get_nonexistent_link_returns_404(client):
     """GET /links/999999 returns 404."""
-    response = await client.get(f"{BASE}/999999", headers=auth_headers)
+    response = await client.get(f"{BASE}/999999")
     assert response.status_code == 404
 
 
@@ -164,20 +152,19 @@ async def test_get_nonexistent_link_returns_404(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_update_link_changes_values(client, auth_headers):
+async def test_update_link_changes_values(client):
     """PUT /links/{id} updates the value; GET by id reflects the change."""
     created = await create_link(
-        client, auth_headers, from_="old_platform", value="https://old.example.com"
+        client, from_="old_platform", value="https://old.example.com"
     )
 
     put_response = await client.put(
         f"{BASE}/{created['id']}",
-        headers=auth_headers,
         json={"from": "new_platform", "value": "https://new.example.com"},
     )
     assert put_response.status_code == 200
 
-    get_response = await client.get(f"{BASE}/{created['id']}", headers=auth_headers)
+    get_response = await client.get(f"{BASE}/{created['id']}")
     body = get_response.json()
     assert body["from"] == "new_platform"
     assert body["value"] == "https://new.example.com"
@@ -188,32 +175,31 @@ async def test_update_link_changes_values(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_delete_link_soft_deletes(client, auth_headers):
+async def test_delete_link_soft_deletes(client):
     """DELETE /links/{id} soft-deletes; detail with include_deleted shows deleted_at."""
     created = await create_link(
-        client, auth_headers, from_="to_delete", value="https://delete.example.com"
+        client, from_="to_delete", value="https://delete.example.com"
     )
 
-    delete = await client.delete(f"{BASE}/{created['id']}", headers=auth_headers)
+    delete = await client.delete(f"{BASE}/{created['id']}")
     assert delete.status_code == 200
 
     detail = await client.get(
         f"{BASE}/{created['id']}",
-        headers=auth_headers,
         params={"include_deleted": "true"},
     )
     assert detail.status_code == 200
     assert detail.json()["deleted_at"] is not None
 
 
-async def test_deleted_link_excluded_from_list(client, auth_headers):
+async def test_deleted_link_excluded_from_list(client):
     """Soft-deleted links do not appear in the default list."""
     created = await create_link(
-        client, auth_headers, from_="gone", value="https://gone.example.com"
+        client, from_="gone", value="https://gone.example.com"
     )
 
-    await client.delete(f"{BASE}/{created['id']}", headers=auth_headers)
+    await client.delete(f"{BASE}/{created['id']}")
 
-    list_response = await client.get(BASE + "/", headers=auth_headers)
+    list_response = await client.get(BASE + "/")
     ids = [lnk["id"] for lnk in list_response.json()]
     assert created["id"] not in ids

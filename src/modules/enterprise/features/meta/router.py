@@ -5,12 +5,9 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.modules.enterprise.shared.adapters import get_current_user, require_role
-from src.modules.enterprise.shared.dtos import AuthenticatedUser
 from src.modules.enterprise.features.meta import dtos, handlers
 from src.shared.database import sql_client
 
-_require_default_role = require_role(["default"])
 router = APIRouter(prefix="/metas", tags=["Metas"])
 
 
@@ -18,8 +15,6 @@ router = APIRouter(prefix="/metas", tags=["Metas"])
 async def create_meta(
     data: dtos.MetaCreateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.MetaResponse:
     return await handlers.create_meta(session, data)
 
@@ -32,8 +27,6 @@ async def list_metas(
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> List[dtos.MetaResponse]:
     filters = dtos.MetaFilterParams(
         vacancy_id=vacancy_id,
@@ -50,8 +43,6 @@ async def get_meta(
     meta_id: int,
     include_deleted: bool = Query(False),
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.MetaDetailResponse:
     return await handlers.get_meta(session, meta_id, include_deleted)
 
@@ -61,8 +52,6 @@ async def update_meta(
     meta_id: int,
     data: dtos.MetaUpdateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.MetaResponse:
     return await handlers.update_meta(session, meta_id, data)
 
@@ -72,7 +61,5 @@ async def delete_meta(
     meta_id: int,
     hard_delete: bool = Query(False),
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.MetaResponse:
     return await handlers.delete_meta(session, meta_id, hard_delete)

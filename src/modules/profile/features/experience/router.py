@@ -5,15 +5,13 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.modules.profile.shared.adapters import get_current_profile_user, require_role
-from src.modules.profile.shared.dtos import ProfileUser
 from src.modules.profile.features.experience import dtos
 from src.modules.profile.features.experience import handlers
+from src.modules.profile.shared.adapters import get_anonymous_user_id
 from src.shared.database import sql_client
 from src.shared import dtos as shared_dtos
 
 
-_require_default_role = require_role(["default"])
 router = APIRouter(prefix="/experiences", tags=["Experiences"])
 
 
@@ -29,11 +27,10 @@ router = APIRouter(prefix="/experiences", tags=["Experiences"])
 async def create_experience(
     data: dtos.ExperienceCreateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
+    anonymous_user_id: int = Depends(get_anonymous_user_id),
 ) -> dtos.ExperienceDetailResponse:
     """Create a new work experience with optional achievements and skills."""
-    return await handlers.create_experience(session, current_user.id, data)
+    return await handlers.create_experience(session, anonymous_user_id, data)
 
 
 @router.get(
@@ -52,12 +49,9 @@ async def list_experiences(
     skip: int = Query(0, ge=0, description="Number of records to skip"),
     limit: int = Query(20, ge=1, le=100, description="Maximum number of records"),
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> List[dtos.ExperienceResponse]:
-    """List experiences for the authenticated user."""
+    """List experiences."""
     filters = dtos.ExperienceFilterParams(
-        user_id=current_user.id,
         company_id=company_id,
         position_title=position_title,
         include_deleted=include_deleted,
@@ -76,8 +70,6 @@ async def get_experience(
     experience_id: int,
     include_deleted: bool = Query(False, description="Include if soft deleted"),
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.ExperienceDetailResponse:
     """Get a specific experience by its ID with achievements."""
     return await handlers.get_experience(
@@ -94,12 +86,10 @@ async def update_experience(
     experience_id: int,
     data: dtos.ExperienceUpdateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.ExperienceResponse:
     """Update an experience's information."""
     return await handlers.update_experience(
-        session, experience_id, data, current_user.id
+        session, experience_id, data
     )
 
 
@@ -112,12 +102,10 @@ async def delete_experience(
     experience_id: int,
     hard_delete: bool = Query(False, description="Permanently delete the experience"),
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.ExperienceResponse:
     """Soft delete an experience (or hard delete if specified)."""
     return await handlers.delete_experience(
-        session, experience_id, current_user.id, hard_delete=hard_delete
+        session, experience_id, hard_delete=hard_delete
     )
 
 
@@ -134,8 +122,6 @@ async def add_achievement(
     experience_id: int,
     data: dtos.AchievementInput,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.AchievementResponse:
     """Add an achievement to an experience."""
     return await handlers.add_achievement(session, experience_id, data)
@@ -150,8 +136,6 @@ async def update_achievement(
     achievement_id: int,
     data: dtos.AchievementUpdateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.AchievementResponse:
     """Update an achievement's information."""
     return await handlers.update_achievement(session, achievement_id, data)
@@ -165,8 +149,6 @@ async def update_achievement(
 async def remove_achievement(
     achievement_id: int,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> None:
     """Remove an achievement."""
     await handlers.remove_achievement(session, achievement_id)
@@ -185,8 +167,6 @@ async def add_experience_skill(
     experience_id: int,
     skill_id: int,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> shared_dtos.Message:
     """Associate a skill with an experience."""
     return await handlers.add_experience_skill(session, experience_id, skill_id)
@@ -201,8 +181,6 @@ async def remove_experience_skill(
     experience_id: int,
     skill_id: int,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> None:
     """Remove a skill from an experience."""
     await handlers.remove_experience_skill(session, experience_id, skill_id)

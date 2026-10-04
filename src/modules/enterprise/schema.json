@@ -1,34 +1,5 @@
 {
   "$defs": {
-    "AuthenticatedUser": {
-      "description": "Lightweight identity payload returned by auth dependencies.\n\nThis is the contract other modules depend on — not SQLAlchemy models.\nIf auth becomes a microservice, this DTO stays the same and the\ndependency implementation changes to an HTTP call.",
-      "properties": {
-        "email": {
-          "title": "Email",
-          "type": "string"
-        },
-        "id": {
-          "title": "Id",
-          "type": "integer"
-        },
-        "is_active": {
-          "title": "Is Active",
-          "type": "boolean"
-        },
-        "role_name": {
-          "title": "Role Name",
-          "type": "string"
-        }
-      },
-      "required": [
-        "id",
-        "email",
-        "role_name",
-        "is_active"
-      ],
-      "title": "AuthenticatedUser",
-      "type": "object"
-    },
     "CompanyCreateRequest": {
       "properties": {
         "name": {
@@ -2489,9 +2460,6 @@
     },
     {
       "$ref": "#/$defs/VacancyUpdateRequest"
-    },
-    {
-      "$ref": "#/$defs/AuthenticatedUser"
     }
   ],
   "description": "Consolidated DTO schemas. Select an individual contract through its reference in x-models. The root accepts any listed DTO.",
@@ -2549,9 +2517,6 @@
       "SegmentFilterParams": "#/$defs/SegmentFilterParams",
       "SegmentResponse": "#/$defs/SegmentResponse",
       "SegmentUpdateRequest": "#/$defs/SegmentUpdateRequest"
-    },
-    "shared": {
-      "AuthenticatedUser": "#/$defs/AuthenticatedUser"
     },
     "vacancy": {
       "VacancyCreateRequest": "#/$defs/VacancyCreateRequest",

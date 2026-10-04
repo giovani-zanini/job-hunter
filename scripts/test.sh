@@ -7,8 +7,8 @@
 #   ./scripts/test.sh -v --tb=long # Extra verbosity
 #
 # Prerequisites:
-#   • PostgreSQL must be accessible (started via Docker Compose below)
-#   • .env.test must exist at the project root
+#   • PostgreSQL de teste deve estar acessível
+#   • TEST_DATABASE_URL and TEST_DATABASE_SYNC_URL must target a disposable database
 #   • Python virtual-env must be active with test dependencies installed:
 #       pip install -e ".[test]"
 
@@ -20,29 +20,21 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT"
 
 # ---------------------------------------------------------------------------
-# 1. Ensure PostgreSQL is running
+# 1. Require a disposable test database
 # ---------------------------------------------------------------------------
-echo "==> Starting PostgreSQL (if not already running)..."
-docker compose -f docker/docker-compose.yml up postgres -d
-
-# Give it a moment to be ready
-echo "==> Waiting for PostgreSQL to be ready..."
-sleep 3
+: "${TEST_DATABASE_URL:?Set TEST_DATABASE_URL to a disposable PostgreSQL database}"
+: "${TEST_DATABASE_SYNC_URL:?Set TEST_DATABASE_SYNC_URL to the same disposable database}"
+export DATABASE_URL="$TEST_DATABASE_URL"
+export DATABASE_SYNC_URL="$TEST_DATABASE_SYNC_URL"
 
 # ---------------------------------------------------------------------------
 # 2. Apply latest migrations
 # ---------------------------------------------------------------------------
 echo "==> Running Alembic migrations..."
-alembic -c src/shared/database/alembic.ini upgrade head
+.venv/bin/alembic -c src/shared/database/alembic.ini upgrade head
 
 # ---------------------------------------------------------------------------
-# 3. Seed roles (idempotent – safe to re-run)
-# ---------------------------------------------------------------------------
-echo "==> Seeding roles..."
-job-finder role create --json roles.json || true
-
-# ---------------------------------------------------------------------------
-# 4. Run tests
+# 3. Run tests
 # ---------------------------------------------------------------------------
 echo "==> Running E2E tests..."
-pytest tests/ -v --tb=short "$@"
+.venv/bin/python -m pytest tests/ -v --tb=short "$@"

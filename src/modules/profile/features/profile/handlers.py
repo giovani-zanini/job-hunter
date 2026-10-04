@@ -25,21 +25,7 @@ from src.modules.profile.features.profile import dtos
 from src.modules.profile.features.profile import services
 from src.modules.profile.features.profile.models import Profile
 from src.shared import dtos as shared_dtos
-from src.shared import exceptions
 from src.shared import services as shared_services
-
-
-async def _check_profile_ownership(
-    session: AsyncSession, profile_id: int, user_id: int
-) -> None:
-    """Raise ForbiddenException if the profile does not belong to the given user."""
-    profile = await shared_services.ensure_exists(
-        session, Profile, profile_id, label="Profile"
-    )
-    if profile.user_id != user_id:
-        raise exceptions.ForbiddenException(
-            detail="Not authorized to access this profile."
-        )
 
 
 async def create_profile(
@@ -49,7 +35,6 @@ async def create_profile(
 
     Args:
         session: The async database session for executing queries.
-        user_id: The profile.User PK of the authenticated user.
         data: The profile creation request containing slug, full_name,
             title, and bio.
 
@@ -72,23 +57,20 @@ async def create_profile(
 
 
 async def delete_profile(
-    session: AsyncSession, profile_id: int, user_id: int, hard_delete: bool = False
+    session: AsyncSession, profile_id: int, hard_delete: bool = False
 ) -> None:
     """Delete a user profile (soft or hard delete).
 
     Args:
         session: The async database session for executing queries.
         profile_id: The unique identifier of the profile to delete.
-        user_id: The profile.User PK of the authenticated user (ownership check).
         hard_delete: If True, permanently removes the profile from database.
             If False, performs a soft delete by setting deleted_at timestamp.
             Defaults to False.
 
     Raises:
         NotFoundException: If no profile exists with the given profile_id.
-        ForbiddenException: If the profile does not belong to the user.
     """
-    await _check_profile_ownership(session, profile_id, user_id)
     await services.delete_profile(
         session=session,
         profile_id=profile_id,
@@ -144,7 +126,6 @@ async def update_profile(
     session: AsyncSession,
     profile_id: int,
     data: dtos.ProfileUpdateRequest,
-    user_id: int,
 ) -> dtos.ProfileResponse:
     """Update an existing user profile.
 
@@ -153,17 +134,14 @@ async def update_profile(
         profile_id: The unique identifier of the profile to update.
         data: The profile update request containing optional slug, full_name,
             title, and bio fields.
-        user_id: The profile.User PK of the authenticated user (ownership check).
 
     Returns:
         A ProfileResponse containing the updated profile data.
 
     Raises:
         NotFoundException: If no profile exists with the given profile_id.
-        ForbiddenException: If the profile does not belong to the user.
         ConflictException: If updating slug to a value that already exists.
     """
-    await _check_profile_ownership(session, profile_id, user_id)
     profile = await services.update_profile(
         session=session,
         profile_id=profile_id,
@@ -184,7 +162,6 @@ async def add_profile_skill(
     session: AsyncSession,
     profile_id: int,
     data: dtos.ProfileAddSkillRequest,
-    user_id: int,
 ) -> dtos.ProfileSkillResponse:
     """Add a skill to a user profile with proficiency details.
 
@@ -201,7 +178,6 @@ async def add_profile_skill(
         NotFoundException: If profile_id or skill_id does not exist.
         ConflictException: If the skill is already associated with this profile.
     """
-    await _check_profile_ownership(session, profile_id, user_id)
     profile_skill = await services.add_profile_skill(
         session,
         profile_id,
@@ -221,7 +197,6 @@ async def update_profile_skill(
     profile_id: int,
     skill_id: int,
     data: dtos.ProfileUpdateSkillRequest,
-    user_id: int,
 ) -> dtos.ProfileSkillResponse:
     """Update proficiency details for a skill associated with a profile.
 
@@ -238,7 +213,6 @@ async def update_profile_skill(
     Raises:
         NotFoundException: If the profile-skill association does not exist.
     """
-    await _check_profile_ownership(session, profile_id, user_id)
     profile_skill = await services.update_profile_skill(
         session,
         profile_id,
@@ -253,7 +227,7 @@ async def update_profile_skill(
 
 
 async def remove_profile_skill(
-    session: AsyncSession, profile_id: int, skill_id: int, user_id: int
+    session: AsyncSession, profile_id: int, skill_id: int,
 ) -> None:
     """Remove a skill association from a user profile.
 
@@ -265,7 +239,6 @@ async def remove_profile_skill(
     Raises:
         NotFoundException: If the profile-skill association does not exist.
     """
-    await _check_profile_ownership(session, profile_id, user_id)
     await services.remove_profile_skill(session, profile_id, skill_id)
 
 
@@ -273,7 +246,7 @@ async def remove_profile_skill(
 
 
 async def add_profile_link(
-    session: AsyncSession, profile_id: int, link_id: int, user_id: int
+    session: AsyncSession, profile_id: int, link_id: int,
 ) -> shared_dtos.Message:
     """Associate a professional link with a user profile.
 
@@ -289,7 +262,6 @@ async def add_profile_link(
         NotFoundException: If profile_id or link_id does not exist.
         ConflictException: If the link is already associated with this profile.
     """
-    await _check_profile_ownership(session, profile_id, user_id)
     await services.add_profile_link(session, profile_id, link_id)
 
     return shared_dtos.Message(
@@ -299,7 +271,7 @@ async def add_profile_link(
 
 
 async def remove_profile_link(
-    session: AsyncSession, profile_id: int, link_id: int, user_id: int
+    session: AsyncSession, profile_id: int, link_id: int,
 ) -> None:
     """Remove a professional link association from a user profile.
 
@@ -311,7 +283,6 @@ async def remove_profile_link(
     Raises:
         NotFoundException: If the profile-link association does not exist.
     """
-    await _check_profile_ownership(session, profile_id, user_id)
     await services.remove_profile_link(session, profile_id, link_id)
 
 
@@ -319,7 +290,7 @@ async def remove_profile_link(
 
 
 async def add_profile_experience(
-    session: AsyncSession, profile_id: int, experience_id: int, user_id: int
+    session: AsyncSession, profile_id: int, experience_id: int,
 ) -> None:
     """Associate a work experience with a user profile.
 
@@ -332,12 +303,11 @@ async def add_profile_experience(
         NotFoundException: If profile_id or experience_id does not exist.
         ConflictException: If the experience is already associated with this profile.
     """
-    await _check_profile_ownership(session, profile_id, user_id)
     await services.add_profile_experience(session, profile_id, experience_id)
 
 
 async def remove_profile_experience(
-    session: AsyncSession, profile_id: int, experience_id: int, user_id: int
+    session: AsyncSession, profile_id: int, experience_id: int,
 ) -> None:
     """Remove a work experience association from a user profile.
 
@@ -349,7 +319,6 @@ async def remove_profile_experience(
     Raises:
         NotFoundException: If the profile-experience association does not exist.
     """
-    await _check_profile_ownership(session, profile_id, user_id)
     await services.remove_profile_experience(session, profile_id, experience_id)
 
 
@@ -357,7 +326,7 @@ async def remove_profile_experience(
 
 
 async def add_profile_education(
-    session: AsyncSession, profile_id: int, education_id: int, user_id: int
+    session: AsyncSession, profile_id: int, education_id: int,
 ) -> shared_dtos.Message:
     """Associate an educational record with a user profile.
 
@@ -373,7 +342,6 @@ async def add_profile_education(
         NotFoundException: If profile_id or education_id does not exist.
         ConflictException: If the education is already associated with this profile.
     """
-    await _check_profile_ownership(session, profile_id, user_id)
     await services.add_profile_education(session, profile_id, education_id)
 
     return shared_dtos.Message(
@@ -383,7 +351,7 @@ async def add_profile_education(
 
 
 async def remove_profile_education(
-    session: AsyncSession, profile_id: int, education_id: int, user_id: int
+    session: AsyncSession, profile_id: int, education_id: int,
 ) -> None:
     """Remove an educational record association from a user profile.
 
@@ -395,7 +363,6 @@ async def remove_profile_education(
     Raises:
         NotFoundException: If the profile-education association does not exist.
     """
-    await _check_profile_ownership(session, profile_id, user_id)
     await services.remove_profile_education(session, profile_id, education_id)
 
 
@@ -403,7 +370,7 @@ async def remove_profile_education(
 
 
 async def add_profile_certificate(
-    session: AsyncSession, profile_id: int, certificate_id: int, user_id: int
+    session: AsyncSession, profile_id: int, certificate_id: int,
 ) -> shared_dtos.Message:
     """Associate a professional certificate with a user profile.
 
@@ -419,7 +386,6 @@ async def add_profile_certificate(
         NotFoundException: If profile_id or certificate_id does not exist.
         ConflictException: If the certificate is already associated with this profile.
     """
-    await _check_profile_ownership(session, profile_id, user_id)
     await services.add_profile_certificate(session, profile_id, certificate_id)
 
     return shared_dtos.Message(
@@ -429,7 +395,7 @@ async def add_profile_certificate(
 
 
 async def remove_profile_certificate(
-    session: AsyncSession, profile_id: int, certificate_id: int, user_id: int
+    session: AsyncSession, profile_id: int, certificate_id: int,
 ) -> None:
     """Remove a professional certificate association from a user profile.
 
@@ -441,5 +407,4 @@ async def remove_profile_certificate(
     Raises:
         NotFoundException: If the profile-certificate association does not exist.
     """
-    await _check_profile_ownership(session, profile_id, user_id)
     await services.remove_profile_certificate(session, profile_id, certificate_id)

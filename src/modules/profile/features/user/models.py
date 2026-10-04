@@ -1,4 +1,4 @@
-from sqlalchemy import Integer
+from sqlalchemy import Boolean, Integer, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
 
@@ -7,11 +7,7 @@ from src.shared.database.sql_mixins import SoftDeleteMixin
 
 
 class User(Base, SoftDeleteMixin):
-    """User model representing profile module users.
-
-    Each row is created automatically on the first authenticated request and
-    maps 1-to-1 to an ``auth.User`` record via ``external_id``.
-    """
+    """Local owner row for profile records, including the anonymous owner."""
 
     __tablename__ = "User"
     __table_args__ = {"schema": "profile"}
@@ -20,8 +16,8 @@ class User(Base, SoftDeleteMixin):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
 
     # Columns
-    external_id: Mapped[int] = mapped_column(
-        Integer, unique=True, nullable=False, index=True
+    is_anonymous: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default="false"
     )
 
     # Relationships
@@ -46,4 +42,12 @@ class User(Base, SoftDeleteMixin):
     )
 
     def __repr__(self) -> str:
-        return f"<User(id={self.id}, external_id={self.external_id})>"
+        return f"<User(id={self.id}, is_anonymous={self.is_anonymous})>"
+
+
+Index(
+    "uq_profile_User_anonymous",
+    User.is_anonymous,
+    unique=True,
+    postgresql_where=User.is_anonymous.is_(True),
+)

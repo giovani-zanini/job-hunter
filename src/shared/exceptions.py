@@ -41,17 +41,3 @@ class BadRequestException(AppException):
 
     status_code = 400
     detail = "Bad request"
-
-
-class UnauthorizedException(AppException):
-    """Authentication required."""
-
-    status_code = 401
-    detail = "Not authenticated"
-
-
-class ForbiddenException(AppException):
-    """Access denied."""
-
-    status_code = 403
-    detail = "Access forbidden"
