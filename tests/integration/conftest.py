@@ -31,7 +31,11 @@ def disposable_database():
     sync_url = source_url.set(database=database_name)
     async_url = sync_url.set(drivername="postgresql+asyncpg")
     try:
-        yield str(sync_url), str(async_url)
+        # str(URL) masks the password, which cannot be used to open a connection.
+        yield (
+            sync_url.render_as_string(hide_password=False),
+            async_url.render_as_string(hide_password=False),
+        )
     finally:
         with admin_engine.connect() as connection:
             connection.execute(

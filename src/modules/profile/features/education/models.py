@@ -9,6 +9,7 @@ from src.shared.database.sql_client import Base
 from src.shared.database.sql_mixins import SoftDeleteMixin
 
 if TYPE_CHECKING:
+    from src.modules.profile.features.profile.models import Profile
     from src.modules.profile.features.user.models import User
     from src.modules.profile.features.skill.models import Skill
 

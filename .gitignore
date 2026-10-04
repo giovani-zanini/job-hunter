@@ -216,3 +216,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Configuração e estado local do agente
+.env.*
+!.env.sample
+!.env.example
+.codex/*
+!.codex/config.toml
+.pre-commit-cache/

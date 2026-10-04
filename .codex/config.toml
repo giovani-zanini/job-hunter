@@ -1,0 +1,10 @@
+# Configuração compartilhada. Carregada após confiar neste projeto no Codex.
+# Modelo, conta, credenciais, plugins e confiança pertencem à configuração pessoal.
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+[sandbox_workspace_write]
+network_access = false
+
+[features]
+multi_agent = true

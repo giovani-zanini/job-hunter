@@ -1,0 +1,102 @@
+name: Qualidade
+
+on:
+  pull_request:
+    branches: [development, main]
+  push:
+    branches: [development, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Código, contratos e commits
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Instalar dependências com Poetry
+        env:
+          JOB_HUNTER_CLOUD_SETUP_DIR: ${{ runner.temp }}/job-hunter-setup
+        run: bash scripts/cloud-install.sh
+      - name: Verificar código e hooks
+        run: |
+          .venv/bin/ruff check src scripts tests
+          .venv/bin/pre-commit validate-config
+          git diff --check
+      - name: Verificar contratos e testes unitários
+        run: |
+          .venv/bin/python scripts/generate_json_schemas.py --check
+          .venv/bin/python -m pytest tests/unit -q
+      - name: Validar commits novos do PR
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: .venv/bin/cz check --rev-range "$BASE_SHA..$HEAD_SHA"
+
+  database:
+    name: Integração e E2E em PostgreSQL descartável
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: job_finder_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U user -d job_finder_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql+asyncpg://user:password@127.0.0.1:5432/job_finder_test
+      TEST_DATABASE_SYNC_URL: postgresql+psycopg2://user:password@127.0.0.1:5432/job_finder_test
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Instalar dependências com Poetry
+        env:
+          JOB_HUNTER_CLOUD_SETUP_DIR: ${{ runner.temp }}/job-hunter-setup
+        run: bash scripts/cloud-install.sh
+      - run: bash scripts/test.sh
+
+  dependencies:
+    name: Vulnerabilidades conhecidas nas dependências
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Instalar dependências com Poetry
+        env:
+          JOB_HUNTER_CLOUD_SETUP_DIR: ${{ runner.temp }}/job-hunter-setup
+        run: bash scripts/cloud-install.sh
+      - name: Auditar versões instaladas
+        run: |
+          .venv/bin/python -m pip freeze --all --exclude-editable > "$RUNNER_TEMP/audit-requirements.txt"
+          .venv/bin/pip-audit --strict --no-deps --disable-pip --requirement "$RUNNER_TEMP/audit-requirements.txt" --progress-spinner off

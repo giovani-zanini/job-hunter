@@ -4,13 +4,10 @@ API FastAPI para dados de perfil profissional e empresas/vagas. As APIs de Profi
 
 ## Executar
 
-Requisitos: Python 3.12+ e PostgreSQL.
+Requisitos: Python 3.12+, Bash e PostgreSQL. O setup instala Poetry e as dependências em ambientes virtuais.
 
 ```bash
-python -m venv .venv
-.venv/bin/python -m ensurepip --upgrade
-.venv/bin/python -m pip install -e '.[test]'
-cp .env.sample .env
+JOB_HUNTER_CLOUD_SETUP_DIR=/tmp/job-hunter-setup bash scripts/cloud-install.sh
 # Defina DATABASE_URL (asyncpg) e DATABASE_SYNC_URL (psycopg2) para o mesmo banco.
 ./scripts/migrate.sh upgrade
 .venv/bin/uvicorn src.main:app --reload
@@ -25,5 +22,11 @@ A migração `a03e20261003` remove o schema `auth` e todos os dados de suas tabe
 Use um PostgreSQL de teste descartável e configure `TEST_DATABASE_URL` e `TEST_DATABASE_SYNC_URL` para ele. `./scripts/test.sh` executa as migrações e os testes. Os testes de integração criam bancos temporários separados na mesma instância PostgreSQL, então a conta de teste precisa de permissão `CREATEDB`.
 
 Atualize os catálogos JSON Schema com `.venv/bin/python scripts/generate_json_schemas.py`; confira com `--check`. Veja [docs/json-schemas.md](docs/json-schemas.md).
+
+## Codex e qualidade
+
+As instruções do agente estão em [AGENTS.md](AGENTS.md) e a política de revisão de segurança em [SECURITY.md](SECURITY.md). Consulte [docs/codex.md](docs/codex.md) para instalar Codex/Superpowers, ativar os hooks e configurar as revisões no GitHub. [docs/cloud-environment.md](docs/cloud-environment.md) descreve o setup com Poetry e os bancos descartáveis.
+
+Commits seguem [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/) com mensagens em inglês. Documentação e revisões são escritas em português brasileiro. O CI verifica código, contratos, commits novos dos PRs, testes em PostgreSQL e vulnerabilidades conhecidas nas dependências.
 
 Licença: GPL-3.0.

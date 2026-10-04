@@ -1,9 +1,16 @@
 from sqlalchemy import Boolean, Integer, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from typing import List
+from typing import TYPE_CHECKING, List
 
 from src.shared.database.sql_client import Base
 from src.shared.database.sql_mixins import SoftDeleteMixin
+
+if TYPE_CHECKING:
+    from src.modules.profile.features.profile.models import Profile
+    from src.modules.profile.features.link.models import Link
+    from src.modules.profile.features.experience.models import Experience
+    from src.modules.profile.features.education.models import Education
+    from src.modules.profile.features.certificate.models import Certificate
 
 
 class User(Base, SoftDeleteMixin):

@@ -1,93 +1,67 @@
-# Cloud development environment
+# Ambiente de desenvolvimento cloud
 
-Use the existing checkout at `/workspace/job-hunter`. Cloud tasks are already isolated; do not create a Git worktree unless the user explicitly requests one. This workflow was validated on the `development` branch. Preserve task branch changes and user files; do not reset or automatically switch branches.
+Use o checkout isolado existente em `/workspace/job-hunter`. Preserve a branch e os arquivos do usuário; não crie outro worktree nem troque de branch automaticamente.
 
-Python 3.12+, Docker Engine and Compose are available. Use Poetry as the project's dependency manager and command runner. Installed dependencies are in `/workspace/job-hunter/.venv`; Poetry 2.2.1 is at `/workspace/.cloud-setup/job-hunter/tools/bin/poetry`. The tracked poetry.lock is stale. The installation script uses Poetry to resolve and install an external metadata copy, with a source link to the real checkout, keeping hashes enabled and tracked manifests and lockfiles unchanged. Python's venv module and pip only bootstrap the separate Poetry tool environment; project packages are installed with Poetry. Re-run the saved installation script when manifests change or dependencies are missing.
+Os módulos ativos são `profile` e `enterprise`. A aplicação é servida por `src.main:app`. Poetry gerencia as dependências do projeto; pip apenas prepara a instalação separada do próprio Poetry.
 
-The ignored `.env` contains local development database configuration and locally generated signing keys. Preserve this file and any injected `SECRET_KEY`, `REFRESH_SECRET_KEY`, `DATABASE_URL` and `DATABASE_SYNC_URL` bindings. Do not print key values. Do not copy `.env.sample` directly: it contains empty database URLs and empty optional integer settings. For this snapshot the development database is `job_finder` and the separate test database is `job_finder_test` on the repository's local PostgreSQL container.
-
-## Installation
-
-From `/workspace/job-hunter`, run the versioned installation script:
+## Instalação
 
 ```bash
+cd /workspace/job-hunter
 bash scripts/cloud-install.sh
 ```
 
-It prepares the Poetry tooling, project virtual environment, external dependency metadata, local development configuration and PostgreSQL image. The startup and test commands below use those prepared files.
+O script prepara Poetry 2.2.1, `.venv` e uma cópia externa dos metadados em `/workspace/.cloud-setup/job-hunter/resolver`. Usa `poetry.lock` do checkout quando disponível; sem ele, resolve e mantém o lock somente no cache externo. Uma resolução sem lock versionado pode variar entre ambientes. O cache só é marcado como válido após instalação bem-sucedida, e mudanças nos inputs invalidam a resolução anterior.
+
+`poetry sync --all-extras` instala dependências de aplicação, testes e desenvolvimento e remove pacotes que deixaram de fazer parte dessa resolução. Arquivos versionados e configurações locais existentes são preservados. O instalador não exige uma árvore Git limpa, não aplica migrações, não gera chaves de autenticação e não semeia papéis.
+
+Se `.env` ainda não existe e não há URLs de banco injetadas, cria apenas as duas URLs para o PostgreSQL local de desenvolvimento definido no Compose. Bindings existentes têm precedência e nunca são persistidos pelo setup. Quando houver bindings injetados, configure `DATABASE_URL` (asyncpg) e `DATABASE_SYNC_URL` (psycopg2) para o mesmo banco; não misture o banco remoto com defaults locais. Não imprima credenciais.
+
+O setup é relocável: `JOB_HUNTER_CLOUD_SETUP_DIR` seleciona o cache externo e o checkout é determinado pela localização do script. No CI ele usa o diretório temporário do runner.
 
 ## Startup
 
-Live processes and Docker state must be checked after restoration. From `/workspace/job-hunter`, run:
+Confira o estado dos serviços restaurados antes de iniciá-los. O Compose usa credenciais exclusivamente locais de desenvolvimento.
 
 ```bash
-set -euo pipefail
-cd /workspace/job-hunter
-export PATH="/workspace/.cloud-setup/job-hunter/tools/bin:$PATH"
-docker compose -f docker/docker-compose.yml up postgres -d --wait --wait-timeout 90
-poetry run alembic -c src/shared/database/alembic.ini upgrade head
-poetry run job-finder role create --json /workspace/.cloud-setup/job-hunter/roles.json
+docker compose -f docker/docker-compose.yml up -d postgres --wait --wait-timeout 90
+# Apenas no banco de desenvolvimento previamente conferido:
+.venv/bin/alembic -c src/shared/database/alembic.ini upgrade head
+.venv/bin/uvicorn src.main:app --host 0.0.0.0 --port 8000
 ```
 
-The role seed and migrations are repeatable. If an existing API process is healthy and runs this checkout, reuse it. Otherwise run this command in a persistent tool session; keep the session available and check its startup output:
+A migração de remoção do módulo antigo é irreversível sem backup. Nunca a aplique a um banco com dados úteis sem revisar destino, impacto e recuperação. Use os controles de preview da plataforma para compartilhar a aplicação; loopback serve apenas para validação interna.
+
+## Verificações sem PostgreSQL
 
 ```bash
-cd /workspace/job-hunter
-export PATH="/workspace/.cloud-setup/job-hunter/tools/bin:$PATH"
-poetry run uvicorn src.main:app --host 0.0.0.0 --port 8000
+.venv/bin/ruff check src scripts tests
+.venv/bin/python -m pytest tests/unit -q
+.venv/bin/python scripts/generate_json_schemas.py --check
+PRE_COMMIT_HOME=/tmp/job-hunter-pre-commit-cache .venv/bin/pre-commit validate-config
+git diff --check
 ```
 
-This is the unified entry point for auth, profile and enterprise. Older module-only commands in README.md are outdated. In another tool call, validate the service with this internal request. Do not present loopback URLs as user-facing previews.
+## Integração e E2E
+
+Os testes fazem `TRUNCATE` e criam/removem bancos. Use a instância PostgreSQL local e o banco descartável `job_finder_test`. A conta local `user` precisa de `CREATEDB`. Confira se já existe esse banco antes de criá-lo:
 
 ```bash
-cd /workspace/job-hunter
-export PATH="/workspace/.cloud-setup/job-hunter/tools/bin:$PATH"
-poetry run python - <<'PY'
-import json
-import time
-import urllib.request
-
-for attempt in range(40):
-    try:
-        with urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2) as response:
-            assert response.status == 200
-            assert json.load(response) == {'status': 'healthy'}
-        break
-    except OSError:
-        if attempt == 39:
-            raise
-        time.sleep(0.5)
-with urllib.request.urlopen('http://127.0.0.1:8000/openapi.json', timeout=3) as response:
-    schema = json.load(response)
-for route in ['/api/v1/account/', '/api/v1/skills/', '/api/v1/vacancies/']:
-    assert route in schema['paths'], route
-print('API health and all three module route registries verified.')
-PY
+docker exec job_finder_postgres psql -U user -d postgres -Atqc "SELECT datname FROM pg_database WHERE datname = 'job_finder_test'"
+# Se o banco ainda não existe:
+docker exec job_finder_postgres createdb -U user job_finder_test
 ```
 
-## Running the existing E2E suite
-
-The tests truncate auth, profile and enterprise tables. Use the dedicated local test database. The following sequence has been executed against this checkout. If the user adds `.env.test`, inspect its database destination before running, because tests/conftest.py loads it with override=True. Do not run this sequence against a user-supplied remote database.
+A sequência abaixo define explicitamente as URLs de teste locais e executa migrações e a suíte nesse destino:
 
 ```bash
-set -euo pipefail
-cd /workspace/job-hunter
-export PATH="/workspace/.cloud-setup/job-hunter/tools/bin:$PATH"
-docker compose -f docker/docker-compose.yml up postgres -d --wait --wait-timeout 90
-if ! docker exec job_finder_postgres psql -U user -d postgres -Atqc "SELECT 1 FROM pg_database WHERE datname = 'job_finder_test'" | rg -q '^1$'; then
-  docker exec job_finder_postgres createdb -U user job_finder_test
-fi
-set -a
-source .env
-set +a
-export DATABASE_URL=postgresql+asyncpg://user:password@localhost:5432/job_finder_test
-export DATABASE_SYNC_URL=postgresql+psycopg2://user:password@localhost:5432/job_finder_test
-poetry run alembic -c src/shared/database/alembic.ini upgrade head
-poetry run pytest tests/ -q --tb=short
+TEST_DATABASE_URL=postgresql+asyncpg://user:password@127.0.0.1:5432/job_finder_test \
+TEST_DATABASE_SYNC_URL=postgresql+psycopg2://user:password@127.0.0.1:5432/job_finder_test \
+bash scripts/test.sh
 ```
 
-The application package installs in editable mode using Poetry, the external metadata and lock checks pass, PostgreSQL 17 is reachable, all six migrations apply, roles seed repeatedly, and API health and OpenAPI checks pass. The full suite executed 187 tests during initial setup: 173 passed, 13 failed, and 1 skipped. Failures were traced to account deletion relationships, refresh JWTs generated within the same second, profile deletion response serialization, lazy async relationship loading, soft-deletion of association models lacking soft_delete, a wrong ensure_exists keyword, and API/test response contract mismatches. The recovery test skips because a recovery token is not exposed. Keep these outcomes distinct; do not disable assertions or change application code as part of environment setup.
+`.env.test` é carregado sem sobrescrever bindings já definidos. Evite carregar `.env` indiscriminadamente no shell; não reutilize a URL do banco de desenvolvimento como URL de teste. Os testes de integração criam bancos temporários adicionais e os removem ao terminar.
 
-After switching the setup commands to Poetry, installation, CLI commands, migrations, role seeding and API restart were revalidated. The health and vacancy E2E subset ran through `poetry run pytest`: 12 passed, zero failed or skipped. The full-suite counts above belong to the earlier full run; the Poetry subset does not replace that report.
+Informe resultados efetivamente medidos na tarefa. Números de execuções anteriores não comprovam o estado atual; testes pulados por falta de configuração de banco são cobertura incompleta.
 
-Publication is performed by the product. Current-machine validation and a saved draft do not establish publication or restoration in a new task.
+Instruções do agente e ativação de ferramentas: [AGENTS.md](../AGENTS.md) e [docs/codex.md](codex.md).

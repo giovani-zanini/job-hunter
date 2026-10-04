@@ -1,9 +1,19 @@
-# Repository guidance
+# Orientações do repositório
 
-This FastAPI project exposes public `profile` and `enterprise` APIs from `src/main.py`. Features live under `src/modules/<module>/features/`; persistence and Alembic live under `src/shared/database/`.
+Siga a arquitetura, os comandos e as decisões documentados em `AGENTS.md`.
+Este projeto FastAPI expõe APIs públicas de `profile` e `enterprise` por
+`src/main.py`. Features ficam em `src/modules/<module>/features/` e persistência
+e Alembic em `src/shared/database/`.
 
-The `profile.User` table is a local ownership anchor. A single row with `is_anonymous=true` owns new Profile, Link, Experience, Education and Certificate records. Existing records retain their `user_id` values and remain publicly accessible. Enterprise has no user dependency.
+`profile.User` é uma âncora local: um único proprietário anônimo vincula novos
+registros de perfil. Registros anteriores preservam seus vínculos e acesso
+público. Preserve esse contrato.
 
-Import every active SQLAlchemy model in `src/shared/database/alembic/env.py` for autogeneration. Historical migrations create an `auth` schema during a fresh upgrade; revision `a03e20261003` deletes it. Do not modify old revisions or reintroduce authentication code.
+Importe modelos ativos em `src/shared/database/alembic/env.py` para autogeração.
+Preserve migrações históricas e avalie o estado final do upgrade.
 
-Run `.venv/bin/python -m pytest tests/unit` and `.venv/bin/python scripts/generate_json_schemas.py --check` for local checks. Database tests require a disposable PostgreSQL instance and the `TEST_DATABASE_URL` / `TEST_DATABASE_SYNC_URL` environment variables. See `README.md`.
+Commits são escritos em inglês no padrão Conventional Commits; documentação e
+revisões são escritas em português brasileiro. Consulte também `SECURITY.md`.
+Use `tests/unit` e o check de JSON Schemas para validações sem PostgreSQL.
+Testes de banco exigem um destino descartável e as variáveis `TEST_DATABASE_URL`
+e `TEST_DATABASE_SYNC_URL`, conforme `docs/cloud-environment.md`.

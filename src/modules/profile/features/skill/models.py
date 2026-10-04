@@ -1,10 +1,16 @@
 import enum
 from sqlalchemy import String, Integer, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from typing import List
+from typing import TYPE_CHECKING, List
 
 from src.shared.database.sql_client import Base
 from src.shared.database.sql_mixins import SoftDeleteMixin
+
+if TYPE_CHECKING:
+    from src.modules.profile.features.profile.models import ProfileSkills
+    from src.modules.profile.features.experience.models import ExperienceSkills
+    from src.modules.profile.features.education.models import EducationSkills
+    from src.modules.profile.features.certificate.models import CertificateSkills
 
 
 class SkillCategory(str, enum.Enum):
