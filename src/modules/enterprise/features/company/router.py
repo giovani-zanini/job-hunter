@@ -5,12 +5,9 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.modules.enterprise.shared.adapters import get_current_user, require_role
-from src.modules.enterprise.shared.dtos import AuthenticatedUser
 from src.modules.enterprise.features.company import dtos, handlers
 from src.shared.database import sql_client
 
-_require_default_role = require_role(["default"])
 router = APIRouter(prefix="/enterprise/companies", tags=["Enterprise Companies"])
 
 
@@ -20,8 +17,6 @@ router = APIRouter(prefix="/enterprise/companies", tags=["Enterprise Companies"]
 async def create_company(
     data: dtos.CompanyCreateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.CompanyResponse:
     return await handlers.create_company(session, data)
 
@@ -33,8 +28,6 @@ async def list_companies(
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> List[dtos.CompanyResponse]:
     filters = dtos.CompanyFilterParams(name=name, include_deleted=include_deleted, skip=skip, limit=limit)
     return await handlers.list_companies(session, filters)
@@ -45,8 +38,6 @@ async def get_company(
     company_id: int,
     include_deleted: bool = Query(False),
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.CompanyDetailResponse:
     return await handlers.get_company(session, company_id, include_deleted)
 
@@ -56,8 +47,6 @@ async def update_company(
     company_id: int,
     data: dtos.CompanyUpdateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.CompanyResponse:
     return await handlers.update_company(session, company_id, data)
 
@@ -67,8 +56,6 @@ async def delete_company(
     company_id: int,
     hard_delete: bool = Query(False),
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.CompanyResponse:
     return await handlers.delete_company(session, company_id, hard_delete)
 
@@ -84,8 +71,6 @@ async def add_unit(
     company_id: int,
     data: dtos.CompanyUnitCreateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.CompanyUnitResponse:
     return await handlers.add_unit(session, company_id, data)
 
@@ -94,8 +79,6 @@ async def add_unit(
 async def list_units(
     company_id: int,
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> List[dtos.CompanyUnitResponse]:
     return await handlers.list_units(session, company_id)
 
@@ -105,8 +88,6 @@ async def remove_unit(
     company_id: int,
     unit_id: int,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> None:
     await handlers.remove_unit(session, company_id, unit_id)
 
@@ -122,8 +103,6 @@ async def add_segment(
     company_id: int,
     data: dtos.CompanySegmentCreateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.CompanySegmentResponse:
     return await handlers.add_segment(session, company_id, data.segment_id)
 
@@ -132,8 +111,6 @@ async def add_segment(
 async def list_segments(
     company_id: int,
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> List[dtos.CompanySegmentResponse]:
     return await handlers.list_segments(session, company_id)
 
@@ -143,7 +120,5 @@ async def remove_segment(
     company_id: int,
     segment_id: int,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> None:
     await handlers.remove_segment(session, company_id, segment_id)

@@ -38,7 +38,6 @@ BASE = "/api/v1/profiles"
 
 async def create_profile(
     client,
-    headers,
     slug: str = "test-profile",
     full_name: str = "Test User",
     title: str = "Software Engineer",
@@ -46,7 +45,6 @@ async def create_profile(
 ) -> dict:
     response = await client.post(
         BASE + "/",
-        headers=headers,
         json={"slug": slug, "full_name": full_name, "title": title, "bio": bio},
     )
     assert response.status_code == 201, response.text
@@ -54,31 +52,28 @@ async def create_profile(
 
 
 async def create_skill(
-    client, headers, name: str = "Python", category: str = "LANGUAGE"
+    client, name: str = "Python", category: str = "LANGUAGE"
 ) -> dict:
     response = await client.post(
         "/api/v1/skills/",
-        headers=headers,
         json={"name": name, "category": category},
     )
     assert response.status_code == 201, response.text
     return response.json()
 
 
-async def create_company(client, headers, name: str = "Acme Corp") -> dict:
+async def create_company(client, name: str = "Acme Corp") -> dict:
     response = await client.post(
         "/api/v1/companies/",
-        headers=headers,
         json={"name": name, "website": "https://acme.test"},
     )
     assert response.status_code == 201, response.text
     return response.json()
 
 
-async def create_link(client, headers) -> dict:
+async def create_link(client) -> dict:
     response = await client.post(
         "/api/v1/links/",
-        headers=headers,
         json={
             "type": "SOCIAL_MEDIA",
             "from": "linkedin",
@@ -89,10 +84,9 @@ async def create_link(client, headers) -> dict:
     return response.json()
 
 
-async def create_experience(client, headers, company_id: int) -> dict:
+async def create_experience(client, company_id: int) -> dict:
     response = await client.post(
         "/api/v1/experiences/",
-        headers=headers,
         json={
             "company_id": company_id,
             "position_title": "Software Engineer",
@@ -107,10 +101,9 @@ async def create_experience(client, headers, company_id: int) -> dict:
     return response.json()
 
 
-async def create_education(client, headers) -> dict:
+async def create_education(client) -> dict:
     response = await client.post(
         "/api/v1/education/",
-        headers=headers,
         json={
             "institution_name": "MIT",
             "degree": "Bachelor",
@@ -124,10 +117,9 @@ async def create_education(client, headers) -> dict:
     return response.json()
 
 
-async def create_certificate(client, headers) -> dict:
+async def create_certificate(client) -> dict:
     response = await client.post(
         "/api/v1/certificates/",
-        headers=headers,
         json={
             "name": "AWS Solutions Architect",
             "issuer": "Amazon",
@@ -146,11 +138,10 @@ async def create_certificate(client, headers) -> dict:
 # ---------------------------------------------------------------------------
 
 
-async def test_create_profile_returns_201_with_data(client, auth_headers):
+async def test_create_profile_returns_201_with_data(client):
     """Creating a profile returns 201 with id, user_id, slug, full_name, title, bio."""
     response = await client.post(
         BASE + "/",
-        headers=auth_headers,
         json={
             "slug": "my-profile",
             "full_name": "Jane Doe",
@@ -168,26 +159,13 @@ async def test_create_profile_returns_201_with_data(client, auth_headers):
     assert "user_id" in body
 
 
-async def test_create_profile_requires_auth(client):
-    """POST /profiles/ without auth returns 401."""
-    response = await client.post(
-        BASE + "/",
-        json={
-            "slug": "ghost",
-            "full_name": "Ghost User",
-            "title": "None",
-            "bio": "None",
-        },
-    )
-    assert response.status_code == 401
 
 
-async def test_create_profile_duplicate_slug_returns_conflict(client, auth_headers):
+async def test_create_profile_duplicate_slug_returns_conflict(client):
     """Creating two profiles with the same slug returns 409 Conflict."""
-    await create_profile(client, auth_headers, slug="unique-slug")
+    await create_profile(client, slug="unique-slug")
     response = await client.post(
         BASE + "/",
-        headers=auth_headers,
         json={
             "slug": "unique-slug",
             "full_name": "Other",
@@ -203,24 +181,24 @@ async def test_create_profile_duplicate_slug_returns_conflict(client, auth_heade
 # ---------------------------------------------------------------------------
 
 
-async def test_created_profile_appears_in_list(client, auth_headers):
+async def test_created_profile_appears_in_list(client):
     """A profile created via POST must appear in GET /profiles/."""
-    created = await create_profile(client, auth_headers, slug="list-me")
+    created = await create_profile(client, slug="list-me")
 
-    response = await client.get(BASE + "/", headers=auth_headers)
+    response = await client.get(BASE + "/")
 
     assert response.status_code == 200
     ids = [p["id"] for p in response.json()]
     assert created["id"] in ids
 
 
-async def test_list_profiles_filter_by_slug(client, auth_headers):
+async def test_list_profiles_filter_by_slug(client):
     """GET /profiles/?slug=partial returns only matching profiles."""
-    await create_profile(client, auth_headers, slug="engineer-profile")
-    await create_profile(client, auth_headers, slug="designer-profile")
+    await create_profile(client, slug="engineer-profile")
+    await create_profile(client, slug="designer-profile")
 
     response = await client.get(
-        BASE + "/", headers=auth_headers, params={"slug": "engineer"}
+        BASE + "/", params={"slug": "engineer"}
     )
 
     assert response.status_code == 200
@@ -234,13 +212,13 @@ async def test_list_profiles_filter_by_slug(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_created_profile_retrievable_by_id(client, auth_headers):
+async def test_created_profile_retrievable_by_id(client):
     """A profile created via POST can be fetched by its ID."""
     created = await create_profile(
-        client, auth_headers, slug="get-by-id", full_name="Retrieve Me"
+        client, slug="get-by-id", full_name="Retrieve Me"
     )
 
-    response = await client.get(f"{BASE}/{created['id']}", headers=auth_headers)
+    response = await client.get(f"{BASE}/{created['id']}")
 
     assert response.status_code == 200
     body = response.json()
@@ -248,9 +226,9 @@ async def test_created_profile_retrievable_by_id(client, auth_headers):
     assert body["full_name"] == "Retrieve Me"
 
 
-async def test_get_nonexistent_profile_returns_404(client, auth_headers):
+async def test_get_nonexistent_profile_returns_404(client):
     """GET /profiles/999999 returns 404."""
-    response = await client.get(f"{BASE}/999999", headers=auth_headers)
+    response = await client.get(f"{BASE}/999999")
     assert response.status_code == 404
 
 
@@ -259,20 +237,19 @@ async def test_get_nonexistent_profile_returns_404(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_update_profile_changes_values(client, auth_headers):
+async def test_update_profile_changes_values(client):
     """PUT /profiles/{id} updates fields; GET by id reflects the changes."""
     created = await create_profile(
-        client, auth_headers, slug="to-update", full_name="Before Update"
+        client, slug="to-update", full_name="Before Update"
     )
 
     put = await client.put(
         f"{BASE}/{created['id']}",
-        headers=auth_headers,
         json={"full_name": "After Update", "title": "Updated Title"},
     )
     assert put.status_code == 200
 
-    get = await client.get(f"{BASE}/{created['id']}", headers=auth_headers)
+    get = await client.get(f"{BASE}/{created['id']}")
     body = get.json()
     assert body["full_name"] == "After Update"
     assert body["title"] == "Updated Title"
@@ -283,15 +260,15 @@ async def test_update_profile_changes_values(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_delete_profile_soft_deletes(client, auth_headers):
+async def test_delete_profile_soft_deletes(client):
     """DELETE /profiles/{id} soft-deletes the profile."""
-    created = await create_profile(client, auth_headers, slug="to-delete-profile")
+    created = await create_profile(client, slug="to-delete-profile")
 
-    delete = await client.delete(f"{BASE}/{created['id']}", headers=auth_headers)
+    delete = await client.delete(f"{BASE}/{created['id']}")
     assert delete.status_code == 200
 
     # The profile should no longer appear in the default list
-    list_response = await client.get(BASE + "/", headers=auth_headers)
+    list_response = await client.get(BASE + "/")
     ids = [p["id"] for p in list_response.json()]
     assert created["id"] not in ids
 
@@ -301,14 +278,13 @@ async def test_delete_profile_soft_deletes(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_add_skill_to_profile_returns_201(client, auth_headers):
+async def test_add_skill_to_profile_returns_201(client):
     """POST /profiles/{id}/skills returns 201 with the association data."""
-    profile = await create_profile(client, auth_headers, slug="skill-profile")
-    skill = await create_skill(client, auth_headers, name="Python")
+    profile = await create_profile(client, slug="skill-profile")
+    skill = await create_skill(client, name="Python")
 
     response = await client.post(
         f"{BASE}/{profile['id']}/skills",
-        headers=auth_headers,
         json={
             "skill_id": skill["id"],
             "level": 4,
@@ -324,14 +300,13 @@ async def test_add_skill_to_profile_returns_201(client, auth_headers):
     assert body["years_of_experience"] == 3
 
 
-async def test_update_profile_skill_changes_level(client, auth_headers):
+async def test_update_profile_skill_changes_level(client):
     """PUT /profiles/{id}/skills/{skill_id} updates level and years."""
-    profile = await create_profile(client, auth_headers, slug="update-skill-profile")
-    skill = await create_skill(client, auth_headers, name="Go")
+    profile = await create_profile(client, slug="update-skill-profile")
+    skill = await create_skill(client, name="Go")
 
     await client.post(
         f"{BASE}/{profile['id']}/skills",
-        headers=auth_headers,
         json={
             "skill_id": skill["id"],
             "level": 2,
@@ -342,7 +317,6 @@ async def test_update_profile_skill_changes_level(client, auth_headers):
 
     update = await client.put(
         f"{BASE}/{profile['id']}/skills/{skill['id']}",
-        headers=auth_headers,
         json={"level": 5, "years_of_experience": 4},
     )
     assert update.status_code == 200
@@ -351,14 +325,13 @@ async def test_update_profile_skill_changes_level(client, auth_headers):
     assert body["years_of_experience"] == 4
 
 
-async def test_remove_skill_from_profile_returns_204(client, auth_headers):
+async def test_remove_skill_from_profile_returns_204(client):
     """DELETE /profiles/{id}/skills/{skill_id} returns 204."""
-    profile = await create_profile(client, auth_headers, slug="remove-skill-profile")
-    skill = await create_skill(client, auth_headers, name="Rust")
+    profile = await create_profile(client, slug="remove-skill-profile")
+    skill = await create_skill(client, name="Rust")
 
     await client.post(
         f"{BASE}/{profile['id']}/skills",
-        headers=auth_headers,
         json={
             "skill_id": skill["id"],
             "level": 3,
@@ -369,7 +342,7 @@ async def test_remove_skill_from_profile_returns_204(client, auth_headers):
 
     delete = await client.delete(
         f"{BASE}/{profile['id']}/skills/{skill['id']}",
-        headers=auth_headers,
+
     )
     assert delete.status_code == 204
 
@@ -379,30 +352,30 @@ async def test_remove_skill_from_profile_returns_204(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_add_link_to_profile_returns_201(client, auth_headers):
+async def test_add_link_to_profile_returns_201(client):
     """POST /profiles/{id}/links/{link_id} returns 201."""
-    profile = await create_profile(client, auth_headers, slug="link-profile")
-    link = await create_link(client, auth_headers)
+    profile = await create_profile(client, slug="link-profile")
+    link = await create_link(client)
 
     response = await client.post(
         f"{BASE}/{profile['id']}/links/{link['id']}",
-        headers=auth_headers,
+
     )
     assert response.status_code == 201
 
 
-async def test_remove_link_from_profile_returns_204(client, auth_headers):
+async def test_remove_link_from_profile_returns_204(client):
     """DELETE /profiles/{id}/links/{link_id} returns 204."""
-    profile = await create_profile(client, auth_headers, slug="remove-link-profile")
-    link = await create_link(client, auth_headers)
+    profile = await create_profile(client, slug="remove-link-profile")
+    link = await create_link(client)
 
     await client.post(
-        f"{BASE}/{profile['id']}/links/{link['id']}", headers=auth_headers
+        f"{BASE}/{profile['id']}/links/{link['id']}"
     )
 
     delete = await client.delete(
         f"{BASE}/{profile['id']}/links/{link['id']}",
-        headers=auth_headers,
+
     )
     assert delete.status_code == 204
 
@@ -412,33 +385,33 @@ async def test_remove_link_from_profile_returns_204(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_add_experience_to_profile_returns_201(client, auth_headers):
+async def test_add_experience_to_profile_returns_201(client):
     """POST /profiles/{id}/experiences/{experience_id} returns 201."""
-    profile = await create_profile(client, auth_headers, slug="exp-profile")
-    company = await create_company(client, auth_headers)
-    experience = await create_experience(client, auth_headers, company_id=company["id"])
+    profile = await create_profile(client, slug="exp-profile")
+    company = await create_company(client)
+    experience = await create_experience(client, company_id=company["id"])
 
     response = await client.post(
         f"{BASE}/{profile['id']}/experiences/{experience['id']}",
-        headers=auth_headers,
+
     )
     assert response.status_code == 201
 
 
-async def test_remove_experience_from_profile_returns_204(client, auth_headers):
+async def test_remove_experience_from_profile_returns_204(client):
     """DELETE /profiles/{id}/experiences/{experience_id} returns 204."""
-    profile = await create_profile(client, auth_headers, slug="remove-exp-profile")
-    company = await create_company(client, auth_headers)
-    experience = await create_experience(client, auth_headers, company_id=company["id"])
+    profile = await create_profile(client, slug="remove-exp-profile")
+    company = await create_company(client)
+    experience = await create_experience(client, company_id=company["id"])
 
     await client.post(
         f"{BASE}/{profile['id']}/experiences/{experience['id']}",
-        headers=auth_headers,
+
     )
 
     delete = await client.delete(
         f"{BASE}/{profile['id']}/experiences/{experience['id']}",
-        headers=auth_headers,
+
     )
     assert delete.status_code == 204
 
@@ -448,31 +421,31 @@ async def test_remove_experience_from_profile_returns_204(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_add_education_to_profile_returns_201(client, auth_headers):
+async def test_add_education_to_profile_returns_201(client):
     """POST /profiles/{id}/education/{education_id} returns 201."""
-    profile = await create_profile(client, auth_headers, slug="edu-profile")
-    education = await create_education(client, auth_headers)
+    profile = await create_profile(client, slug="edu-profile")
+    education = await create_education(client)
 
     response = await client.post(
         f"{BASE}/{profile['id']}/education/{education['id']}",
-        headers=auth_headers,
+
     )
     assert response.status_code == 201
 
 
-async def test_remove_education_from_profile_returns_204(client, auth_headers):
+async def test_remove_education_from_profile_returns_204(client):
     """DELETE /profiles/{id}/education/{education_id} returns 204."""
-    profile = await create_profile(client, auth_headers, slug="remove-edu-profile")
-    education = await create_education(client, auth_headers)
+    profile = await create_profile(client, slug="remove-edu-profile")
+    education = await create_education(client)
 
     await client.post(
         f"{BASE}/{profile['id']}/education/{education['id']}",
-        headers=auth_headers,
+
     )
 
     delete = await client.delete(
         f"{BASE}/{profile['id']}/education/{education['id']}",
-        headers=auth_headers,
+
     )
     assert delete.status_code == 204
 
@@ -482,30 +455,30 @@ async def test_remove_education_from_profile_returns_204(client, auth_headers):
 # ---------------------------------------------------------------------------
 
 
-async def test_add_certificate_to_profile_returns_201(client, auth_headers):
+async def test_add_certificate_to_profile_returns_201(client):
     """POST /profiles/{id}/certificates/{certificate_id} returns 201."""
-    profile = await create_profile(client, auth_headers, slug="cert-profile")
-    certificate = await create_certificate(client, auth_headers)
+    profile = await create_profile(client, slug="cert-profile")
+    certificate = await create_certificate(client)
 
     response = await client.post(
         f"{BASE}/{profile['id']}/certificates/{certificate['id']}",
-        headers=auth_headers,
+
     )
     assert response.status_code == 201
 
 
-async def test_remove_certificate_from_profile_returns_204(client, auth_headers):
+async def test_remove_certificate_from_profile_returns_204(client):
     """DELETE /profiles/{id}/certificates/{certificate_id} returns 204."""
-    profile = await create_profile(client, auth_headers, slug="remove-cert-profile")
-    certificate = await create_certificate(client, auth_headers)
+    profile = await create_profile(client, slug="remove-cert-profile")
+    certificate = await create_certificate(client)
 
     await client.post(
         f"{BASE}/{profile['id']}/certificates/{certificate['id']}",
-        headers=auth_headers,
+
     )
 
     delete = await client.delete(
         f"{BASE}/{profile['id']}/certificates/{certificate['id']}",
-        headers=auth_headers,
+
     )
     assert delete.status_code == 204

@@ -4,11 +4,9 @@ info:
   type: workspace
 
 collections:
-  - name: "Job Finder Auth API"
-    path: "collections/Job Finder Auth API"
+  - name: "Job Finder API"
+    path: "collections/Job Finder API"
 
-specs:
-
+specs: []
 docs: ''
-
 activeEnvironmentUid: 1kwv6ka00000000000000

@@ -3,7 +3,7 @@
 Cada feature em `src/modules/profile/features/` e `src/modules/enterprise/features/`
 possui um `schema.json` com todos os DTOs Pydantic definidos em seu `dtos.py`.
 Os arquivos `src/modules/profile/schema.json` e `src/modules/enterprise/schema.json`
-consolidam as respectivas features e os DTOs de `shared/dtos.py`.
+consolidam as respectivas features. DTOs compartilhados são incluídos quando existirem.
 
 Os arquivos seguem JSON Schema Draft 2020-12 e são autossuficientes: todas as
 referências apontam para `$defs` no mesmo arquivo. `x-models` é um índice dos

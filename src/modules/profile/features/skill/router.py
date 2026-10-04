@@ -5,14 +5,11 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.modules.profile.shared.adapters import get_current_profile_user, require_role
-from src.modules.profile.shared.dtos import ProfileUser
 from src.modules.profile.features.skill import dtos
 from src.modules.profile.features.skill import handlers
 from src.shared.database import sql_client
 
 
-_require_default_role = require_role(["default"])
 router = APIRouter(prefix="/skills", tags=["Skills"])
 
 
@@ -25,8 +22,6 @@ router = APIRouter(prefix="/skills", tags=["Skills"])
 async def create_skill(
     data: dtos.SkillCreateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.SkillResponse:
     """Create a new skill with the provided name and category."""
     return await handlers.create_skill(session, data)
@@ -45,8 +40,6 @@ async def list_skills(
     skip: int = Query(0, ge=0, description="Number of records to skip"),
     limit: int = Query(20, ge=1, le=100, description="Maximum number of records"),
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> List[dtos.SkillResponse]:
     """List all skills with optional filters and pagination."""
     filters = dtos.SkillFilterParams(
@@ -66,8 +59,6 @@ async def list_skills(
 async def get_skill(
     skill_id: int,
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.SkillDetailResponse:
     """Get a specific skill by its ID."""
     return await handlers.get_skill(session, skill_id)
@@ -82,8 +73,6 @@ async def update_skill(
     skill_id: int,
     data: dtos.SkillUpdateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.SkillResponse:
     """Update a skill's information."""
     return await handlers.update_skill(session, skill_id, data)
@@ -97,8 +86,6 @@ async def update_skill(
 async def delete_skill(
     skill_id: int,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.SkillResponse:
     """Soft delete a skill (or hard delete if specified)."""
     return await handlers.delete_skill(session, skill_id)

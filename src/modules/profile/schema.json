@@ -1981,35 +1981,6 @@
       "title": "ProfileUpdateSkillRequest",
       "type": "object"
     },
-    "ProfileUser": {
-      "description": "Authenticated user in the context of the profile module.\n\nThis DTO is returned by the profile-specific ``get_current_profile_user``\ndependency. It represents the row from the ``profile.User`` table that was\neither retrieved or auto-created based on the incoming JWT token.\n\nAttributes:\n    id: Primary key of the ``profile.User`` row.\n    external_id: Foreign reference to ``auth.User.id`` (auth module PK).\n    role_name: Role name extracted from the JWT (forwarded from auth).\n    is_active: Whether the auth user account is active.",
-      "properties": {
-        "external_id": {
-          "title": "External Id",
-          "type": "integer"
-        },
-        "id": {
-          "title": "Id",
-          "type": "integer"
-        },
-        "is_active": {
-          "title": "Is Active",
-          "type": "boolean"
-        },
-        "role_name": {
-          "title": "Role Name",
-          "type": "string"
-        }
-      },
-      "required": [
-        "id",
-        "external_id",
-        "role_name",
-        "is_active"
-      ],
-      "title": "ProfileUser",
-      "type": "object"
-    },
     "SkillCategory": {
       "description": "Enum for skill categories.",
       "enum": [
@@ -2187,7 +2158,6 @@
       "type": "object"
     },
     "UserDetailResponse": {
-      "description": "Schema for detailed user response.",
       "properties": {
         "deleted_at": {
           "anyOf": [
@@ -2202,47 +2172,46 @@
           "default": null,
           "title": "Deleted At"
         },
-        "external_id": {
-          "title": "External Id",
-          "type": "integer"
-        },
         "id": {
           "title": "Id",
           "type": "integer"
+        },
+        "is_anonymous": {
+          "title": "Is Anonymous",
+          "type": "boolean"
         }
       },
       "required": [
         "id",
-        "external_id"
+        "is_anonymous"
       ],
       "title": "UserDetailResponse",
       "type": "object"
     },
     "UserFilterParams": {
-      "description": "Schema for user list filters.",
       "properties": {
-        "external_id": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Filter by external auth user ID",
-          "title": "External Id"
-        },
         "include_deleted": {
           "default": false,
           "description": "Include soft deleted users",
           "title": "Include Deleted",
           "type": "boolean"
         },
+        "is_anonymous": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter anonymous owner",
+          "title": "Is Anonymous"
+        },
         "limit": {
           "default": 20,
-          "description": "Maximum number of records to return",
+          "description": "Maximum number of records",
           "maximum": 100,
           "minimum": 1,
           "title": "Limit",
@@ -2260,20 +2229,19 @@
       "type": "object"
     },
     "UserResponse": {
-      "description": "Schema for user response.",
       "properties": {
-        "external_id": {
-          "title": "External Id",
-          "type": "integer"
-        },
         "id": {
           "title": "Id",
           "type": "integer"
+        },
+        "is_anonymous": {
+          "title": "Is Anonymous",
+          "type": "boolean"
         }
       },
       "required": [
         "id",
-        "external_id"
+        "is_anonymous"
       ],
       "title": "UserResponse",
       "type": "object"
@@ -2430,9 +2398,6 @@
     },
     {
       "$ref": "#/$defs/UserResponse"
-    },
-    {
-      "$ref": "#/$defs/ProfileUser"
     }
   ],
   "description": "Consolidated DTO schemas. Select an individual contract through its reference in x-models. The root accepts any listed DTO.",
@@ -2491,9 +2456,6 @@
       "ProfileSkillResponse": "#/$defs/ProfileSkillResponse",
       "ProfileUpdateRequest": "#/$defs/ProfileUpdateRequest",
       "ProfileUpdateSkillRequest": "#/$defs/ProfileUpdateSkillRequest"
-    },
-    "shared": {
-      "ProfileUser": "#/$defs/ProfileUser"
     },
     "skill": {
       "SkillCreateRequest": "#/$defs/SkillCreateRequest",

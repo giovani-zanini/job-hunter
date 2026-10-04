@@ -504,7 +504,7 @@ async def add_profile_experience(
     await shared_services.ensure_exists(
         session=session,
         model=Profile,
-        id=profile_id,
+        entity_id=profile_id,
         label="Profile",
     )
 
@@ -512,7 +512,7 @@ async def add_profile_experience(
     await shared_services.ensure_exists(
         session=session,
         model=Experience,
-        id=experience_id,
+        entity_id=experience_id,
         label="Experience",
     )
 

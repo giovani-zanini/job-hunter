@@ -7,7 +7,6 @@ from src.modules.profile.features.education import services
 from src.modules.profile.features.education.models import Education, EducationSkills
 from src.modules.profile.features.skill.models import Skill
 from src.modules.profile.features.skill.services import ensure_skills_exist
-from src.shared import exceptions
 from src.shared import services as shared_services
 from src.shared import dtos as shared_dtos
 
@@ -41,7 +40,7 @@ async def create_education(
 
 
 async def delete_education(
-    session: AsyncSession, education_id: int, user_id: int, hard_delete: bool = False
+    session: AsyncSession, education_id: int, hard_delete: bool = False
 ) -> dtos.EducationResponse:
     """Execute the delete education use case."""
 
@@ -50,10 +49,6 @@ async def delete_education(
         session, Education, education_id, include_deleted=True, label="Education"
     )
 
-    if education.user_id != user_id:
-        raise exceptions.ForbiddenException(
-            detail="Not authorized to delete this education record."
-        )
 
     if hard_delete:
         response = dtos.EducationResponse.model_validate(education)
@@ -107,7 +102,6 @@ async def update_education(
     session: AsyncSession,
     education_id: int,
     data: dtos.EducationUpdateRequest,
-    user_id: int,
 ) -> dtos.EducationResponse:
     """Execute the update education use case."""
 
@@ -116,10 +110,6 @@ async def update_education(
         session, Education, education_id, label="Education"
     )
 
-    if education.user_id != user_id:
-        raise exceptions.ForbiddenException(
-            detail="Not authorized to update this education record."
-        )
 
     # Update education
     education = await services.update_education(

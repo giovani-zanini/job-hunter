@@ -1,7 +1,6 @@
 {
   "$defs": {
     "UserDetailResponse": {
-      "description": "Schema for detailed user response.",
       "properties": {
         "deleted_at": {
           "anyOf": [
@@ -16,47 +15,46 @@
           "default": null,
           "title": "Deleted At"
         },
-        "external_id": {
-          "title": "External Id",
-          "type": "integer"
-        },
         "id": {
           "title": "Id",
           "type": "integer"
+        },
+        "is_anonymous": {
+          "title": "Is Anonymous",
+          "type": "boolean"
         }
       },
       "required": [
         "id",
-        "external_id"
+        "is_anonymous"
       ],
       "title": "UserDetailResponse",
       "type": "object"
     },
     "UserFilterParams": {
-      "description": "Schema for user list filters.",
       "properties": {
-        "external_id": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Filter by external auth user ID",
-          "title": "External Id"
-        },
         "include_deleted": {
           "default": false,
           "description": "Include soft deleted users",
           "title": "Include Deleted",
           "type": "boolean"
         },
+        "is_anonymous": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filter anonymous owner",
+          "title": "Is Anonymous"
+        },
         "limit": {
           "default": 20,
-          "description": "Maximum number of records to return",
+          "description": "Maximum number of records",
           "maximum": 100,
           "minimum": 1,
           "title": "Limit",
@@ -74,20 +72,19 @@
       "type": "object"
     },
     "UserResponse": {
-      "description": "Schema for user response.",
       "properties": {
-        "external_id": {
-          "title": "External Id",
-          "type": "integer"
-        },
         "id": {
           "title": "Id",
           "type": "integer"
+        },
+        "is_anonymous": {
+          "title": "Is Anonymous",
+          "type": "boolean"
         }
       },
       "required": [
         "id",
-        "external_id"
+        "is_anonymous"
       ],
       "title": "UserResponse",
       "type": "object"

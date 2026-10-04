@@ -5,13 +5,13 @@ enum SKILL_CATEGORY {
 }
 
 Table User [headercolor: #177a1c] {
-	id integer [ pk, increment, not null, unique ]
-	email varchar(125) [ not null, unique ]
-	password varchar(64) [ not null ]
+    id integer [pk, increment, not null, unique]
+    is_anonymous boolean [not null, default: false, note: 'Unique true value; shared owner of new profile data']
+    deleted_at timestamp
 
-	indexes {
-		(id, email) [ name: 'User_index_0', unique ]
-	}
+    indexes {
+        (is_anonymous) [name: 'uq_profile_User_anonymous', unique, note: 'Partial index where is_anonymous is true']
+    }
 }
 
 Table Link [headercolor: #177a1c] {

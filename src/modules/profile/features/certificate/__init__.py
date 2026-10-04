@@ -5,6 +5,5 @@ from src.modules.profile.features.certificate.models import (
     CertificateSkills,
     ProfileCertificate,
 )
-from src.modules.profile.features.certificate.router import router
 
-__all__ = ["Certificate", "CertificateSkills", "ProfileCertificate", "router"]
+__all__ = ["Certificate", "CertificateSkills", "ProfileCertificate"]

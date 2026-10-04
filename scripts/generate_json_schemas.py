@@ -59,17 +59,18 @@ def load_dtos(module_name: str) -> dict[str, list[type[BaseModel]]]:
         if not features[directory.name]:
             raise ValueError(f"No Pydantic DTOs found in {dto_module.__name__}")
 
-    shared_module = importlib.import_module(f"src.modules.{module_name}.shared.dtos")
-    shared_models = sorted(
-        (
-            cls
-            for _, cls in inspect.getmembers(shared_module, inspect.isclass)
-            if issubclass(cls, BaseModel) and cls is not BaseModel
-        ),
-        key=lambda cls: cls.__name__,
-    )
-    if shared_models:
-        features["shared"] = shared_models
+    if (ROOT / "src" / "modules" / module_name / "shared" / "dtos.py").is_file():
+        shared_module = importlib.import_module(f"src.modules.{module_name}.shared.dtos")
+        shared_models = sorted(
+            (
+                cls
+                for _, cls in inspect.getmembers(shared_module, inspect.isclass)
+                if issubclass(cls, BaseModel) and cls is not BaseModel
+            ),
+            key=lambda cls: cls.__name__,
+        )
+        if shared_models:
+            features["shared"] = shared_models
     return features
 
 

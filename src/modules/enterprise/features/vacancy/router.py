@@ -5,12 +5,9 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.modules.enterprise.shared.adapters import get_current_user, require_role
-from src.modules.enterprise.shared.dtos import AuthenticatedUser
 from src.modules.enterprise.features.vacancy import dtos, handlers
 from src.shared.database import sql_client
 
-_require_default_role = require_role(["default"])
 router = APIRouter(prefix="/vacancies", tags=["Vacancies"])
 
 
@@ -18,8 +15,6 @@ router = APIRouter(prefix="/vacancies", tags=["Vacancies"])
 async def create_vacancy(
     data: dtos.VacancyCreateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.VacancyResponse:
     return await handlers.create_vacancy(session, data)
 
@@ -33,8 +28,6 @@ async def list_vacancies(
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> List[dtos.VacancyResponse]:
     filters = dtos.VacancyFilterParams(
         title=title,
@@ -52,8 +45,6 @@ async def get_vacancy(
     vacancy_id: int,
     include_deleted: bool = Query(False),
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.VacancyDetailResponse:
     return await handlers.get_vacancy(session, vacancy_id, include_deleted)
 
@@ -63,8 +54,6 @@ async def update_vacancy(
     vacancy_id: int,
     data: dtos.VacancyUpdateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.VacancyResponse:
     return await handlers.update_vacancy(session, vacancy_id, data)
 
@@ -74,8 +63,6 @@ async def delete_vacancy(
     vacancy_id: int,
     hard_delete: bool = Query(False),
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.VacancyResponse:
     return await handlers.delete_vacancy(session, vacancy_id, hard_delete)
 
@@ -91,8 +78,6 @@ async def add_requirement_to_vacancy(
     vacancy_id: int,
     data: dtos.VacancyRequirementCreateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.VacancyRequirementResponse:
     return await handlers.add_requirement_to_vacancy(session, vacancy_id, data)
 
@@ -102,8 +87,6 @@ async def remove_requirement_from_vacancy(
     vacancy_id: int,
     vacancy_requirement_id: int,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> None:
     await handlers.remove_requirement_from_vacancy(session, vacancy_id, vacancy_requirement_id)
 
@@ -119,8 +102,6 @@ async def add_responsability_to_vacancy(
     vacancy_id: int,
     data: dtos.VacancyResponsabilityCreateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.VacancyResponsabilityResponse:
     return await handlers.add_responsability_to_vacancy(session, vacancy_id, data)
 
@@ -133,7 +114,5 @@ async def remove_responsability_from_vacancy(
     vacancy_id: int,
     responsability_id: int,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: AuthenticatedUser = Depends(get_current_user),
-    _: None = Depends(_require_default_role),
 ) -> None:
     await handlers.remove_responsability_from_vacancy(session, vacancy_id, responsability_id)

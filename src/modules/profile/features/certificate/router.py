@@ -5,15 +5,13 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.modules.profile.shared.adapters import get_current_profile_user, require_role
-from src.modules.profile.shared.dtos import ProfileUser
 from src.modules.profile.features.certificate import dtos
 from src.modules.profile.features.certificate import handlers
+from src.modules.profile.shared.adapters import get_anonymous_user_id
 from src.shared.database import sql_client
 from src.shared import dtos as shared_dtos
 
 
-_require_default_role = require_role(["default"])
 router = APIRouter(prefix="/certificates", tags=["Certificates"])
 
 
@@ -29,11 +27,10 @@ router = APIRouter(prefix="/certificates", tags=["Certificates"])
 async def create_certificate(
     data: dtos.CertificateCreateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
+    anonymous_user_id: int = Depends(get_anonymous_user_id),
 ) -> dtos.CertificateDetailResponse:
     """Create a new certificate with optional skills."""
-    return await handlers.create_certificate(session, current_user.id, data)
+    return await handlers.create_certificate(session, anonymous_user_id, data)
 
 
 @router.get(
@@ -50,12 +47,9 @@ async def list_certificates(
     skip: int = Query(0, ge=0, description="Number of records to skip"),
     limit: int = Query(20, ge=1, le=100, description="Maximum number of records"),
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> List[dtos.CertificateResponse]:
-    """List certificates for the authenticated user."""
+    """List certificates."""
     filters = dtos.CertificateFilterParams(
-        user_id=current_user.id,
         name=name,
         issuer=issuer,
         include_deleted=include_deleted,
@@ -74,8 +68,6 @@ async def get_certificate(
     certificate_id: int,
     include_deleted: bool = Query(False, description="Include if soft deleted"),
     session: AsyncSession = Depends(sql_client.get_sql_read_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.CertificateDetailResponse:
     """Get a specific certificate by its ID."""
     return await handlers.get_certificate(session, certificate_id, include_deleted)
@@ -90,12 +82,10 @@ async def update_certificate(
     certificate_id: int,
     data: dtos.CertificateUpdateRequest,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.CertificateResponse:
     """Update a certificate's information."""
     return await handlers.update_certificate(
-        session, certificate_id, data, current_user.id
+        session, certificate_id, data
     )
 
 
@@ -108,12 +98,10 @@ async def delete_certificate(
     certificate_id: int,
     hard_delete: bool = Query(False, description="Permanently delete the record"),
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> dtos.CertificateResponse:
     """Soft delete a certificate (or hard delete if specified)."""
     return await handlers.delete_certificate(
-        session, certificate_id, current_user.id, hard_delete
+        session, certificate_id, hard_delete
     )
 
 
@@ -130,8 +118,6 @@ async def add_certificate_skill(
     certificate_id: int,
     skill_id: int,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> shared_dtos.Message:
     """Associate a skill with a certificate."""
     return await handlers.add_certificate_skill(session, certificate_id, skill_id)
@@ -146,8 +132,6 @@ async def remove_certificate_skill(
     certificate_id: int,
     skill_id: int,
     session: AsyncSession = Depends(sql_client.get_sql_default_session),
-    current_user: ProfileUser = Depends(get_current_profile_user),
-    _: None = Depends(_require_default_role),
 ) -> None:
     """Remove a skill from a certificate."""
     await handlers.remove_certificate_skill(session, certificate_id, skill_id)

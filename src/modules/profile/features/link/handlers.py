@@ -19,7 +19,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.modules.profile.features.link import dtos
 from src.modules.profile.features.link import services
 from src.modules.profile.features.link.models import Link
-from src.shared import exceptions
 from src.shared import services as shared_services
 
 
@@ -33,7 +32,6 @@ async def create_link(
 
     Args:
         session: The async database session for executing queries.
-        user_id: The profile.User PK of the authenticated user.
         data: The link creation request containing type, from_, and value.
 
     Returns:
@@ -54,7 +52,7 @@ async def create_link(
 
 
 async def delete_link(
-    session: AsyncSession, link_id: int, user_id: int, hard_delete: bool = False
+    session: AsyncSession, link_id: int, hard_delete: bool = False
 ) -> dtos.LinkResponse:
     """Delete a user link (soft or hard delete).
 
@@ -70,17 +68,12 @@ async def delete_link(
 
     Raises:
         NotFoundException: If no link exists with the given link_id.
-        ForbiddenException: If the link does not belong to the user.
     """
     # Find link
     link = await shared_services.ensure_exists(
         session, Link, link_id, include_deleted=True, label="Link"
     )
 
-    if link.user_id != user_id:
-        raise exceptions.ForbiddenException(
-            detail="Not authorized to delete this link."
-        )
 
     if hard_delete:
         response = dtos.LinkResponse.model_validate(link)
@@ -145,7 +138,7 @@ async def list_links(
 
 
 async def update_link(
-    session: AsyncSession, link_id: int, data: dtos.LinkUpdateRequest, user_id: int
+    session: AsyncSession, link_id: int, data: dtos.LinkUpdateRequest,
 ) -> dtos.LinkResponse:
     """Update an existing user link.
 
@@ -159,15 +152,10 @@ async def update_link(
 
     Raises:
         NotFoundException: If no link exists with the given link_id.
-        ForbiddenException: If the link does not belong to the user.
     """
     # Find link
     link = await shared_services.ensure_exists(session, Link, link_id, label="Link")
 
-    if link.user_id != user_id:
-        raise exceptions.ForbiddenException(
-            detail="Not authorized to update this link."
-        )
 
     # Update link
     link = await services.update_link(
